@@ -1,0 +1,178 @@
+{
+    "meta": {
+        "name": "API Keys Dashboard",
+        "version": "1.0.0",
+        "description": "Dashboard for managing API keys with environment context and quick copy actions.",
+        "responsive": true,
+        "themes": ["light"],
+        "platforms": ["desktop", "mobile"]
+    },
+    "layout": {
+        "type": "application",
+        "structure": ["topbar", "sidebar", "content"]
+    },
+    "topbar": {
+        "height": "64px",
+        "elements": [
+            {
+                "type": "brand",
+                "content": [
+                    {
+                        "type": "logo",
+                        "text": "F2 Apps"
+                    }
+                ]
+            },
+            {
+                "type": "app-switcher",
+                "behavior": "dropdown",
+                "elements": ["current_app", "current_environment", "search", "app_list", "create_app_action"]
+            },
+            {
+                "type": "actions",
+                "align": "right",
+                "elements": ["apps_link", "docs_link", "theme_toggle", "user_avatar"]
+            }
+        ]
+    },
+    "sidebar": {
+        "visibility": {
+            "desktop": true,
+            "mobile": false
+        },
+        "width": "240px",
+        "navigation": [
+            {
+                "label": "Overview",
+                "icon": "home",
+                "active": false
+            },
+            {
+                "label": "Logs",
+                "icon": "folder",
+                "active": false
+            },
+            {
+                "label": "API Keys",
+                "icon": "key",
+                "active": true
+            },
+            {
+                "label": "Payment history",
+                "icon": "credit-card",
+                "active": false
+            },
+            {
+                "label": "Settings",
+                "icon": "settings",
+                "active": false
+            }
+        ]
+    },
+    "content": {
+        "header": {
+            "title": "API Keys",
+            "subtitle": "View and manage your API keys."
+        },
+        "sections": [
+            {
+                "id": "quick-copy",
+                "type": "card",
+                "title": "Quick Copy",
+                "description": "Copy your environment variable to your clipboard.",
+                "elements": [
+                    {
+                        "type": "select",
+                        "label": "Key type",
+                        "options": ["Secret Key"]
+                    },
+                    {
+                        "type": "code-block",
+                        "label": "Environment variables",
+                        "language": "env",
+                        "content": ["APP_SECRET='sk_live_********'", "APP_ID='********'"],
+                        "actions": [
+                            {
+                                "type": "button",
+                                "label": "Copy",
+                                "variant": "secondary"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "standard-keys",
+                "type": "card",
+                "title": "Standard Keys",
+                "description": "These keys will allow you to authenticate API requests.",
+                "elements": [
+                    {
+                        "type": "table",
+                        "columns": ["Name", "Key", "Created", "Last used", "Actions"],
+                        "rows": [
+                            {
+                                "name": "Secret Key",
+                                "key_masked": true,
+                                "created_at": "Dec 30, 2025, 4:50 PM",
+                                "last_used": "Never",
+                                "actions": ["reveal", "more"]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "button",
+                        "label": "Create key",
+                        "variant": "ghost",
+                        "icon": "plus"
+                    }
+                ]
+            }
+        ]
+    },
+    "mobile": {
+        "layout": {
+            "topbar": {
+                "elements": ["brand", "theme_toggle", "menu_toggle"]
+            }
+        },
+        "navigation": {
+            "type": "bottom-or-drawer",
+            "trigger": "menu_toggle"
+        },
+        "content": {
+            "behavior": "single-column",
+            "cards": "stacked",
+            "tables": {
+                "transform": "list"
+            }
+        }
+    },
+    "design_tokens": {
+        "spacing": {
+            "xs": 4,
+            "sm": 8,
+            "md": 16,
+            "lg": 24,
+            "xl": 32
+        },
+        "radius": {
+            "sm": 6,
+            "md": 10,
+            "lg": 14
+        },
+        "typography": {
+            "font": "Inter",
+            "scale": {
+                "title": "20px",
+                "subtitle": "14px",
+                "body": "14px",
+                "code": "13px"
+            }
+        }
+    },
+    "behavior": {
+        "security": ["keys_are_masked_by_default", "explicit_reveal_action_required"],
+        "copy_actions": ["one_click_copy", "visual_feedback_on_copy"]
+    }
+}

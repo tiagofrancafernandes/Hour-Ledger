@@ -1,0 +1,318 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "version": "1.0.0",
+    "name": "Hours Ledger System - UI Design Specification",
+    "description": "Design system specification extracted from desktop and mobile mockups",
+
+    "colors": {
+        "primary": {
+            "main": "#dc2626",
+            "hover": "#b91c1c",
+            "light": "#fecaca",
+            "description": "Used for primary actions, brand elements, and active states"
+        },
+        "secondary": {
+            "main": "#6b7280",
+            "hover": "#4b5563",
+            "light": "#e5e7eb",
+            "description": "Used for secondary actions and neutral elements"
+        },
+        "background": {
+            "primary": "#ffffff",
+            "secondary": "#f9fafb",
+            "tertiary": "#f3f4f6",
+            "description": "Background colors for different surfaces"
+        },
+        "text": {
+            "primary": "#111827",
+            "secondary": "#6b7280",
+            "tertiary": "#9ca3af",
+            "inverse": "#ffffff",
+            "description": "Text colors for different hierarchy levels"
+        },
+        "border": {
+            "light": "#e5e7eb",
+            "medium": "#d1d5db",
+            "dark": "#9ca3af",
+            "description": "Border colors for dividers and outlines"
+        },
+        "code": {
+            "background": "#1a1a1a",
+            "text": "#e5e7eb",
+            "highlight": "#3b82f6",
+            "description": "Code block and terminal colors"
+        },
+        "status": {
+            "success": "#10b981",
+            "warning": "#f59e0b",
+            "error": "#ef4444",
+            "info": "#3b82f6",
+            "description": "Status and feedback colors"
+        }
+    },
+
+    "typography": {
+        "fontFamily": {
+            "sans": "Inter, system-ui, -apple-system, sans-serif",
+            "mono": "Monaco, Consolas, 'Courier New', monospace"
+        },
+        "fontSize": {
+            "xs": "0.75rem",
+            "sm": "0.875rem",
+            "base": "1rem",
+            "lg": "1.125rem",
+            "xl": "1.25rem",
+            "2xl": "1.5rem",
+            "3xl": "1.875rem"
+        },
+        "fontWeight": {
+            "normal": "400",
+            "medium": "500",
+            "semibold": "600",
+            "bold": "700"
+        }
+    },
+
+    "spacing": {
+        "xs": "0.25rem",
+        "sm": "0.5rem",
+        "md": "1rem",
+        "lg": "1.5rem",
+        "xl": "2rem",
+        "2xl": "3rem",
+        "description": "Consistent spacing scale"
+    },
+
+    "borderRadius": {
+        "sm": "0.25rem",
+        "md": "0.375rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px",
+        "description": "Border radius for different components"
+    },
+
+    "shadows": {
+        "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+        "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+        "description": "Shadow elevation levels"
+    },
+
+    "components": {
+        "button": {
+            "primary": {
+                "background": "#dc2626",
+                "color": "#ffffff",
+                "hover": "#b91c1c",
+                "border": "none",
+                "borderRadius": "0.5rem",
+                "padding": "0.5rem 1rem",
+                "fontSize": "0.875rem",
+                "fontWeight": "500",
+                "description": "Primary action button"
+            },
+            "secondary": {
+                "background": "#f3f4f6",
+                "color": "#374151",
+                "hover": "#e5e7eb",
+                "border": "1px solid #e5e7eb",
+                "borderRadius": "0.5rem",
+                "padding": "0.5rem 1rem",
+                "fontSize": "0.875rem",
+                "fontWeight": "500",
+                "description": "Secondary action button"
+            },
+            "ghost": {
+                "background": "transparent",
+                "color": "#6b7280",
+                "hover": "#f3f4f6",
+                "border": "none",
+                "borderRadius": "0.5rem",
+                "padding": "0.5rem 1rem",
+                "fontSize": "0.875rem",
+                "fontWeight": "500",
+                "description": "Ghost/text button"
+            },
+            "icon": {
+                "background": "transparent",
+                "color": "#6b7280",
+                "hover": "#f3f4f6",
+                "border": "none",
+                "borderRadius": "0.375rem",
+                "padding": "0.5rem",
+                "size": "2rem",
+                "description": "Icon-only button"
+            }
+        },
+
+        "card": {
+            "background": "#ffffff",
+            "border": "1px solid #e5e7eb",
+            "borderRadius": "0.75rem",
+            "padding": "1.5rem",
+            "shadow": "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+            "description": "Content card container"
+        },
+
+        "input": {
+            "background": "#ffffff",
+            "border": "1px solid #d1d5db",
+            "borderRadius": "0.5rem",
+            "padding": "0.5rem 0.75rem",
+            "fontSize": "0.875rem",
+            "color": "#111827",
+            "placeholder": "#9ca3af",
+            "focus": {
+                "border": "#dc2626",
+                "ring": "0 0 0 3px rgba(220, 38, 38, 0.1)"
+            },
+            "description": "Text input field"
+        },
+
+        "dropdown": {
+            "background": "#ffffff",
+            "border": "1px solid #d1d5db",
+            "borderRadius": "0.5rem",
+            "padding": "0.5rem 0.75rem",
+            "fontSize": "0.875rem",
+            "shadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            "description": "Dropdown/select component"
+        },
+
+        "badge": {
+            "primary": {
+                "background": "#dc2626",
+                "color": "#ffffff",
+                "borderRadius": "0.375rem",
+                "padding": "0.25rem 0.75rem",
+                "fontSize": "0.75rem",
+                "fontWeight": "600",
+                "description": "Primary badge (app identifier)"
+            },
+            "secondary": {
+                "background": "#f3f4f6",
+                "color": "#374151",
+                "borderRadius": "0.375rem",
+                "padding": "0.25rem 0.75rem",
+                "fontSize": "0.75rem",
+                "fontWeight": "500",
+                "description": "Secondary badge"
+            }
+        },
+
+        "table": {
+            "header": {
+                "background": "#f9fafb",
+                "color": "#6b7280",
+                "fontSize": "0.75rem",
+                "fontWeight": "500",
+                "textTransform": "uppercase",
+                "padding": "0.75rem 1rem"
+            },
+            "row": {
+                "background": "#ffffff",
+                "hover": "#f9fafb",
+                "border": "1px solid #e5e7eb",
+                "padding": "1rem"
+            },
+            "description": "Data table styling"
+        },
+
+        "sidebar": {
+            "background": "#ffffff",
+            "border": "1px solid #e5e7eb",
+            "width": "16rem",
+            "item": {
+                "color": "#6b7280",
+                "hover": "#f3f4f6",
+                "active": "#fecaca",
+                "activeColor": "#dc2626",
+                "padding": "0.75rem 1rem",
+                "borderRadius": "0.5rem"
+            },
+            "description": "Sidebar navigation"
+        },
+
+        "codeBlock": {
+            "background": "#1a1a1a",
+            "color": "#e5e7eb",
+            "borderRadius": "0.5rem",
+            "padding": "1rem",
+            "fontFamily": "Monaco, Consolas, monospace",
+            "fontSize": "0.875rem",
+            "lineHeight": "1.5",
+            "description": "Code display block"
+        }
+    },
+
+    "navigation": {
+        "header": {
+            "height": "4rem",
+            "background": "#ffffff",
+            "border": "1px solid #e5e7eb",
+            "padding": "0 1.5rem",
+            "logo": {
+                "fontSize": "1.5rem",
+                "fontWeight": "700",
+                "primaryColor": "#111827",
+                "accentColor": "#dc2626"
+            },
+            "description": "Top header navigation"
+        },
+        "bottomNav": {
+            "mobile": {
+                "height": "4rem",
+                "background": "#ffffff",
+                "border": "1px solid #e5e7eb",
+                "shadow": "0 -1px 3px 0 rgba(0, 0, 0, 0.1)",
+                "iconSize": "1.5rem",
+                "iconColor": "#6b7280",
+                "iconActiveColor": "#dc2626"
+            },
+            "description": "Mobile bottom navigation"
+        }
+    },
+
+    "responsive": {
+        "breakpoints": {
+            "sm": "640px",
+            "md": "768px",
+            "lg": "1024px",
+            "xl": "1280px",
+            "2xl": "1536px"
+        },
+        "mobile": {
+            "sidebarCollapsed": true,
+            "bottomNavVisible": true,
+            "headerCompact": true
+        },
+        "desktop": {
+            "sidebarExpanded": true,
+            "bottomNavVisible": false,
+            "headerFull": true
+        }
+    },
+
+    "animations": {
+        "duration": {
+            "fast": "150ms",
+            "normal": "300ms",
+            "slow": "500ms"
+        },
+        "easing": {
+            "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+            "in": "cubic-bezier(0.4, 0, 1, 1)",
+            "out": "cubic-bezier(0, 0, 0.2, 1)"
+        }
+    },
+
+    "notes": {
+        "branding": "Logo uses combination of black text + red accent (e.g., 'MK' in black, 'Pay' in red)",
+        "consistency": "Maintain consistent spacing, border radius, and color usage across all components",
+        "accessibility": "Ensure sufficient color contrast ratios for WCAG AA compliance",
+        "darkMode": "Dark mode toggle visible in header - implement theme switching",
+        "icons": "Use consistent icon library (e.g., Heroicons, Lucide) at 1.25rem-1.5rem sizes"
+    }
+}

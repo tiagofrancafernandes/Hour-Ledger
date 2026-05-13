@@ -1,0 +1,19 @@
+*.md
+
+no-commit
+vendor
+node_modules
+storage
+build
+dist
+.output
+.vite
+.cache
+.*/
+*.env
+.env*
+
+### Project ignore rules
+apps
+docker
+docs

@@ -1,0 +1,14 @@
+# Testing
+coverage
+.nyc_output
+*.lcov
+
+# IDE & Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Development
+.vercel

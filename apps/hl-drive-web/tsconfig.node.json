@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+        "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "module": "ESNext",
+        "jsx": "preserve",
+        "types": ["node", "vue3-toastify/global"],
+        "skipLibCheck": true,
+
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "verbatimModuleSyntax": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+
+        /* Linting */
+        // "strict": true,
+        "strict": false,
+        "strictNullChecks": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "erasableSyntaxOnly": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true
+    },
+    "include": ["vite.config.ts"],
+
+    "exclude": [
+        "eslint.config.js",
+        "tailwind.config.js",
+        "tailwind.config.ts",
+        "open-in-editor-server.js",
+        "*-no*commit*",
+        "**/dist/**",
+        "**/.vite/**",
+        "**/node_modules/**",
+        "**/no-commit/**",
+        "dist",
+        "**/dist/**",
+        "**/open-in-editor-server.js"
+        //
+    ]
+}
