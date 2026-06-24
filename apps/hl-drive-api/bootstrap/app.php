@@ -68,6 +68,12 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'http://*.localcom/*',
         ]);
 
+        $middleware->api(
+            append: [
+                \App\Http\Middleware\TenantMiddleware::class,
+            ]
+        );
+
         $middleware->alias([
             'verified' => App\Http\Middleware\EnsureEmailIsVerified::class,
             'role' => Spatie\Permission\Middleware\RoleMiddleware::class,

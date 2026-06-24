@@ -39,6 +39,15 @@ Route::prefix('debug')->group(function () {
     Route::post('/config', DebugConfigController::class);
 });
 
+// Test Tenant Endpoint (for testing TenantMiddleware)
+Route::get('/test-tenant-endpoint', function (Request $request) {
+    return response()->json([
+        'tenant_id' => $request->attributes->get('tenant_id'),
+        'tenant_schema' => $request->attributes->get('tenant_schema'),
+        'message' => 'Tenant endpoint reached successfully',
+    ]);
+});
+
 Route::prefix('public')->name('api.public.')->group(function () {
     Route::any('/timezones', [PublicResourceController::class, 'timezones'])->name('timezones');
 });
