@@ -5,7 +5,7 @@ Este diretório contém o planejamento e execução das atividades do projeto.
 ## Estrutura
 
 ```text
-tasks/
+docs/agent/
 ├── README.md
 ├── plans/
 ├── tasks/
@@ -74,7 +74,7 @@ Ao concluir uma tarefa:
 Antes de executar qualquer tarefa, analisar obrigatoriamente:
 
 1. README.md
-2. tasks/README.md
+2. docs/agent/README.md
 3. AGENTS.md
 4. CLAUDE.md
 
@@ -149,7 +149,7 @@ Antes de criar tarefas para esses planos:
 
 1. analisar o plano
 2. analisar README.md
-3. analisar tasks/README.md
+3. analisar docs/agent/README.md
 4. analisar AGENTS.md
 5. analisar CLAUDE.md
 

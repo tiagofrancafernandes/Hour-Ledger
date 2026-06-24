@@ -20,7 +20,7 @@
 - Services e payments (sem integração com payment gateway)
 
 ### ⏳ Em Progresso (1 tarefa)
-- `tasks/doing/` - Verificar se há algo em execução
+- `docs/agent/doing/` - Verificar se há algo em execução
 
 ### ⏸️ Pausado (3 itens)
 - 061: Sales (legado incompleto, aguardando decisão de negócio)
@@ -28,7 +28,7 @@
 - ANALISE-DEMANDA-SALES-STORE.md (análise consolidada)
 
 ### 📋 Planos Consolidados
-- Todos os planos de execução movidos para `tasks/done/` com documentação de conclusão
+- Todos os planos de execução movidos para `docs/agent/done/` com documentação de conclusão
 
 ---
 
@@ -56,7 +56,7 @@
 ## Como Iniciar a Próxima Tarefa
 
 1. **Escolher tarefa** da lista acima conforme prioridade
-2. **Criar arquivo** em `tasks/tasks/0NN-descricao.md` (formato em tasks/README.md)
+2. **Criar arquivo** em `docs/agent/tasks/0NN-descricao.md` (formato em docs/agent/README.md)
 3. **Preencher seções**:
    - Objetivo
    - Escopo
