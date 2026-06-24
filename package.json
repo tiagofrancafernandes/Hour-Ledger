@@ -4,11 +4,15 @@
     "packageManager": "pnpm@9.0.0",
     "scripts": {
         "dev": "turbo run dev",
+        "dev:drive": "concurrently -n drive-api,drive-web -c blue,green \"npm:dev:drive-api\" \"npm:dev:drive-web\"",
+        "dev:drive-api": "cd ./apps/hl-drive-api && php artisan serve --host 0.0.0.0 --port=6011",
+        "dev:drive-web": "cd ./apps/hl-drive-web && pnpm dev",
         "build": "turbo run build",
         "test": "turbo run test",
         "lint": "turbo run lint"
     },
     "devDependencies": {
+        "concurrently": "9.2.1",
         "turbo": "latest"
     }
 }

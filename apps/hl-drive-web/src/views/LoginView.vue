@@ -77,7 +77,7 @@ onMounted(() => {
                         <Icon icon="heroicons:clock" class="w-6 h-6 text-white" />
                     </div>
                     <h1 class="text-xl font-bold text-gray-900">Hours Ledger</h1>
-                    <p class="mt-1 text-sm text-gray-500">Sign in to your account</p>
+                    <p class="mt-1 text-sm text-gray-500">{{ $t('auth.sign_in') }}</p>
                 </div>
 
                 <!-- Form -->
@@ -93,7 +93,7 @@ onMounted(() => {
                     <form class="space-y-4" @submit.prevent="handleSubmit">
                         <!-- Email -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">{{ $t('auth.email') }}</label>
                             <input
                                 id="email"
                                 v-model="email"
@@ -108,7 +108,7 @@ onMounted(() => {
                         <!-- Password -->
                         <div>
                             <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                Password
+                                {{ $t('auth.password') }}
                             </label>
                             <div class="relative">
                                 <input
@@ -150,7 +150,7 @@ onMounted(() => {
                                         for="remember"
                                         class="text-sm font-medium text-gray-700 mb-1.5 select-none cursor-pointer"
                                     >
-                                        Remember me
+                                        {{ $t('auth.remember_me') }}
                                     </label>
                                 </div>
                             </div>
@@ -160,7 +160,7 @@ onMounted(() => {
                                 to="/password-recovery"
                                 class="text-sm font-medium text-red-600 hover:text-red-700 hover:underline"
                             >
-                                Forgot password?
+                                {{ $t('auth.forgot_password') }}
                             </router-link>
                         </div>
 
@@ -172,9 +172,9 @@ onMounted(() => {
                         >
                             <span v-if="loading" class="inline-flex items-center gap-2 justify-center">
                                 <Icon icon="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
-                                Signing in...
+                                {{ $t('common.loading') }}
                             </span>
-                            <span v-else>Sign in</span>
+                            <span v-else>{{ $t('auth.sign_in') }}</span>
                         </button>
                     </form>
                 </div>
@@ -202,8 +202,8 @@ onMounted(() => {
 
             <!-- Footer -->
             <div v-if="canRegister" class="text-center mt-6 text-sm text-gray-600">
-                Don't have an account?
-                <router-link to="/register" class="font-medium text-red-600 hover:text-red-700">Register</router-link>
+                {{ $t('auth.dont_have_account') }}
+                <router-link to="/register" class="font-medium text-red-600 hover:text-red-700">{{ $t('auth.register') }}</router-link>
             </div>
         </div>
     </div>

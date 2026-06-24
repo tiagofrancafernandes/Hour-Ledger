@@ -1,0 +1,37 @@
+{
+    "auth": {
+        "login": "Entrar",
+        "email": "E-mail",
+        "password": "Senha",
+        "remember_me": "Lembrar-me",
+        "forgot_password": "Esqueceu sua senha?",
+        "sign_in": "Entrar",
+        "register": "Cadastrar",
+        "dont_have_account": "Não tem uma conta?",
+        "sign_up": "Cadastre-se"
+    },
+    "common": {
+        "balance": "Saldo",
+        "wallet": "Carteira",
+        "wallets": "Carteiras",
+        "details": "Detalhes",
+        "reports": "Relatórios",
+        "dashboard": "Painel",
+        "profile": "Perfil",
+        "logout": "Sair",
+        "loading": "Carregando...",
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "create": "Criar",
+        "update": "Atualizar",
+        "delete": "Excluir",
+        "actions": "Ações"
+    },
+    "wallet": {
+        "total_balance": "Saldo Total",
+        "total_wallets": "Total de Carteiras",
+        "my_wallets": "Minhas Carteiras",
+        "add_wallet": "Adicionar Carteira",
+        "buy_credits": "Comprar Créditos"
+    }
+}

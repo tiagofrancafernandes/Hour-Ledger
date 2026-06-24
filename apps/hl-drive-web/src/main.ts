@@ -15,10 +15,16 @@ import { Icon } from '@iconify/vue';
 import router from './router';
 import authPlugin from './plugins/auth';
 import ToastPlugin from '@/plugins/toast';
+import i18n from './plugins/i18n';
 import { SpeedInsights } from '@vercel/speed-insights/vue';
 
 const app = createApp(App);
 const pinia = createPinia();
+
+app.use(pinia);
+app.use(router);
+app.use(i18n);
+app.use(authPlugin);
 
 const components = {
     CButton: CButton,
@@ -36,9 +42,6 @@ const components = {
     UIcon: Icon,
 };
 
-app.use(pinia);
-app.use(router);
-app.use(authPlugin);
 app.use(ToastPlugin, {
     autoClose: 8000,
 });

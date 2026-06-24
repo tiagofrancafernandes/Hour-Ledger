@@ -68,6 +68,7 @@
         "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/typography": "^0.5.19",
         "laravel-precognition": "^2.0.0",
-        "laravel-precognition-vue": "^2.0.0"
+        "laravel-precognition-vue": "^2.0.0",
+        "vue-i18n": "9"
     }
 }

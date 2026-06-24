@@ -41,15 +41,12 @@ export default defineConfig({
         },
     },
     server: {
-        // host: '0.0.0.0',
+        port: 6010,
         host: true,
-        // allowedHosts: [
-        //     'app.tiagoapps.com.br',
-        //     'app.local.tiagoapps.com.br',
-        //     'app.hml.tiagoapps.com.br',
-        //     // ... other hosts
-        // ],
         allowedHosts: true, // Any host
+        hmr: {
+            clientPort: 443,
+        },
         proxy: {
             '/__open-in-editor': {
                 target: process.env.OPEN_IN_EDITOR_URL || 'http://host.docker.internal:3001',

@@ -17,11 +17,12 @@ Planejado.
 
 ## Próxima ação
 
-Aguardar revisão humana do plano de extração (Etapa 6 de EXECUTION.md).
+Executar configuração de ambiente local e i18n (conforme novo plano aprovado tacitamente).
 
 ## Pendências imediatas
 
 - Obter aprovação para o plano em docs/agent/plans/2026-05-13-ledger-wallet-extraction-execution-plan.md.
+- Executar plano em docs/agent/plans/2026-05-13-local-setup-and-i18n.md.
 
 ## Observações
 

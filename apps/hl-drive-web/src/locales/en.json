@@ -1,0 +1,37 @@
+{
+    "auth": {
+        "login": "Login",
+        "email": "Email",
+        "password": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot your password?",
+        "sign_in": "Sign In",
+        "register": "Register",
+        "dont_have_account": "Don't have an account?",
+        "sign_up": "Sign Up"
+    },
+    "common": {
+        "balance": "Balance",
+        "wallet": "Wallet",
+        "wallets": "Wallets",
+        "details": "Details",
+        "reports": "Reports",
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "logout": "Logout",
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "actions": "Actions"
+    },
+    "wallet": {
+        "total_balance": "Total Balance",
+        "total_wallets": "Total Wallets",
+        "my_wallets": "My Wallets",
+        "add_wallet": "Add Wallet",
+        "buy_credits": "Buy Credits"
+    }
+}
