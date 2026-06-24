@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Exceptions\TenantNotActive;
 use App\Exceptions\TenantNotFound;
 use App\Exceptions\UnauthorizedTenant;
 use App\Http\Middleware\TenantMiddleware;
