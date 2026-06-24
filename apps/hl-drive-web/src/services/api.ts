@@ -109,6 +109,7 @@ async function request<T>(
     }
 
     const token = localStorage.getItem('auth_token');
+    const activeTenantId = localStorage.getItem('tenant_active_id');
     let isGet = Boolean(!method || ['GET', 'get'].includes(method));
 
     headers = {
@@ -116,6 +117,10 @@ async function request<T>(
         Accept: 'application/json',
         ...headers,
     };
+
+    if (activeTenantId) {
+        (headers as Record<string, string>)['X-Tenant-ID'] = activeTenantId;
+    }
 
     if (bodyIsFormData) {
         // headers['Content-Type'] = 'multipart/form-data'; // (This breaks the request because the boundary is not sent.)
