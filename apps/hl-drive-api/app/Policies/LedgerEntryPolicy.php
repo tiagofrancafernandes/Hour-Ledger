@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\LedgerEntry;
 use App\Models\User;
+use App\Traits\ValidatesTenantAccess;
 
 class LedgerEntryPolicy
 {
+    use ValidatesTenantAccess;
     public function viewAny(User $user): bool
     {
         if ($user->can('ledger.view_any')) {
@@ -18,9 +22,15 @@ class LedgerEntryPolicy
 
     public function view(User $user, LedgerEntry $ledgerEntry): bool
     {
+        // Validate tenant access first
+        if (!$this->userCanAccessTenantResource($user, $ledgerEntry)) {
+            return false;
+        }
+
+        // Check permission
         $canView = $user->can('ledger.view');
 
-        if (! $canView) {
+        if (!$canView) {
             return false;
         }
 

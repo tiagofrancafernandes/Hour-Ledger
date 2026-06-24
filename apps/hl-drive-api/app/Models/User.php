@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -33,6 +34,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Tenant> $tenants
+ * @property-read int|null $tenants_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -111,5 +114,72 @@ class User extends Authenticatable
     public function creditPurchasePayments()
     {
         return $this->hasMany(CreditPurchasePayment::class, 'receipt_approved_by');
+    }
+
+    /**
+     * Get all tenants this user has access to.
+     *
+     * Users can have access to multiple tenants through the user_tenants pivot table.
+     * This relationship allows querying all tenants a user is associated with.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function tenants()
+    {
+        return $this->belongsToMany(
+            Tenant::class,
+            'user_tenants',
+            'user_id',
+            'tenant_id'
+        )
+            ->withPivot('role', 'status')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user has access to a specific tenant.
+     *
+     * Validates that:
+     * 1. User has a relationship in user_tenants table
+     * 2. Access status is active (not suspended or revoked)
+     * 3. Tenant itself is active or accessible
+     *
+     * @param int $tenantId The tenant ID to check access for
+     *
+     * @return bool True if user can access tenant, false otherwise
+     */
+    public function hasAccessToTenant(int $tenantId): bool
+    {
+        $userTenant = $this->tenants()
+            ->where('tenant_id', $tenantId)
+            ->where('user_tenants.status', 'active')
+            ->wherePivot('status', 'active')
+            ->first();
+
+        if (!$userTenant) {
+            return false;
+        }
+
+        // Verify tenant is accessible
+        return $userTenant->allowsOperations();
+    }
+
+    /**
+     * Get all tenants this user can access.
+     *
+     * Returns only tenants where:
+     * 1. User has active relationship in user_tenants
+     * 2. Tenant allows operations (active or accessible)
+     *
+     * Useful for populating tenant selector in UI.
+     *
+     * @return Collection<int, Tenant> Collection of accessible tenants
+     */
+    public function getAccessibleTenants(): Collection
+    {
+        return $this->tenants()
+            ->wherePivot('status', 'active')
+            ->accessible()
+            ->get();
     }
 }

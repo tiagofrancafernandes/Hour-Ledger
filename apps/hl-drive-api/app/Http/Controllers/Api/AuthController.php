@@ -9,6 +9,7 @@ use App\Http\Requests\PasswordRecoveryResetRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Services\AuthService;
+use App\Services\TenantValidationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -16,28 +17,56 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthService $authService)
-    {
+    public function __construct(
+        private AuthService $authService,
+        private TenantValidationService $tenantValidationService
+    ) {
     }
+
     public function login(Request $request): JsonResponse
     {
+        // Validate request
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+            'tenant_id' => ['nullable', 'integer', 'exists:tenants,id'],
         ]);
 
+        // Find user by email
         $user = User::where('email', $request->input('email'))->first();
 
-        if (! $user || ! Hash::check($request->input('password'), $user->password)) {
+        // Verify credentials
+        if (!$user || !Hash::check($request->input('password'), $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
+        // Handle tenant_id if provided
+        $tenantId = $request->input('tenant_id');
 
+        if ($tenantId) {
+            // Validate user can access requested tenant
+            if (!$this->tenantValidationService->userCanCreateTenantToken($user, $tenantId)) {
+                throw ValidationException::withMessages([
+                    'tenant_id' => ['You do not have access to this tenant.'],
+                ]);
+            }
+
+            // Create token limited to this tenant
+            $tokenObject = $user->createToken('auth-token', ['*']);
+            $tokenObject->accessToken->tenant_id = $tenantId;
+            $tokenObject->accessToken->save();
+            $token = $tokenObject->plainTextToken;
+        } else {
+            // Create global token
+            $token = $user->createToken('auth-token')->plainTextToken;
+        }
+
+        // Get user data
         $role = $user->roles->first();
         $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+        $accessibleTenants = $this->tenantValidationService->getUserAccessibleTenants($user);
 
         return response()->json([
             'user' => [
@@ -48,6 +77,7 @@ class AuthController extends Controller
             ],
             'role' => $role ? $role->name : null,
             'permissions' => $permissions,
+            'accessible_tenants' => $accessibleTenants,
             'token' => $token,
         ]);
     }

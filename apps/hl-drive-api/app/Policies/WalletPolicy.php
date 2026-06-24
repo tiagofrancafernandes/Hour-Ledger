@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\User;
 use App\Models\Wallet;
+use App\Traits\ValidatesTenantAccess;
 
 class WalletPolicy
 {
+    use ValidatesTenantAccess;
     public function viewAny(User $user): bool
     {
         if ($user->can('wallet.view_any')) {
@@ -18,9 +22,15 @@ class WalletPolicy
 
     public function view(User $user, Wallet $wallet): bool
     {
+        // Validate tenant access first
+        if (!$this->userCanAccessTenantResource($user, $wallet)) {
+            return false;
+        }
+
+        // Check permission
         $canView = $user->can('wallet.view');
 
-        if (! $canView) {
+        if (!$canView) {
             return false;
         }
 
@@ -39,11 +49,21 @@ class WalletPolicy
 
     public function update(User $user, Wallet $wallet): bool
     {
+        // Validate tenant access first
+        if (!$this->userCanAccessTenantResource($user, $wallet)) {
+            return false;
+        }
+
         return $user->can('wallet.update');
     }
 
     public function delete(User $user, Wallet $wallet): bool
     {
+        // Validate tenant access first
+        if (!$this->userCanAccessTenantResource($user, $wallet)) {
+            return false;
+        }
+
         return $user->can('wallet.delete');
     }
 }
