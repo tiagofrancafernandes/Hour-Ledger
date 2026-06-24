@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
+ * @property int $tenant_id
  * @property int $client_id
  * @property string $name
  * @property string|null $description
@@ -44,8 +48,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Wallet extends Model
 {
     use HasFactory;
+    use BelongsToTenant;
 
     protected $fillable = [
+        'tenant_id',
         'client_id',
         'name',
         'description',
@@ -56,6 +62,7 @@ class Wallet extends Model
     ];
 
     protected $casts = [
+        'tenant_id' => 'int',
         'hourly_rate_reference' => 'decimal:2',
     ];
 

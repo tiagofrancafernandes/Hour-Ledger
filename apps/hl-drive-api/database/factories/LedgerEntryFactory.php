@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\LedgerEntry;
+use App\Models\Tenant;
 use App\Models\Wallet;
+use App\Services\TenantResolver;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\LedgerEntry>
+ * @extends Factory<LedgerEntry>
  */
 class LedgerEntryFactory extends Factory
 {
@@ -20,13 +24,40 @@ class LedgerEntryFactory extends Factory
      */
     public function definition(): array
     {
+        $tenantId = $this->getOrCreateTenantId();
+        $wallet = Wallet::factory()->for(Tenant::find($tenantId), 'tenant');
+
         return [
-            'wallet_id' => Wallet::factory(),
+            'tenant_id' => $tenantId,
+            'wallet_id' => $wallet,
             'hours' => fake()->randomFloat(2, -20, 50),
             'title' => fake()->sentence(3),
             'description' => fake()->optional()->paragraph(),
             'reference_date' => fake()->dateTimeBetween('-3 months', 'now'),
         ];
+    }
+
+    /**
+     * Get or create a tenant ID.
+     *
+     * If a tenant is already set via TenantResolver, use that.
+     * Otherwise create a new tenant.
+     *
+     * @return int
+     */
+    protected function getOrCreateTenantId(): int
+    {
+        try {
+            $tenantResolver = app(TenantResolver::class);
+
+            if ($tenantResolver->hasTenant()) {
+                return $tenantResolver->getTenantId();
+            }
+        } catch (\Exception $e) {
+            // If container is not available, ignore and create new tenant
+        }
+
+        return Tenant::factory()->create()->id;
     }
 
     /**

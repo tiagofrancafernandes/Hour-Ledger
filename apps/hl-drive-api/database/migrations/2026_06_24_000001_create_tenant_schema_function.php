@@ -26,6 +26,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Only run for PostgreSQL
+        if (!$this->isPostgreSQL()) {
+            return;
+        }
+
         // Create the PostgreSQL function for tenant schema creation
         $this->createTenantSchemaFunction();
 
@@ -38,8 +43,23 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Only run for PostgreSQL
+        if (!$this->isPostgreSQL()) {
+            return;
+        }
+
         DB::statement('DROP FUNCTION IF EXISTS copy_table_structure(text, text, text) CASCADE');
         DB::statement('DROP FUNCTION IF EXISTS create_tenant_schema(bigint, varchar, varchar) CASCADE');
+    }
+
+    /**
+     * Check if the database driver is PostgreSQL.
+     *
+     * @return bool
+     */
+    private function isPostgreSQL(): bool
+    {
+        return DB::getDriverName() === 'pgsql';
     }
 
     /**

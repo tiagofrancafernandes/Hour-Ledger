@@ -59,9 +59,12 @@ class Tenant extends Model
     /**
      * The connection name for the model.
      *
-     * @var string
+     * Uses the default database connection configured in environment.
+     * For tests, this will be SQLite; for production, PostgreSQL.
+     *
+     * @var string|null
      */
-    protected $connection = 'pgsql';
+    protected $connection = null;
 
     /**
      * The "type" of the primary key ID.

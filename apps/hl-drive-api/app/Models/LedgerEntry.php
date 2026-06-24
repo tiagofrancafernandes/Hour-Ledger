@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
+ * @property int $tenant_id
  * @property int $wallet_id
  * @property numeric $hours
  * @property string|null $title
@@ -39,8 +43,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class LedgerEntry extends Model
 {
     use HasFactory;
+    use BelongsToTenant;
 
     protected $fillable = [
+        'tenant_id',
         'wallet_id',
         'hours',
         'title',
@@ -50,6 +56,7 @@ class LedgerEntry extends Model
     ];
 
     protected $casts = [
+        'tenant_id' => 'int',
         'hours' => 'decimal:2',
         'reference_date' => 'date',
     ];

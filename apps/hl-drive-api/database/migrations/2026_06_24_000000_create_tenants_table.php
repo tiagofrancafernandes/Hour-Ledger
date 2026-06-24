@@ -30,35 +30,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tenants', function (Blueprint $table): void {
-            $table->comment('Global tenants configuration table (public schema)');
-
             // Primary Key
-            $table->bigIncrements('id')
-                ->comment('Unique tenant identifier');
+            $table->bigIncrements('id');
 
             // Tenant Information
-            $table->string('name', 255)
-                ->comment('Tenant display name');
+            $table->string('name', 255);
 
             $table->string('slug', 100)
                 ->unique()
-                ->nullable()
-                ->comment('URL-friendly tenant identifier');
+                ->nullable();
 
             // Status Management
             $table->string('status', 50)
                 ->default('active')
-                ->index()
-                ->comment('Tenant status: active, suspended, or deleted');
+                ->index();
 
             // Timestamps
-            $table->timestamps()
-                ->comment('Created and updated timestamps');
+            $table->timestamps();
 
             // Additional Information
             $table->text('metadata')
-                ->nullable()
-                ->comment('Additional tenant configuration in JSON format');
+                ->nullable();
         });
     }
 
