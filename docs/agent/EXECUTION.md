@@ -1,107 +1,173 @@
-# Execução dos planos com agente de IA
+# Rastreamento de Execução: Status Atual (2026-06-25)
 
-## Premissa confirmada
+**Última atualização**: 2026-06-25  
+**Status geral**: 70% concluído (PHASE-3 e PHASE-4 em conclusão)  
+**Architecture Freeze**: ✅ ATIVO
 
-Os projetos já estão nos locais corretos:
+---
 
-- Backend: `apps/hl-drive-api`
-- Frontend: `apps/hl-drive-web`
+## Status de Execução por Fase
 
-## Regra principal
+### ✅ PHASE-2: Migração para Monorepo & Setup Local
 
-Execute uma etapa por vez.
+**Status**: CONCLUÍDO  
+**Período**: Maio 2026  
+**Tarefas**: Todas completadas
 
-Não misture validação de monorepo com extração de core.
+- ✅ Monorepo migrado (apps/hl-drive-api, apps/hl-drive-web)
+- ✅ i18n configurado (pt-BR, en-US)
+- ✅ Setup local funcional
 
-Não peça ao agente para executar todos os planos de uma vez.
+**Checkpoints**: Ver `docs/execution-history/PHASE-2/`  
+**Documentação**: `docs/execution-history/PHASE-2/plans/`
 
-## Ordem oficial
+---
 
-### Etapa 1 — Atualizar plano de migração
+### ✅ PHASE-3: Multi-Instrutor
 
-Usar:
+**Status**: 95% CONCLUÍDO  
+**Período**: Junho 2026  
+**Total de código**: 6.800+ linhas, 67 arquivos
 
-`docs/agent/prompts/01-update-monorepo-plan.md`
+#### Tarefas Completadas:
+- ✅ Task A: Instructor Context
+- ✅ Task B: Database Schema (Instructor-Student Links)
+- ✅ Task C: Invite Flow
+- ✅ Task D: Student Link Management
+- ✅ Task E: Student Interface
+- 🟡 Task F: Testes & Validação (EM PROGRESSO)
 
-### Etapa 2 — Validar migração para monorepo
+**Próximas ações**:
+- [ ] Completar Task F (testes finais)
+- [ ] Criar PHASE-3-COMPLETION-REPORT
+- [ ] Mover para docs/execution-history/PHASE-3/
 
-Usar:
+**Checkpoints**: Ver `docs/execution-history/PHASE-3/checkpoints/`  
+**Planos**: Ver `docs/execution-history/PHASE-3/plans/`
 
-`docs/agent/prompts/02-validate-monorepo-migration.md`
+---
 
-Resultado esperado:
+### 🟡 PHASE-4: Multi-Tenancy com PostgreSQL Schemas
 
-`docs/agent/reports/2026-05-13-monorepo-migration-validation.md`
+**Status**: 90% CONCLUÍDO  
+**Período**: Junho 2026
 
-### Etapa 3 — Executar Milestone 0 da extração do core
+#### Tarefas Completadas:
+- ✅ Task A: Architecture Design
+- ✅ Task B: Database Schema Migrations
+- ✅ Task C: Eloquent TenantScope & BelongsToTenant
+- ✅ Task D: Auth Integration with Tenant Context
+- ✅ Task E: Frontend Tenant Context UI
+- ✅ Task F: Integration Testing
+- 🟠 **Task G: Isolamento Multi-Tenant Security Tests** ← CRÍTICA
 
-Usar:
+**Status de Task G (BLOQUEADOR PARA STAGING)**:
+- 📋 Planejamento: 100% pronto (3 documentos, 800+ linhas)
+- 30+ testes especificados
+- Fixtures prontas
+- Timeline: 5 dias em 5 milestones
+- **AÇÃO**: Iniciar Milestone 1 HOJE
 
-`docs/agent/prompts/03-execute-core-extraction-milestone-0.md`
+**Checkpoints**: Ver `docs/execution-history/PHASE-4/checkpoints/`  
+**Planos**: Ver `docs/execution-history/PHASE-4/plans/`
 
-Resultado esperado:
+---
 
-`docs/agent/reports/2026-05-13-milestone-0-structure-validation.md`
+## 🚀 PRÓXIMAS AÇÕES (ORDEM DE PRIORIDADE)
 
-### Etapa 4 — Executar Milestone 1 da extração do core
+### 1️⃣ CRÍTICA: Executar Task G (Testes Multi-Tenant)
 
-Usar:
+**Documento**: `docs/agent/plans/2026-06-24-comprehensive-tenant-isolation-security-tests.md`
 
-`docs/agent/prompts/04-execute-core-extraction-milestone-1.md`
+**Motivo**: Bloqueador para deploy em staging
 
-Resultado esperado:
+**Timeline**:
+- Milestone 1: 1 dia (Setup testes, fixtures)
+- Milestone 2: 1 dia (Isolamento básico)
+- Milestone 3: 1 dia (Data leakage prevention)
+- Milestone 4: 1 dia (Cross-tenant bypass attempts)
+- Milestone 5: 1 dia (Consolidação & validação)
 
-`docs/agent/reports/2026-05-13-current-app-inventory.md`
+**Checklist**:
+- [ ] Revisar documentação
+- [ ] Iniciar Milestone 1
+- [ ] Criar checkpoint a cada milestone
+- [ ] Completar em 5 dias
 
-### Etapa 5 — Planejar extração de Ledger/Wallet
+### 2️⃣ ALTA: Completar Phase-3 Task F
 
-Usar:
+**Dependência**: Reutiliza estratégia de testes de Phase-3
 
-`docs/agent/prompts/05-plan-ledger-wallet-extraction.md`
+**Tarefas**:
+- [ ] Testes finais
+- [ ] Validação de fluxos
+- [ ] Checkpoint final
 
-Resultado esperado:
+### 3️⃣ MÉDIA: Documentação de Fase
 
-`docs/agent/plans/2026-05-13-ledger-wallet-extraction-execution-plan.md`
+**Tarefas**:
+- [ ] Criar PHASE-3-COMPLETION-REPORT
+- [ ] Criar PHASE-4-COMPLETION-REPORT
+- [ ] Atualizar ROADMAP-PROXIMO-CICLO
 
-### Etapa 6 — Revisão humana
+---
 
-Antes de executar a extração real, revisar manualmente:
+## 📊 Métricas de Progresso
 
-`docs/agent/plans/2026-05-13-ledger-wallet-extraction-execution-plan.md`
+| Métrica | Valor |
+|---------|-------|
+| Linhas de código (Phase 3) | 6.800+ |
+| Arquivos modificados (Phase 3) | 67 |
+| Testes especificados (Phase 4) | 30+ |
+| Checkpoints de progresso | 16 |
+| Fases concluídas | 2 de 4 |
 
-Aprovar, ajustar ou rejeitar.
+---
 
-Não pule esta etapa.
+## ⚠️ Restrições Ativas
 
-### Etapa 7 — Executar extração de Ledger/Wallet
+**ARCHITECTURE FREEZE**: ✅ ATIVO
 
-Usar:
+### ❌ Proibido:
+- Criar packages compartilhados
+- Criar novos produtos
+- Abstrações preventivas
+- Grandes reorganizações
 
-`docs/agent/prompts/06-execute-ledger-wallet-extraction-after-approval.md`
+### ✅ Permitido:
+- Evoluir domínio
+- Corrigir modelagem
+- Melhorar testes
+- Simplificar código
 
-Somente após aprovação explícita.
+---
 
-Resultado esperado:
+## 📁 Referências de Documentação
 
-`docs/agent/reports/2026-05-13-ledger-wallet-extraction-report.md`
+### Consolidada em execution-history/
+- **PHASE-2**: `docs/execution-history/PHASE-2/`
+- **PHASE-3**: `docs/execution-history/PHASE-3/`
+- **PHASE-4**: `docs/execution-history/PHASE-4/`
 
-## Resumo visual
+### Índices
+- `docs/execution-history/INDEX.md`: Histórico por fase
+- `docs/future/spikes/INDEX.md`: Planos pós-V1 (arquivados)
+- `BACKLOG-CURATION-2026-06-25.md`: Curadoria completa
+- `CURADORIA-RESUMO-EXECUTIVO.md`: Este resumo
 
-```txt
-1. Atualizar plano antigo
-2. Validar monorepo
-3. Milestone 0 — validar estrutura da extração
-4. Milestone 1 — inventário
-5. Milestone 2 — planejar Ledger/Wallet
-6. Revisão humana
-7. Milestone 3 — executar Ledger/Wallet
-```
+---
 
-## Regra de parada
+## Regra de Execução
 
-Se qualquer etapa encontrar problema estrutural relevante:
+**Execute uma tarefa por vez**. Não misture implementação de features com testes.
 
-1. parar;
-2. registrar no relatório;
-3. atualizar checkpoint;
-4. não avançar para a próxima etapa.
+Quando iniciar Task G:
+1. Revisar documentação (30 min)
+2. Iniciar Milestone 1 (1 dia)
+3. Criar checkpoint
+4. Proceder para próximo milestone
+
+---
+
+**Próxima revisão**: Após conclusão de Task G  
+**Status**: READY FOR IMPLEMENTATION
