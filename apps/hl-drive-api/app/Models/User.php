@@ -21,6 +21,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $customer_id
  * @property string|null $client_role
+ * @property int|null $active_instructor_id
  * @property-read Client|null $client
  * @property-read \Illuminate\Database\Eloquent\Collection<int, CreditPurchasePayment> $creditPurchasePayments
  * @property-read int|null $credit_purchase_payments_count
@@ -76,6 +77,7 @@ class User extends Authenticatable
         'email_verified_at',
         'customer_id',
         'client_role',
+        'active_instructor_id',
     ];
 
     /**

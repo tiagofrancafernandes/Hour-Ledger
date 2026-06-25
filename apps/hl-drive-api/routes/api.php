@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ClientUserController;
 use App\Http\Controllers\Api\CreditPurchaseController;
 use App\Http\Controllers\Api\ImportPlanController;
+use App\Http\Controllers\Api\InvitationController;
+use App\Http\Controllers\Api\InstructorStudentLinkController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\LedgerEntryController;
 use App\Http\Controllers\Api\PaymentApprovalController;
@@ -174,5 +176,29 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/{creditPurchasePayment}/approve', [PaymentApprovalController::class, 'approve']);
         Route::post('/{creditPurchasePayment}/reject', [PaymentApprovalController::class, 'reject']);
         Route::get('/{creditPurchasePayment}/receipt-download', [PaymentReceiptController::class, 'download']);
+    });
+
+    // Invitation Routes
+    Route::prefix('invitations')->group(function () {
+        Route::post('/', [InvitationController::class, 'store']);
+        Route::get('/', [InvitationController::class, 'index']);
+        Route::get('/{invitation}', [InvitationController::class, 'show']);
+        Route::post('/{invitation}/accept', [InvitationController::class, 'accept']);
+        Route::post('/{invitation}/reject', [InvitationController::class, 'reject']);
+        Route::post('/{invitation}/resend', [InvitationController::class, 'resend']);
+        Route::delete('/{invitation}', [InvitationController::class, 'destroy']);
+    });
+
+    // Instructor-Student Link Routes
+    Route::prefix('instructor-links')->group(function () {
+        Route::get('/', [InstructorStudentLinkController::class, 'index']);
+        Route::get('/{link}', [InstructorStudentLinkController::class, 'show']);
+        Route::delete('/{link}', [InstructorStudentLinkController::class, 'destroy']);
+    });
+
+    // My Instructor Routes
+    Route::prefix('my-instructor')->group(function () {
+        Route::get('/', [InstructorStudentLinkController::class, 'getMyInstructor']);
+        Route::post('/', [InstructorStudentLinkController::class, 'switchMyInstructor']);
     });
 });
