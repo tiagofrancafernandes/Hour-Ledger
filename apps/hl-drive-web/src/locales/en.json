@@ -33,5 +33,31 @@
         "my_wallets": "My Wallets",
         "add_wallet": "Add Wallet",
         "buy_credits": "Buy Credits"
+    },
+    "instructor": {
+        "select": "Select Instructor",
+        "my_instructors": "My Instructors",
+        "my_students": "My Students",
+        "select_instructor": "Select an instructor"
+    },
+    "invitation": {
+        "create_new": "Create New Invitation",
+        "email": "Email Address",
+        "email_placeholder": "student@example.com",
+        "email_required": "Email is required",
+        "email_invalid": "Please enter a valid email address",
+        "send": "Send Invitation",
+        "created_success": "Invitation sent successfully",
+        "create_error": "Failed to create invitation",
+        "no_pending": "No pending invitations",
+        "from": "From",
+        "expires": "Expires",
+        "accept": "Accept",
+        "reject": "Reject",
+        "status": {
+            "pending": "Pending",
+            "accepted": "Accepted",
+            "rejected": "Rejected"
+        }
     }
 }

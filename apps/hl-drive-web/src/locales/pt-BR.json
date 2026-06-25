@@ -33,5 +33,31 @@
         "my_wallets": "Minhas Carteiras",
         "add_wallet": "Adicionar Carteira",
         "buy_credits": "Comprar Créditos"
+    },
+    "instructor": {
+        "select": "Selecionar Instrutor",
+        "my_instructors": "Meus Instrutores",
+        "my_students": "Meus Alunos",
+        "select_instructor": "Selecione um instrutor"
+    },
+    "invitation": {
+        "create_new": "Criar Novo Convite",
+        "email": "Endereço de E-mail",
+        "email_placeholder": "aluno@exemplo.com.br",
+        "email_required": "E-mail é obrigatório",
+        "email_invalid": "Por favor, insira um endereço de e-mail válido",
+        "send": "Enviar Convite",
+        "created_success": "Convite enviado com sucesso",
+        "create_error": "Falha ao criar convite",
+        "no_pending": "Sem convites pendentes",
+        "from": "De",
+        "expires": "Expira",
+        "accept": "Aceitar",
+        "reject": "Rejeitar",
+        "status": {
+            "pending": "Pendente",
+            "accepted": "Aceito",
+            "rejected": "Rejeitado"
+        }
     }
 }

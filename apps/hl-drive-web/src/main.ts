@@ -19,6 +19,8 @@ import i18n from './plugins/i18n';
 import { SpeedInsights } from '@vercel/speed-insights/vue';
 import { useTenantStore } from './stores/tenant';
 import { useTenantHeaders } from './composables/useTenantHeaders';
+import { useInstructorStore } from './stores/instructor';
+import { useInstructorHeaders } from './composables/useInstructorHeaders';
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -32,11 +34,22 @@ app.use(authPlugin);
 const tenantStore = useTenantStore();
 const { headers } = useTenantHeaders();
 
+// Initialize instructor store and headers integration
+const instructorStore = useInstructorStore();
+const { headers: instructorHeaders } = useInstructorHeaders();
+
 // Listen to tenant changes to update headers
 window.addEventListener('tenant-changed', () => {
     const tenantHeaders = headers();
     // Headers will be automatically included in API calls via the api service
     console.log('Tenant changed. Active headers:', tenantHeaders);
+});
+
+// Listen to instructor changes to update headers
+window.addEventListener('instructor-changed', () => {
+    const instHeaders = instructorHeaders();
+    // Headers will be automatically included in API calls via the api service
+    console.log('Instructor changed. Active headers:', instHeaders);
 });
 
 const components = {
@@ -68,4 +81,9 @@ app.mount('#app');
 // Initialize tenants after app is mounted
 tenantStore.initialize().catch((err) => {
     console.error('Failed to initialize tenants:', err);
+});
+
+// Initialize instructors after app is mounted
+instructorStore.initialize().catch((err) => {
+    console.error('Failed to initialize instructors:', err);
 });

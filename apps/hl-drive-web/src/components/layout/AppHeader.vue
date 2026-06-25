@@ -8,6 +8,7 @@ import { useTimerStore } from '@/stores/timer';
 import ManualEntryModal from '@/components/ManualEntryModal.vue';
 import TimerStartModal from '@/components/TimerStartModal.vue';
 import TenantSelector from '@/components/TenantSelector.vue';
+import InstructorSelector from '@/components/InstructorSelector.vue';
 
 const props = defineProps<{
     sidebarCollapsed: boolean;
@@ -127,6 +128,9 @@ onUnmounted(() => {
 
         <!-- Tenant Selector -->
         <TenantSelector />
+
+        <!-- Instructor Selector -->
+        <InstructorSelector />
 
         <!-- Timer actions: Desktop (md+) -->
         <div v-if="canCreateTimer" class="hidden md:flex items-center gap-2">
