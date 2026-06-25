@@ -35,16 +35,17 @@ class IsolationTest extends TenantTestCase
      */
     public function test_client_all_returns_only_tenant_clients(): void
     {
-        // Create clients for each tenant using raw model creation
-        // Explicitly set tenant_id to ensure it's saved correctly
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
+        // Create clients for each tenant using context-aware creation
+        // The Observer will automatically set tenant_id based on active context
+        $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
+        $this->assertNotNull($clientA->id, 'Client A should have been created');
+        $this->assertEquals($this->tenantA->id, $clientA->tenant_id, 'Client A should have tenantA.id');
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
+        $clientB = $this->createModelInTenant($this->tenantB, Client::class, ['name' => 'Client B']);
+        $this->assertNotNull($clientB->id, 'Client B should have been created');
 
-        $clientC = new Client(['name' => 'Client C', 'tenant_id' => $this->tenantC->id]);
-        $clientC->saveQuietly();
+        $clientC = $this->createModelInTenant($this->tenantC, Client::class, ['name' => 'Client C']);
+        $this->assertNotNull($clientC->id, 'Client C should have been created');
 
         // Verify isolation by checking count for each tenant
         $this->switchTenant($this->tenantA);
@@ -187,28 +188,30 @@ class IsolationTest extends TenantTestCase
      */
     public function test_ledger_entry_all_returns_only_tenant_entries(): void
     {
-        // Create ledger entries for each tenant using raw model creation
-        // Create ledger entries for each tenant with explicit tenant_id
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
-        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]);
-        $walletA->saveQuietly();
-        $entryA = new LedgerEntry(['wallet_id' => $walletA->id, 'hours' => 10.50, 'tenant_id' => $this->tenantA->id]);
-        $entryA->saveQuietly();
+        // Create ledger entries for each tenant using context-aware creation
+        $this->switchTenant($this->tenantA);
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
+        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
+        $walletA->save();
+        $entryA = new LedgerEntry(['wallet_id' => $walletA->id, 'hours' => 10.50]);
+        $entryA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
-        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]);
-        $walletB->saveQuietly();
-        $entryB = new LedgerEntry(['wallet_id' => $walletB->id, 'hours' => 10.50, 'tenant_id' => $this->tenantB->id]);
-        $entryB->saveQuietly();
+        $this->switchTenant($this->tenantB);
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
+        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
+        $walletB->save();
+        $entryB = new LedgerEntry(['wallet_id' => $walletB->id, 'hours' => 10.50]);
+        $entryB->save();
 
-        $clientC = new Client(['name' => 'Client C', 'tenant_id' => $this->tenantC->id]);
-        $clientC->saveQuietly();
-        $walletC = new Wallet(['client_id' => $clientC->id, 'name' => 'Wallet C', 'tenant_id' => $this->tenantC->id]);
-        $walletC->saveQuietly();
-        $entryC = new LedgerEntry(['wallet_id' => $walletC->id, 'hours' => 10.50, 'tenant_id' => $this->tenantC->id]);
-        $entryC->saveQuietly();
+        $this->switchTenant($this->tenantC);
+        $clientC = new Client(['name' => 'Client C']);
+        $clientC->save();
+        $walletC = new Wallet(['client_id' => $clientC->id, 'name' => 'Wallet C']);
+        $walletC->save();
+        $entryC = new LedgerEntry(['wallet_id' => $walletC->id, 'hours' => 10.50]);
+        $entryC->save();
 
         // Verify isolation by checking count for each tenant
         $this->switchTenant($this->tenantA);
@@ -327,34 +330,33 @@ class IsolationTest extends TenantTestCase
         $instructorC = User::factory()->create(['email' => 'instructor_c@test.com']);
         $studentC = User::factory()->create(['email' => 'student_c@test.com']);
 
-        // Create links for each tenant using create() with explicit attributes
-        // Cannot use factory due to observer validation; must switch tenant context first
+        // Create links for each tenant using context-aware creation
+        $this->switchTenant($this->tenantA);
         $linkA = new InstructorStudentLink([
-            'tenant_id' => $this->tenantA->id,
             'instructor_id' => $instructorA->id,
             'student_id' => $studentA->id,
             'status' => 'ACTIVE',
             'access_level' => 'FULL',
         ]);
-        $linkA->saveQuietly();
+        $linkA->save();
 
+        $this->switchTenant($this->tenantB);
         $linkB = new InstructorStudentLink([
-            'tenant_id' => $this->tenantB->id,
             'instructor_id' => $instructorB->id,
             'student_id' => $studentB->id,
             'status' => 'ACTIVE',
             'access_level' => 'FULL',
         ]);
-        $linkB->saveQuietly();
+        $linkB->save();
 
+        $this->switchTenant($this->tenantC);
         $linkC = new InstructorStudentLink([
-            'tenant_id' => $this->tenantC->id,
             'instructor_id' => $instructorC->id,
             'student_id' => $studentC->id,
             'status' => 'ACTIVE',
             'access_level' => 'FULL',
         ]);
-        $linkC->saveQuietly();
+        $linkC->save();
 
         // Verify isolation by checking count and filtering by tenant
         $this->assertEquals(
@@ -397,16 +399,18 @@ class IsolationTest extends TenantTestCase
      */
     public function test_tenant_isolation_comprehensive(): void
     {
-        // Setup: Create data for all three tenants
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
-        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]);
-        $walletA->saveQuietly();
+        // Setup: Create data for all three tenants using context-aware creation
+        $this->switchTenant($this->tenantA);
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
+        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
+        $walletA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
-        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]);
-        $walletB->saveQuietly();
+        $this->switchTenant($this->tenantB);
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
+        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
+        $walletB->save();
 
         // Test isolation for multiple models simultaneously
         $this->switchTenant($this->tenantA);

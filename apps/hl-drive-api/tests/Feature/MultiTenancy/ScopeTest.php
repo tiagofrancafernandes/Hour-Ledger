@@ -33,11 +33,11 @@ class ScopeTest extends TenantTestCase
     public function test_where_clause_respects_tenant_scope(): void
     {
         // Create clients for each tenant with distinct names
-        $clientA = new Client(['name' => 'Premium Client', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
+        $clientA = new Client(['name' => 'Premium Client']);
+        $clientA->save();
 
-        $clientB = new Client(['name' => 'Premium Client', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
+        $clientB = new Client(['name' => 'Premium Client']);
+        $clientB->save();
 
         // When we search for "Premium Client" in tenant A, we should only get clientA
         $this->switchTenant($this->tenantA);
@@ -71,15 +71,15 @@ class ScopeTest extends TenantTestCase
     public function test_join_does_not_leak_data(): void
     {
         // Create clients and wallets for each tenant
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
-        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]);
-        $walletA->saveQuietly();
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
+        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
+        $walletA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
-        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]);
-        $walletB->saveQuietly();
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
+        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
+        $walletB->save();
 
         // Join wallets with clients and verify tenant isolation
         $this->switchTenant($this->tenantA);
@@ -116,19 +116,19 @@ class ScopeTest extends TenantTestCase
     public function test_relations_do_not_leak_data(): void
     {
         // Create full hierarchy: Client -> Wallet -> LedgerEntry
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
-        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]);
-        $walletA->saveQuietly();
-        $entryA = new LedgerEntry(['wallet_id' => $walletA->id, 'hours' => 10.50, 'tenant_id' => $this->tenantA->id]);
-        $entryA->saveQuietly();
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
+        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
+        $walletA->save();
+        $entryA = new LedgerEntry(['wallet_id' => $walletA->id, 'hours' => 10.50]);
+        $entryA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
-        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]);
-        $walletB->saveQuietly();
-        $entryB = new LedgerEntry(['wallet_id' => $walletB->id, 'hours' => 10.50, 'tenant_id' => $this->tenantB->id]);
-        $entryB->saveQuietly();
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
+        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
+        $walletB->save();
+        $entryB = new LedgerEntry(['wallet_id' => $walletB->id, 'hours' => 10.50]);
+        $entryB->save();
 
         // Test: Load wallet relations in tenant A
         $this->switchTenant($this->tenantA);
@@ -167,18 +167,18 @@ class ScopeTest extends TenantTestCase
     {
         // Create multiple clients for each tenant
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client A-$i", 'tenant_id' => $this->tenantA->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client A-$i"]);
+            $client->save();
         }
 
         for ($i = 1; $i <= 5; $i++) {
-            $client = new Client(['name' => "Client B-$i", 'tenant_id' => $this->tenantB->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client B-$i"]);
+            $client->save();
         }
 
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client C-$i", 'tenant_id' => $this->tenantC->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client C-$i"]);
+            $client->save();
         }
 
         // Count in tenant A
@@ -210,18 +210,18 @@ class ScopeTest extends TenantTestCase
     public function test_count_with_where_respects_scope(): void
     {
         // Create clients with different attributes
-        $vip = new Client(['name' => 'VIP Client', 'tenant_id' => $this->tenantA->id]);
-        $vip->saveQuietly();
+        $vip = new Client(['name' => 'VIP Client']);
+        $vip->save();
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client A-$i", 'tenant_id' => $this->tenantA->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client A-$i"]);
+            $client->save();
         }
 
-        $vip = new Client(['name' => 'VIP Client', 'tenant_id' => $this->tenantB->id]);
-        $vip->saveQuietly();
+        $vip = new Client(['name' => 'VIP Client']);
+        $vip->save();
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client B-$i", 'tenant_id' => $this->tenantB->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client B-$i"]);
+            $client->save();
         }
 
         // Count VIP clients in tenant A
@@ -244,11 +244,11 @@ class ScopeTest extends TenantTestCase
     public function test_exists_checks_only_in_tenant(): void
     {
         // Create a client in each tenant
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
 
         // Check existence in tenant A
         $this->switchTenant($this->tenantA);
@@ -283,16 +283,14 @@ class ScopeTest extends TenantTestCase
         $clientA = new Client([
             'name' => 'Acme Corp',
             'email' => 'contact@acme.com',
-            'tenant_id' => $this->tenantA->id,
         ]);
-        $clientA->saveQuietly();
+        $clientA->save();
 
         $clientB = new Client([
             'name' => 'Acme Corp', // Same name
             'email' => 'contact@acme.com', // Same email
-            'tenant_id' => $this->tenantB->id,
-        ]);
-        $clientB->saveQuietly();
+            ]);
+        $clientB->save();
 
         // Complex query in tenant A
         $this->switchTenant($this->tenantA);

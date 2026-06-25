@@ -33,11 +33,11 @@ class ContextTest extends TenantTestCase
     public function test_changing_tenant_changes_query_results(): void
     {
         // Create clients for each tenant
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
 
         // Query in tenant A
         $this->switchTenant($this->tenantA);
@@ -77,13 +77,13 @@ class ContextTest extends TenantTestCase
     {
         // Create some data
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client A-$i", 'tenant_id' => $this->tenantA->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client A-$i"]);
+            $client->save();
         }
 
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client B-$i", 'tenant_id' => $this->tenantB->id]);
-            $client->saveQuietly();
+            $client = new Client(['name' => "Client B-$i"]);
+            $client->save();
         }
 
         // Clear tenant context to null
@@ -116,11 +116,11 @@ class ContextTest extends TenantTestCase
     public function test_invalid_context_returns_no_data(): void
     {
         // Create some data in valid tenants
-        $client = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $client->saveQuietly();
+        $client = new Client(['name' => 'Client A']);
+        $client->save();
 
-        $client = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $client->saveQuietly();
+        $client = new Client(['name' => 'Client B']);
+        $client->save();
 
         // Manually set context to invalid tenant ID
         $reflection = new \ReflectionClass(TenantResolver::class);
@@ -153,19 +153,19 @@ class ContextTest extends TenantTestCase
     public function test_sequential_queries_maintain_isolation(): void
     {
         // Create data for all tenants
-        $clientA1 = new Client(['name' => 'Client A-1', 'tenant_id' => $this->tenantA->id]);
-        $clientA1->saveQuietly();
+        $clientA1 = new Client(['name' => 'Client A-1']);
+        $clientA1->save();
 
-        (new Client(['name' => 'Client A-2', 'tenant_id' => $this->tenantA->id]))->saveQuietly();
+        (new Client(['name' => 'Client A-2']))->save();
 
-        (new Wallet(['client_id' => $clientA1->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]))->saveQuietly();
+        (new Wallet(['client_id' => $clientA1->id, 'name' => 'Wallet A']))->save();
 
-        $clientB1 = new Client(['name' => 'Client B-1', 'tenant_id' => $this->tenantB->id]);
-        $clientB1->saveQuietly();
+        $clientB1 = new Client(['name' => 'Client B-1']);
+        $clientB1->save();
 
-        (new Client(['name' => 'Client B-2', 'tenant_id' => $this->tenantB->id]))->saveQuietly();
+        (new Client(['name' => 'Client B-2']))->save();
 
-        (new Wallet(['client_id' => $clientB1->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]))->saveQuietly();
+        (new Wallet(['client_id' => $clientB1->id, 'name' => 'Wallet B']))->save();
 
         // Test sequential queries in tenant A
         $this->switchTenant($this->tenantA);
@@ -223,15 +223,15 @@ class ContextTest extends TenantTestCase
     public function test_context_persists_across_model_queries(): void
     {
         // Setup: Create related data
-        $clientA = new Client(['name' => 'Client A', 'tenant_id' => $this->tenantA->id]);
-        $clientA->saveQuietly();
-        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A', 'tenant_id' => $this->tenantA->id]);
-        $walletA->saveQuietly();
+        $clientA = new Client(['name' => 'Client A']);
+        $clientA->save();
+        $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
+        $walletA->save();
 
-        $clientB = new Client(['name' => 'Client B', 'tenant_id' => $this->tenantB->id]);
-        $clientB->saveQuietly();
-        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B', 'tenant_id' => $this->tenantB->id]);
-        $walletB->saveQuietly();
+        $clientB = new Client(['name' => 'Client B']);
+        $clientB->save();
+        $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
+        $walletB->save();
 
         // Set context to tenant A
         $this->switchTenant($this->tenantA);

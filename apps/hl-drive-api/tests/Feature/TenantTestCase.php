@@ -119,53 +119,18 @@ abstract class TenantTestCase extends TestCase
     /**
      * Switch to a different tenant context
      *
-     * This sets the active tenant in the TenantResolver service,
+     * Sets the active tenant in the TenantResolver service,
      * allowing subsequent queries to be filtered by the tenant_id.
      *
-     * For testing, we set the tenant directly using reflection to bypass
-     * validation that might fail in test environments.
+     * Uses the public setTenantId() method which properly initializes
+     * the tenant context for testing.
      *
      * @param Tenant $tenant The tenant to switch to
      */
     protected function switchTenant(Tenant $tenant): void
     {
-        // Rebind TenantResolver to ensure fresh instance
-        app()->forgetInstance(TenantResolver::class);
         $tenantResolver = app(TenantResolver::class);
-
-        $this->setTenantContextDirectly($tenantResolver, $tenant);
-    }
-
-    /**
-     * Set tenant context directly (for testing purposes)
-     *
-     * Uses reflection to set private properties for testing scenarios.
-     * This bypasses validation to allow testing of isolation logic.
-     *
-     * @param TenantResolver $resolver The resolver instance
-     * @param Tenant $tenant The tenant to set
-     */
-    private function setTenantContextDirectly(TenantResolver $resolver, Tenant $tenant): void
-    {
-        $reflection = new \ReflectionClass($resolver);
-
-        // Set tenantId
-        $tenantIdProp = $reflection->getProperty('tenantId');
-        $tenantIdProp->setAccessible(true);
-        $tenantIdProp->setValue($resolver, $tenant->id);
-
-        // Set schema
-        $schemaProp = $reflection->getProperty('schema');
-        $schemaProp->setAccessible(true);
-        $schemaProp->setValue($resolver, $tenant->schemaName('testing'));
-
-        // Set context
-        $contextClass = new \ReflectionClass(TenantContext::class);
-        $context = new TenantContext($tenant->id, $tenant->schemaName('testing'), null);
-
-        $contextProp = $reflection->getProperty('context');
-        $contextProp->setAccessible(true);
-        $contextProp->setValue($resolver, $context);
+        $tenantResolver->setTenantId($tenant->id, null);
     }
 
     /**
@@ -233,6 +198,25 @@ abstract class TenantTestCase extends TestCase
             $tenantResolver->getTenantId(),
             "Expected tenant {$tenant->id} to be active"
         );
+    }
+
+    /**
+     * Create a model instance within a tenant context
+     *
+     * Sets the tenant context, then uses create() with attributes.
+     * The Observer will automatically set tenant_id based on the active tenant context.
+     *
+     * @template T of \Illuminate\Database\Eloquent\Model
+     * @param Tenant $tenant The tenant context for creation
+     * @param class-string<T> $modelClass The model class to instantiate
+     * @param array $attributes The attributes for the model (DO NOT include tenant_id)
+     * @return T The created model
+     */
+    protected function createModelInTenant(Tenant $tenant, string $modelClass, array $attributes)
+    {
+        $this->switchTenant($tenant);
+
+        return $modelClass::create($attributes);
     }
 
     /**
