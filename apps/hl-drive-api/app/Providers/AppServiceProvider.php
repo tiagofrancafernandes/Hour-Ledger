@@ -6,6 +6,7 @@ use App\PaymentMethods\BankTransferPaymentMethod;
 use App\PaymentMethods\PixPaymentMethod;
 use App\PaymentMethods\PaymentMethodRegistry;
 use App\PaymentMethods\PixOfflinePaymentMethod;
+use App\Services\TenantResolver;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,7 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(TenantResolver::class, function () {
+            $environment = config('app.environment') ?? 'prod';
+
+            return new TenantResolver($environment);
+        });
     }
 
     /**

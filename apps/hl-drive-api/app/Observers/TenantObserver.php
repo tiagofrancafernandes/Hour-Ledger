@@ -36,13 +36,10 @@ class TenantObserver
     public function creating(Model $model): void
     {
         $tenantResolver = app(TenantResolver::class);
-
         $activeTenantId = $tenantResolver->getTenantId();
 
-        // Get the tenant_id from the model (might be null)
         $modelTenantId = $model->getAttribute('tenant_id');
 
-        // Validate if tenant_id is explicitly set
         if ($modelTenantId !== null) {
             if ($modelTenantId !== $activeTenantId) {
                 throw new UnauthorizedTenant($modelTenantId);
@@ -51,13 +48,10 @@ class TenantObserver
             return;
         }
 
-        // Auto-set tenant_id if not provided and tenant is active
         if ($activeTenantId !== null) {
             $model->setAttribute('tenant_id', $activeTenantId);
 
             return;
         }
-
-        // tenant_id is null and no active tenant: this will be caught by model validation
     }
 }

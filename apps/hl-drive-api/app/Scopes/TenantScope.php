@@ -48,7 +48,7 @@ class TenantScope implements Scope
             return;
         }
 
-        // Apply filter for active tenant
-        $builder->where('tenant_id', '=', $activeTenantId);
+        $table = $model->getTable();
+        $builder->where($table . '.tenant_id', '=', $activeTenantId);
     }
 }

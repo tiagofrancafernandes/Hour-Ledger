@@ -32,14 +32,14 @@ class ScopeTest extends TenantTestCase
      */
     public function test_where_clause_respects_tenant_scope(): void
     {
-        // Create clients for each tenant with distinct names
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Premium Client']);
         $clientA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Premium Client']);
         $clientB->save();
 
-        // When we search for "Premium Client" in tenant A, we should only get clientA
         $this->switchTenant($this->tenantA);
         $result = Client::where('name', 'Premium Client')->get();
 
@@ -70,18 +70,18 @@ class ScopeTest extends TenantTestCase
      */
     public function test_join_does_not_leak_data(): void
     {
-        // Create clients and wallets for each tenant
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
         $clientA->save();
         $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
         $walletA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Client B']);
         $clientB->save();
         $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
         $walletB->save();
 
-        // Join wallets with clients and verify tenant isolation
         $this->switchTenant($this->tenantA);
 
         $result = Wallet::join('clients', 'wallets.client_id', '=', 'clients.id')
@@ -115,7 +115,7 @@ class ScopeTest extends TenantTestCase
      */
     public function test_relations_do_not_leak_data(): void
     {
-        // Create full hierarchy: Client -> Wallet -> LedgerEntry
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
         $clientA->save();
         $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
@@ -123,6 +123,7 @@ class ScopeTest extends TenantTestCase
         $entryA = new LedgerEntry(['wallet_id' => $walletA->id, 'hours' => 10.50]);
         $entryA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Client B']);
         $clientB->save();
         $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
@@ -130,7 +131,6 @@ class ScopeTest extends TenantTestCase
         $entryB = new LedgerEntry(['wallet_id' => $walletB->id, 'hours' => 10.50]);
         $entryB->save();
 
-        // Test: Load wallet relations in tenant A
         $this->switchTenant($this->tenantA);
 
         $wallet = Wallet::find($walletA->id);
@@ -165,23 +165,24 @@ class ScopeTest extends TenantTestCase
      */
     public function test_count_reflects_only_tenant_data(): void
     {
-        // Create multiple clients for each tenant
+        $this->switchTenant($this->tenantA);
         for ($i = 1; $i <= 3; $i++) {
             $client = new Client(['name' => "Client A-$i"]);
             $client->save();
         }
 
+        $this->switchTenant($this->tenantB);
         for ($i = 1; $i <= 5; $i++) {
             $client = new Client(['name' => "Client B-$i"]);
             $client->save();
         }
 
+        $this->switchTenant($this->tenantC);
         for ($i = 1; $i <= 2; $i++) {
             $client = new Client(['name' => "Client C-$i"]);
             $client->save();
         }
 
-        // Count in tenant A
         $this->switchTenant($this->tenantA);
         $countA = Client::count();
         $this->assertEquals(3, $countA, 'Tenant A should have exactly 3 clients');
@@ -209,7 +210,7 @@ class ScopeTest extends TenantTestCase
      */
     public function test_count_with_where_respects_scope(): void
     {
-        // Create clients with different attributes
+        $this->switchTenant($this->tenantA);
         $vip = new Client(['name' => 'VIP Client']);
         $vip->save();
         for ($i = 1; $i <= 2; $i++) {
@@ -217,6 +218,7 @@ class ScopeTest extends TenantTestCase
             $client->save();
         }
 
+        $this->switchTenant($this->tenantB);
         $vip = new Client(['name' => 'VIP Client']);
         $vip->save();
         for ($i = 1; $i <= 3; $i++) {
@@ -224,7 +226,6 @@ class ScopeTest extends TenantTestCase
             $client->save();
         }
 
-        // Count VIP clients in tenant A
         $this->switchTenant($this->tenantA);
         $vipCount = Client::where('name', 'VIP Client')->count();
         $this->assertEquals(1, $vipCount, 'Tenant A should have 1 VIP client');
@@ -243,14 +244,14 @@ class ScopeTest extends TenantTestCase
      */
     public function test_exists_checks_only_in_tenant(): void
     {
-        // Create a client in each tenant
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
         $clientA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Client B']);
         $clientB->save();
 
-        // Check existence in tenant A
         $this->switchTenant($this->tenantA);
         $this->assertTrue(
             Client::where('id', $clientA->id)->exists(),
@@ -280,19 +281,20 @@ class ScopeTest extends TenantTestCase
      */
     public function test_exists_with_complex_conditions(): void
     {
+        $this->switchTenant($this->tenantA);
         $clientA = new Client([
             'name' => 'Acme Corp',
             'email' => 'contact@acme.com',
         ]);
         $clientA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client([
-            'name' => 'Acme Corp', // Same name
-            'email' => 'contact@acme.com', // Same email
+            'name' => 'Acme Corp',
+            'email' => 'contact@acme.com',
             ]);
         $clientB->save();
 
-        // Complex query in tenant A
         $this->switchTenant($this->tenantA);
         $exists = Client::where('name', 'Acme Corp')
             ->where('email', 'contact@acme.com')

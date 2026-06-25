@@ -32,14 +32,14 @@ class ContextTest extends TenantTestCase
      */
     public function test_changing_tenant_changes_query_results(): void
     {
-        // Create clients for each tenant
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
         $clientA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Client B']);
         $clientB->save();
 
-        // Query in tenant A
         $this->switchTenant($this->tenantA);
         $resultA = Client::first();
         $this->assertNotNull($resultA, 'Should find a client in tenant A');
@@ -75,33 +75,30 @@ class ContextTest extends TenantTestCase
      */
     public function test_null_context_returns_no_data(): void
     {
-        // Create some data
+        $this->switchTenant($this->tenantA);
         for ($i = 1; $i <= 3; $i++) {
             $client = new Client(['name' => "Client A-$i"]);
             $client->save();
         }
 
+        $this->switchTenant($this->tenantB);
         for ($i = 1; $i <= 2; $i++) {
             $client = new Client(['name' => "Client B-$i"]);
             $client->save();
         }
 
-        // Clear tenant context to null
-        app()->forgetInstance(TenantResolver::class);
+        $tenantResolver = app(TenantResolver::class);
+        $tenantResolver->clear();
 
-        // When there's no context, all() should return empty
         $result = Client::all();
         $this->assertEquals(0, $result->count(), 'Should return no clients when context is null');
 
-        // count() should also be 0
         $countResult = Client::count();
         $this->assertEquals(0, $countResult, 'Count should be 0 when context is null');
 
-        // exists() should return false
         $existsResult = Client::exists();
         $this->assertFalse($existsResult, 'Exists should return false when context is null');
 
-        // first() should return null
         $firstResult = Client::first();
         $this->assertNull($firstResult, 'First should return null when context is null');
     }
@@ -115,14 +112,14 @@ class ContextTest extends TenantTestCase
      */
     public function test_invalid_context_returns_no_data(): void
     {
-        // Create some data in valid tenants
+        $this->switchTenant($this->tenantA);
         $client = new Client(['name' => 'Client A']);
         $client->save();
 
+        $this->switchTenant($this->tenantB);
         $client = new Client(['name' => 'Client B']);
         $client->save();
 
-        // Manually set context to invalid tenant ID
         $reflection = new \ReflectionClass(TenantResolver::class);
         $tenantResolver = app(TenantResolver::class);
 
@@ -130,15 +127,12 @@ class ContextTest extends TenantTestCase
         $tenantIdProp->setAccessible(true);
         $tenantIdProp->setValue($tenantResolver, 99999);
 
-        // Query should return empty since no client has tenant_id = 99999
         $result = Client::all();
         $this->assertEquals(0, $result->count(), 'Should return no clients with invalid tenant context');
 
-        // count() should also be 0
         $countResult = Client::count();
         $this->assertEquals(0, $countResult, 'Count should be 0 with invalid tenant context');
 
-        // exists() should return false
         $existsResult = Client::exists();
         $this->assertFalse($existsResult, 'Exists should return false with invalid tenant context');
     }
@@ -152,7 +146,7 @@ class ContextTest extends TenantTestCase
      */
     public function test_sequential_queries_maintain_isolation(): void
     {
-        // Create data for all tenants
+        $this->switchTenant($this->tenantA);
         $clientA1 = new Client(['name' => 'Client A-1']);
         $clientA1->save();
 
@@ -160,6 +154,7 @@ class ContextTest extends TenantTestCase
 
         (new Wallet(['client_id' => $clientA1->id, 'name' => 'Wallet A']))->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB1 = new Client(['name' => 'Client B-1']);
         $clientB1->save();
 
@@ -222,18 +217,18 @@ class ContextTest extends TenantTestCase
      */
     public function test_context_persists_across_model_queries(): void
     {
-        // Setup: Create related data
+        $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
         $clientA->save();
         $walletA = new Wallet(['client_id' => $clientA->id, 'name' => 'Wallet A']);
         $walletA->save();
 
+        $this->switchTenant($this->tenantB);
         $clientB = new Client(['name' => 'Client B']);
         $clientB->save();
         $walletB = new Wallet(['client_id' => $clientB->id, 'name' => 'Wallet B']);
         $walletB->save();
 
-        // Set context to tenant A
         $this->switchTenant($this->tenantA);
         $this->assertActiveTenant($this->tenantA);
 

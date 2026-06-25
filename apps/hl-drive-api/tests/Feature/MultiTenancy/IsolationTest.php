@@ -314,13 +314,11 @@ class IsolationTest extends TenantTestCase
     /**
      * Test: InstructorStudentLink isolation by tenant
      *
-     * InstructorStudentLink has a tenant_id column and can be filtered by tenant directly.
-     * Note: InstructorStudentLink does NOT use BelongsToTenant trait but has tenant_id column
-     * for data organization. This test verifies basic tenant filtering works correctly.
+     * InstructorStudentLink uses the BelongsToTenant trait for automatic tenant isolation.
+     * This test verifies that links are properly isolated by tenant context.
      */
     public function test_link_isolation_by_tenant(): void
     {
-        // Create instructor and student users
         $instructorA = User::factory()->create(['email' => 'instructor_a@test.com']);
         $studentA = User::factory()->create(['email' => 'student_a@test.com']);
 
@@ -330,7 +328,6 @@ class IsolationTest extends TenantTestCase
         $instructorC = User::factory()->create(['email' => 'instructor_c@test.com']);
         $studentC = User::factory()->create(['email' => 'student_c@test.com']);
 
-        // Create links for each tenant using context-aware creation
         $this->switchTenant($this->tenantA);
         $linkA = new InstructorStudentLink([
             'instructor_id' => $instructorA->id,
@@ -358,34 +355,37 @@ class IsolationTest extends TenantTestCase
         ]);
         $linkC->save();
 
-        // Verify isolation by checking count and filtering by tenant
-        $this->assertEquals(
-            1,
-            InstructorStudentLink::where('tenant_id', $this->tenantA->id)->count(),
-            'Tenant A should have exactly 1 link'
-        );
-        $this->assertEquals(
-            1,
-            InstructorStudentLink::where('tenant_id', $this->tenantB->id)->count(),
-            'Tenant B should have exactly 1 link'
-        );
-        $this->assertEquals(
-            1,
-            InstructorStudentLink::where('tenant_id', $this->tenantC->id)->count(),
-            'Tenant C should have exactly 1 link'
-        );
-
+        $this->switchTenant($this->tenantA);
+        $this->assertEquals(1, InstructorStudentLink::count(), 'Tenant A should have exactly 1 link');
         $this->assertTrue(
-            InstructorStudentLink::where('tenant_id', $this->tenantA->id)
-                ->where('id', $linkA->id)
-                ->exists(),
-            'Link A should be found in Tenant A'
+            InstructorStudentLink::where('id', $linkA->id)->exists(),
+            'Link A should be accessible in Tenant A'
         );
         $this->assertFalse(
-            InstructorStudentLink::where('tenant_id', $this->tenantA->id)
-                ->where('id', $linkB->id)
-                ->exists(),
-            'Link B should NOT be found in Tenant A'
+            InstructorStudentLink::where('id', $linkB->id)->exists(),
+            'Link B should NOT be accessible in Tenant A'
+        );
+
+        $this->switchTenant($this->tenantB);
+        $this->assertEquals(1, InstructorStudentLink::count(), 'Tenant B should have exactly 1 link');
+        $this->assertTrue(
+            InstructorStudentLink::where('id', $linkB->id)->exists(),
+            'Link B should be accessible in Tenant B'
+        );
+        $this->assertFalse(
+            InstructorStudentLink::where('id', $linkA->id)->exists(),
+            'Link A should NOT be accessible in Tenant B'
+        );
+
+        $this->switchTenant($this->tenantC);
+        $this->assertEquals(1, InstructorStudentLink::count(), 'Tenant C should have exactly 1 link');
+        $this->assertTrue(
+            InstructorStudentLink::where('id', $linkC->id)->exists(),
+            'Link C should be accessible in Tenant C'
+        );
+        $this->assertFalse(
+            InstructorStudentLink::where('id', $linkA->id)->exists(),
+            'Link A should NOT be accessible in Tenant C'
         );
     }
 

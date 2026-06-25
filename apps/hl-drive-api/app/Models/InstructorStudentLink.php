@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\AccessLevel;
 use App\Enums\LinkStatus;
+use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -53,6 +54,7 @@ class InstructorStudentLink extends Model
     /** @use HasFactory<\Database\Factories\InstructorStudentLinkFactory> */
     use HasFactory;
     use SoftDeletes;
+    use BelongsToTenant;
 
     /**
      * The table associated with the model.
