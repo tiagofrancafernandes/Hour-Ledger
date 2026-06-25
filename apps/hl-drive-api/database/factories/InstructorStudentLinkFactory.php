@@ -42,22 +42,22 @@ class InstructorStudentLinkFactory extends Factory
     }
 
     /**
-     * Set the link as inactive.
+     * Set the link as suspended.
      */
-    public function inactive(): static
+    public function suspended(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => LinkStatus::INACTIVE,
+        return $this->state(fn () => [
+            'status' => LinkStatus::SUSPENDED,
         ]);
     }
 
     /**
-     * Set the link with read-only access.
+     * Set the link as revoked.
      */
-    public function readOnly(): static
+    public function revoked(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'access_level' => AccessLevel::READ_ONLY,
+        return $this->state(fn () => [
+            'status' => LinkStatus::REVOKED,
         ]);
     }
 }

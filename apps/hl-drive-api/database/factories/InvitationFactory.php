@@ -44,7 +44,7 @@ class InvitationFactory extends Factory
      */
     public function accepted(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'status' => InvitationStatus::ACCEPTED,
             'accepted_at' => now(),
         ]);
@@ -55,7 +55,7 @@ class InvitationFactory extends Factory
      */
     public function rejected(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'status' => InvitationStatus::REJECTED,
             'rejected_at' => now(),
         ]);
@@ -66,7 +66,7 @@ class InvitationFactory extends Factory
      */
     public function expired(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'expires_at' => now()->subDay(),
         ]);
     }

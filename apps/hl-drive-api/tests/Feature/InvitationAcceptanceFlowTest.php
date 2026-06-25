@@ -9,7 +9,6 @@ use App\Models\Invitation;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Enums\InvitationStatus;
-use App\Enums\LinkStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -98,7 +97,7 @@ class InvitationAcceptanceFlowTest extends TestCase
     public function test_multiple_invitations_can_be_sent_to_same_student(): void
     {
         // Setup: Create 2 invitations from different instructors to same student
-        $inv1 = Invitation::create([
+        Invitation::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor->id,
             'student_id' => $this->student->id,
@@ -109,7 +108,7 @@ class InvitationAcceptanceFlowTest extends TestCase
 
         $instructor2 = User::factory()->create();
 
-        $inv2 = Invitation::create([
+        Invitation::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $instructor2->id,
             'student_id' => $this->student->id,

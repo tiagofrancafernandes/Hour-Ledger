@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\InstructorStudentLink;
-use App\Models\Invitation;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Enums\InvitationStatus;
 use App\Enums\LinkStatus;
 use App\Enums\AccessLevel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +34,7 @@ class MultiInstructorFlowTest extends TestCase
     public function test_student_can_manage_links_with_multiple_instructors(): void
     {
         // Setup: Create links with 2 instructors
-        $link1 = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor1->id,
             'student_id' => $this->student->id,
@@ -44,7 +42,7 @@ class MultiInstructorFlowTest extends TestCase
             'access_level' => AccessLevel::FULL->value,
         ]);
 
-        $link2 = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor2->id,
             'student_id' => $this->student->id,
@@ -99,7 +97,7 @@ class MultiInstructorFlowTest extends TestCase
     public function test_instructor_sees_only_own_student_links(): void
     {
         // Setup: Create links
-        $link1 = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor1->id,
             'student_id' => $this->student->id,
@@ -109,7 +107,7 @@ class MultiInstructorFlowTest extends TestCase
 
         $otherStudent = User::factory()->create();
 
-        $link2 = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor2->id,
             'student_id' => $otherStudent->id,

@@ -108,7 +108,7 @@ class IsolationAndSecurityTest extends TestCase
     public function test_instructor_cannot_see_other_instructor_students(): void
     {
         // Setup: Create links in same tenant but different instructors
-        $linkA = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenantA->id,
             'instructor_id' => $this->instructorA->id,
             'student_id' => $this->studentA->id,
@@ -119,7 +119,7 @@ class IsolationAndSecurityTest extends TestCase
         $instructor2A = User::factory()->create();
         $student2A = User::factory()->create();
 
-        $linkAlt = InstructorStudentLink::create([
+        InstructorStudentLink::create([
             'tenant_id' => $this->tenantA->id,
             'instructor_id' => $instructor2A->id,
             'student_id' => $student2A->id,
