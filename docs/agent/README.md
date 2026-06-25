@@ -2,6 +2,12 @@
 
 Este diretório contém o planejamento e execução das atividades do projeto.
 
+## Entendendo o projeto
+
+Leia docs/architecture/00-START-HERE.md e siga todas as referências indicadas antes de executar cada tarefa.
+
+Para entender bem o objetivo desse projeto, leia docs/architecture/02-VISION.md pois nele tem definição de planos para agora e planos futuro.
+
 ## Estrutura
 
 ```text
