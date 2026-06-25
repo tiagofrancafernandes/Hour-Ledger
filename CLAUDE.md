@@ -8,6 +8,10 @@ Antes de planejar ou alterar qualquer código, leia `AGENTS.md`.
 
 Este arquivo contém apenas instruções específicas para uso com Claude Code.
 
+Leia docs/architecture/00-START-HERE.md e siga todas as referências indicadas antes de executar cada tarefa.
+
+Para entender bem o objetivo desse projeto, leia docs/architecture/02-VISION.md pois nele tem definição de planos para agora e planos futuro.
+
 ## Uso com Claude Code
 
 - Use modo de planejamento para tarefas não triviais.

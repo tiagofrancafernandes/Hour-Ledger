@@ -10,8 +10,10 @@ Ordem de leitura obrigatória:
 5. 04-DECISION-FRAMEWORK.md
 6. 05-BOUNDARIES.md
 7. 06-ARCHITECTURE-FREEZE.md
-8. docs/agent/README.md
-9. AGENTS.md
-10. CLAUDE.md
+8. 08-REFACTORING-POLICY.md
+9. 99-GLOSSARY.md
+10. docs/agent/README.md
+11. AGENTS.md
+12. CLAUDE.md
 
 Nenhuma implementação pode ignorar estes documentos.
