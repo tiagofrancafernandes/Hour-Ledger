@@ -20,6 +20,15 @@ class DatabaseSeeder extends Seeder
         // Seed admin users
         $this->call(AdminUserSeeder::class);
 
+        // Seed tenants
+        $this->call(TenantSeeder::class);
+
+        // Seed instructor and student users
+        $this->call(InstructorStudentUserSeeder::class);
+
+        // Seed invitations and links
+        $this->call(InvitationAndLinkSeeder::class);
+
         $this->call(DevDummyDataSeeder::class);
     }
 }

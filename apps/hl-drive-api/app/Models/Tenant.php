@@ -226,4 +226,24 @@ class Tenant extends Model
     {
         return $query->whereIn('status', TenantStatus::accessible());
     }
+
+    /**
+     * Get all invitations in this tenant.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'tenant_id');
+    }
+
+    /**
+     * Get all instructor-student links in this tenant.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function instructorStudentLinks()
+    {
+        return $this->hasMany(InstructorStudentLink::class, 'tenant_id');
+    }
 }

@@ -137,6 +137,59 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the active instructor for this user (if any).
+     *
+     * Returns the user's currently selected instructor context.
+     * Null if user is not viewing instructor resources.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function activeInstructor()
+    {
+        return $this->belongsTo(static::class, 'active_instructor_id');
+    }
+
+    /**
+     * Get all invitations sent by this user as instructor.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentInvitations()
+    {
+        return $this->hasMany(Invitation::class, 'instructor_id');
+    }
+
+    /**
+     * Get all invitations received by this user as student.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedInvitations()
+    {
+        return $this->hasMany(Invitation::class, 'student_id');
+    }
+
+    /**
+     * Get all instructor-student links where this user is the instructor.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function studentLinks()
+    {
+        return $this->hasMany(InstructorStudentLink::class, 'instructor_id');
+    }
+
+    /**
+     * Get all instructor-student links where this user is the student.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function instructorLinks()
+    {
+        return $this->hasMany(InstructorStudentLink::class, 'student_id');
+    }
+
+    /**
      * Check if user has access to a specific tenant.
      *
      * Validates that:
@@ -181,5 +234,35 @@ class User extends Authenticatable
             ->wherePivot('status', 'active')
             ->accessible()
             ->get();
+    }
+
+    /**
+     * Check if user has an active instructor link with another user.
+     *
+     * @param int $instructorId The instructor ID to check
+     *
+     * @return bool
+     */
+    public function hasActiveInstructorLink(int $instructorId): bool
+    {
+        return $this->instructorLinks()
+            ->where('instructor_id', $instructorId)
+            ->active()
+            ->exists();
+    }
+
+    /**
+     * Check if user has an active student link with another user.
+     *
+     * @param int $studentId The student ID to check
+     *
+     * @return bool
+     */
+    public function hasActiveStudentLink(int $studentId): bool
+    {
+        return $this->studentLinks()
+            ->where('student_id', $studentId)
+            ->active()
+            ->exists();
     }
 }
