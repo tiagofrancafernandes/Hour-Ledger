@@ -8,7 +8,6 @@ use App\Exceptions\UnauthorizedTenant;
 use App\Models\Client;
 use App\Models\LedgerEntry;
 use App\Models\Wallet;
-use App\Services\TenantResolver;
 use Illuminate\Support\Facades\DB;
 use Tests\Feature\TenantTestCase;
 
