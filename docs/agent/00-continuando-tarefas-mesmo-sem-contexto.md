@@ -1,5 +1,19 @@
 # Prompts para Continuar Tarefas
 
+## Índice
+
+1. [Continuar tarefa em andamento](#para-continuar-uma-tarefa-em-andamento)
+2. [Iniciar múltiplas tarefas](#para-iniciar-múltiplas-tarefas-em-paralelo)
+3. [Revisar plano existente](#para-revisar-e-atualizar-um-plano-existente)
+4. [Refinar rascunho de plano](#para-refinar-um-rascunho-de-plano)
+5. [Executar tarefa específica](#para-executar-uma-tarefa-específica)
+6. [Executar plano completo](#para-executar-um-plano-completo)
+7. [Resolver bloqueador](#para-resolver-um-bloqueador)
+8. [Cleanup de código](#para-fazer-cleanup-de-código-antes-de-commit)
+9. [Gerar checkpoint](#para-gerar-checkpoint-após-completar-tarefa)
+
+---
+
 ## Para continuar uma tarefa em andamento:
 
 ```
