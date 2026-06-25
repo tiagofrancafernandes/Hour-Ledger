@@ -43,6 +43,25 @@ abstract class TenantTestCase extends TestCase
     protected User $userC;
 
     /**
+     * Setup the test environment.
+     *
+     * Override database configuration to use SQLite for tests.
+     *
+     * @return void
+     */
+    protected function getEnvironmentSetUp($app)
+    {
+        parent::getEnvironmentSetUp($app);
+
+        $app['config']->set('database.default', 'sqlite');
+        $app['config']->set('database.connections.sqlite', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
+    }
+
+    /**
      * Set up test tenants and users
      */
     protected function setUp(): void
