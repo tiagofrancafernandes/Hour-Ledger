@@ -1,7 +1,16 @@
 # Prompts para Continuar Tarefas
 
+## Para iniciar nova sessão ou após `/clear`:
+
+```
+Ler: docs/agent/prompts/00-garantir-consistencia-do-projeto.md | Ler: AGENTS.md | Ler: CLAUDE.md | Ler: UNIVERSAL-CODE-STYLE-RULES.md | Ler: docs/architecture/02-VISION.md | Ler: docs/agent/README.md | Ler: git log -10 | git status | Garantir respeito a AGENTS.md, CLAUDE.md e UNIVERSAL-CODE-STYLE-RULES.md em todo código | Não fugir do escopo do projeto (VISION é autoridade) | Próximo passo: [descrever o que será feito]
+```
+
+---
+
 ## Índice
 
+0. [Nova sessão / `/clear`](#para-iniciar-nova-sessão-ou-após-clear) ⭐ **COMECE AQUI**
 1. [Continuar tarefa em andamento](#para-continuar-uma-tarefa-em-andamento)
 2. [Iniciar múltiplas tarefas](#para-iniciar-múltiplas-tarefas-em-paralelo)
 3. [Revisar plano existente](#para-revisar-e-atualizar-um-plano-existente)
@@ -29,7 +38,7 @@ Ler checkpoint: docs/agent/checkpoints/[date].md | Criar subagents para tarefas:
 ## Para revisar e atualizar um plano existente:
 
 ```
-Ler plano: docs/agent/plans/[plan-id].md | Validar com VISION (docs/architecture/02-VISION.md) e AGENTS.md | Atualizar timeline/escopo se necessário | Identificar bloqueadores | Salvar versão atualizada | Propor execução
+Ler plano: [arquivo_do_plano] | Validar com VISION (docs/architecture/02-VISION.md) e AGENTS.md | Atualizar timeline/escopo se necessário | Identificar bloqueadores | Salvar versão atualizada | Propor execução
 ```
 
 ## Para refinar um rascunho de plano:
@@ -41,7 +50,7 @@ Ler rascunho: docs/agent/plans/[rascunho].md | Validar com docs/architecture/02-
 ## Para executar uma tarefa específica:
 
 ```
-Tarefa: [ID] | Objetivo: [o que será feito] | Escopo: [limites] | Ler checkpoint/plano se existir | Respeitar AGENTS.md, CLAUDE.md, UNIVERSAL-CODE-STYLE-RULES.md | Fazer commit ao terminar | Atualizar checkpoint
+Tarefa: [ID/ou caminho do arquivo da tarefa] | Ler checkpoint/plano se existir | Respeitar AGENTS.md, CLAUDE.md, UNIVERSAL-CODE-STYLE-RULES.md | Fazer commit ao terminar | Atualizar checkpoint
 ```
 
 ## Para executar um plano completo:
@@ -50,24 +59,12 @@ Tarefa: [ID] | Objetivo: [o que será feito] | Escopo: [limites] | Ler checkpoin
 Plano: docs/agent/plans/[plan-id].md | Ler e validar estrutura | Identificar tarefas paralelas vs sequenciais | Criar subagents conforme necessário | Executar em background | Notificar ao terminar | Compilar relatório
 ```
 
-## Para resolver um bloqueador:
-
-```
-Bloqueador: [descrição] | Arquivo: [caminho] | Linha: [número] | Contexto: [2-3 linhas de código] | Erro: [mensagem completa] | Tentativas: [o que foi testado] | Respeitar código style do projeto
-```
-
 ## Para fazer cleanup de código antes de commit:
 
 ```
 Arquivo: [caminho] | Validar: UNIVERSAL-CODE-STYLE-RULES.md | Remover: variáveis não usadas, imports não usados, comments desnecessários | Indentação: 4 espaços | Nomes: descritivos | Rodar testes | Fazer commit com contexto claro
 ```
 
-## Para gerar checkpoint após completar tarefa:
-
-```
-Tarefa: [ID] | Status: COMPLETO | Testes: [X/X passando] | Assertions: [número] | Commits: [lista de hashes] | Bloqueadores: [nenhum/descrição] | Timeline: [quanto tempo levou] | Próximos passos: [o que vem depois]
-```
-
 ---
 
-**Dica:** Copie o prompt completo (1 linha) e cole no Claude Code. Adapt [placeholders] conforme necessário.
+**Dica:** Copie o prompt completo (1 linha) e cole no Claude Code. Ajuste os **placeholders** conforme necessário.
