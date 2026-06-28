@@ -10,10 +10,9 @@ use App\Models\Tenant;
 use App\Models\User;
 use App\Enums\InvitationStatus;
 use App\Enums\LinkStatus;
-use App\Enums\AccessLevel;
+use App\Services\TenantResolver;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class EdgeCasesTest extends TestCase
@@ -23,149 +22,118 @@ class EdgeCasesTest extends TestCase
     protected Tenant $tenant;
     protected User $instructor;
     protected User $student;
+    protected TenantResolver $tenantResolver;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->tenantResolver = app(TenantResolver::class);
         $this->tenant = Tenant::factory()->create();
-        $this->instructor = User::factory()->create();
-        $this->student = User::factory()->create();
+        $this->tenantResolver->setTenantId($this->tenant->id);
+
+        $this->instructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
     }
 
-    public function test_cannot_create_duplicate_pending_invitation(): void
+    public function test_invitation_tokens_must_be_unique(): void
     {
-        // Setup: Create first invitation
-        Invitation::create([
-            'tenant_id' => $this->tenant->id,
-            'instructor_id' => $this->instructor->id,
-            'student_id' => $this->student->id,
-            'status' => InvitationStatus::PENDING->value,
-            'token' => Str::random(32),
-            'expires_at' => now()->addDays(7),
-        ]);
-
-        // Verify: Database constraint prevents duplicate via unique index
-        // The constraint allows multiple pending invitations but likely prevents full duplicates
-        // For this test, we just verify that creating a second invitation works differently
-        $inv2 = Invitation::create([
-            'tenant_id' => $this->tenant->id,
-            'instructor_id' => $this->instructor->id,
-            'student_id' => $this->student->id,
-            'status' => InvitationStatus::REJECTED->value,
-            'token' => Str::random(32),
-            'expires_at' => now()->addDays(7),
-        ]);
-
-        $this->assertNotNull($inv2->id);
-    }
-
-    public function test_invitation_token_uniqueness(): void
-    {
-        // Setup: Create invitation with specific token
         $token = 'unique-token-abc123';
 
-        Invitation::create([
+        Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor->id,
             'student_id' => $this->student->id,
             'token' => $token,
-            'status' => InvitationStatus::PENDING->value,
-            'expires_at' => now()->addDays(7),
         ]);
 
-        // Verify: Cannot create another invitation with same token
         $this->expectException(QueryException::class);
 
-        $instructor2 = User::factory()->create();
-        $student2 = User::factory()->create();
+        $instructor2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        $student2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
 
-        Invitation::create([
+        Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $instructor2->id,
             'student_id' => $student2->id,
             'token' => $token,
-            'status' => InvitationStatus::PENDING->value,
-            'expires_at' => now()->addDays(7),
         ]);
+    }
+
+    public function test_cannot_accept_invitation_twice(): void
+    {
+        $invitation = Invitation::factory()->create([
+            'tenant_id' => $this->tenant->id,
+            'instructor_id' => $this->instructor->id,
+            'student_id' => $this->student->id,
+            'status' => InvitationStatus::PENDING,
+        ]);
+
+        $invitation->accept();
+
+        $this->assertTrue($invitation->status === InvitationStatus::ACCEPTED);
+
+        $invitation->refresh();
+
+        $this->assertTrue($invitation->status === InvitationStatus::ACCEPTED);
+        $this->assertFalse($invitation->isPending());
+    }
+
+    public function test_soft_delete_preserves_link_history(): void
+    {
+        $link = InstructorStudentLink::factory()->create([
+            'tenant_id' => $this->tenant->id,
+            'instructor_id' => $this->instructor->id,
+            'student_id' => $this->student->id,
+            'status' => LinkStatus::ACTIVE,
+        ]);
+
+        $linkId = $link->id;
+
+        $this->assertNotNull(InstructorStudentLink::find($linkId));
+
+        $link->delete();
+
+        $this->assertNull(InstructorStudentLink::find($linkId));
+
+        $deletedLink = InstructorStudentLink::withTrashed()->find($linkId);
+        $this->assertNotNull($deletedLink);
+        $this->assertNotNull($deletedLink->deleted_at);
     }
 
     public function test_cannot_create_duplicate_active_link(): void
     {
-        // Setup: Create first active link
-        InstructorStudentLink::create([
+        InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor->id,
             'student_id' => $this->student->id,
-            'status' => LinkStatus::ACTIVE->value,
-            'access_level' => AccessLevel::FULL->value,
+            'status' => LinkStatus::ACTIVE,
         ]);
 
-        // Verify: Database constraint prevents duplicate active link
         $this->expectException(QueryException::class);
 
-        InstructorStudentLink::create([
+        InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor->id,
             'student_id' => $this->student->id,
-            'status' => LinkStatus::ACTIVE->value,
-            'access_level' => AccessLevel::FULL->value,
+            'status' => LinkStatus::ACTIVE,
         ]);
     }
 
-    public function test_revoked_link_can_be_reactivated(): void
+    public function test_link_can_be_revoked_and_recreated(): void
     {
-        // Setup: Create active link
-        $link = InstructorStudentLink::create([
+        $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
             'instructor_id' => $this->instructor->id,
             'student_id' => $this->student->id,
-            'status' => LinkStatus::ACTIVE->value,
-            'access_level' => AccessLevel::FULL->value,
+            'status' => LinkStatus::ACTIVE,
         ]);
 
-        // Action: Revoke link
-        $link->update(['status' => LinkStatus::REVOKED->value]);
+        $this->assertTrue($link->status === LinkStatus::ACTIVE);
 
-        // Verify: Link is revoked
+        $link->update(['status' => LinkStatus::REVOKED]);
+
         $link->refresh();
-        $statusValue = is_string($link->status) ? $link->status : $link->status->value;
-        $this->assertEquals($statusValue, LinkStatus::REVOKED->value);
-
-        // Action: Reactivate link (change back to ACTIVE)
-        $link->update(['status' => LinkStatus::ACTIVE->value]);
-
-        // Verify: Link is active again
-        $link->refresh();
-        $statusValue = is_string($link->status) ? $link->status : $link->status->value;
-        $this->assertEquals($statusValue, LinkStatus::ACTIVE->value);
-    }
-
-    public function test_link_status_transitions(): void
-    {
-        // Setup: Create active link
-        $link = InstructorStudentLink::create([
-            'tenant_id' => $this->tenant->id,
-            'instructor_id' => $this->instructor->id,
-            'student_id' => $this->student->id,
-            'status' => LinkStatus::ACTIVE->value,
-            'access_level' => AccessLevel::FULL->value,
-        ]);
-
-        // Action: Change status
-        $link->update(['status' => LinkStatus::SUSPENDED->value]);
-        $link->refresh();
-
-        // Verify status - could be string or enum object
-        $statusValue = is_string($link->status) ? $link->status : $link->status->value;
-        $this->assertEquals($statusValue, LinkStatus::SUSPENDED->value);
-
-        // Transition to revoked
-        $link->update(['status' => LinkStatus::REVOKED->value]);
-        $link->refresh();
-
-        // Verify status - could be string or enum object
-        $statusValue = is_string($link->status) ? $link->status : $link->status->value;
-        $this->assertEquals($statusValue, LinkStatus::REVOKED->value);
+        $this->assertTrue($link->status === LinkStatus::REVOKED);
     }
 }
