@@ -432,3 +432,81 @@ export type TimezoneConfig = {
     timezone_id: string;
     country: string;
 };
+
+export interface Package {
+    id: number;
+    tenant_id?: string;
+    instructor_id: number;
+    name: string;
+    description?: string | null;
+    hours: string;
+    price: string;
+    currency_code?: string | null;
+    instructor?: User;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}
+
+export interface PackageForm {
+    name: string;
+    description?: string | null;
+    hours: number;
+    price: number;
+    currency_code?: string;
+}
+
+export interface PackagePurchase {
+    id: number;
+    tenant_id?: string;
+    package_id: number;
+    student_id: number;
+    wallet_id: number;
+    quantity: number;
+    unit_price: string;
+    total_price: string;
+    status: 'pending' | 'completed' | 'cancelled';
+    package?: Package;
+    student?: User;
+    wallet?: Wallet;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}
+
+export interface PackagePurchaseForm {
+    package_id: number;
+    quantity?: number;
+}
+
+export interface Lesson {
+    id: number;
+    tenant_id?: string;
+    instructor_id: number;
+    student_id: number;
+    wallet_id: number;
+    scheduled_at: string;
+    duration_minutes: number;
+    status: 'scheduled' | 'completed' | 'cancelled';
+    notes?: string | null;
+    hours_consumed?: string | null;
+    instructor?: User;
+    student?: User;
+    wallet?: Wallet;
+    created_at: string;
+    updated_at: string;
+    deleted_at?: string | null;
+}
+
+export interface LessonForm {
+    student_id: number;
+    wallet_id: number;
+    scheduled_at: string;
+    duration_minutes: number;
+    notes?: string | null;
+}
+
+export interface LessonConsumptionForm {
+    wallet_id: number;
+    hours_consumed: number;
+}
