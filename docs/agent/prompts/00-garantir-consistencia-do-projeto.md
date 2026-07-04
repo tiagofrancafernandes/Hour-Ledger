@@ -1,13 +1,3 @@
-# Objetivo
-
-Quero realizar uma curadoria completa dos planos e tarefas existentes para garantir que o backlog do projeto reflita exatamente o estado atual da arquitetura, do domínio e da estratégia do Hour Ledger.
-
-Esta atividade **NÃO consiste em implementar código**.
-
-Ela consiste exclusivamente em revisar, reorganizar, corrigir e limpar a documentação de planejamento.
-
----
-
 # Leitura obrigatória
 
 Antes de qualquer análise, leia obrigatoriamente, nesta ordem:
@@ -83,10 +73,10 @@ Remova documentos que:
 
 Mova documentos para:
 
-* `done/` quando estiverem concluídos;
-* `paused/` quando dependerem de decisão futura;
-* `plans/` quando representarem apenas estratégia;
-* `tasks/` quando forem unidades executáveis.
+* `docs/agent/done/` quando estiverem concluídos;
+* `docs/agent/paused/` quando dependerem de decisão futura;
+* `docs/agent/plans/` quando representarem apenas estratégia;
+* `docs/agent/tasks/` quando forem unidades executáveis.
 
 ---
 
