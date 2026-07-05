@@ -9,6 +9,7 @@ use App\Exceptions\TenantNotFound;
 use App\Exceptions\UnauthorizedTenant;
 use App\Services\TenantResolver;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -47,9 +48,9 @@ class TenantMiddleware
      * @param Request $request
      * @param Closure(Request): (Response) $next
      *
-     * @return Response
+     * @return Response|JsonResponse
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): Response|JsonResponse
     {
         try {
             $tenantId = $this->resolveTenantId($request);
@@ -153,9 +154,9 @@ class TenantMiddleware
      *
      * @param string $message
      *
-     * @return Response
+     * @return JsonResponse
      */
-    private function forbiddenResponse(string $message): Response
+    private function forbiddenResponse(string $message): JsonResponse
     {
         return response()->json(
             [

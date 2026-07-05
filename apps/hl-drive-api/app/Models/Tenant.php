@@ -224,7 +224,7 @@ class Tenant extends Model
      */
     public function scopeAccessible(\Illuminate\Database\Eloquent\Builder $query)
     {
-        return $query->whereIn('status', TenantStatus::accessible());
+        return $query->whereIn('tenants.status', TenantStatus::accessible());
     }
 
     /**
