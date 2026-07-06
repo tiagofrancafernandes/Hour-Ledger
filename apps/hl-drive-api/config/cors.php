@@ -52,6 +52,8 @@ return [
         '/^http:\/\/localhost:(3000|5173|8080)$/',    // Matches localhost on ports 3000, 5173, or 8080
         '/^https?:\/\/([a-z0-9-]+\.)?hlcore\.com$/', // Matches hlcore.com and any of its subdomains
         '/^https?:\/\/([a-z0-9-]+\.)?local\.hlcore\.com$/', // Matches local.hlcore.com and any of its subdomains
+        '/^https?:\/\/([a-z0-9-]+\.)?hourledger\.com$/', // Matches hourledger.com and any of its subdomains
+        '/^https?:\/\/([a-z0-9-]+\.)?local\.hourledger\.com$/', // Matches local.hlcore.com and any of its subdomains
     ],
 
     'allowed_headers' => ['*'],
