@@ -510,3 +510,5 @@ export interface LessonConsumptionForm {
     wallet_id: number;
     hours_consumed: number;
 }
+
+export * from './tenant';
