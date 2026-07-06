@@ -4,12 +4,22 @@ import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import { useAuthResources } from '@/composables/useAuthResources';
+import { useTenantSelection } from '@/composables/useTenantSelection';
+import TenantSelector from '@/components/TenantSelector.vue';
 import { IS_PRODUCTION, SHOW_DEV_HELPERS } from '@/configs/app';
 import { isValidEmail } from '@/utils/data-helpers';
 
 const router = useRouter();
 const { login, loading, error } = useAuth();
 const { canRegister, canRecoverPassword, fetchAuthResources } = useAuthResources();
+const {
+  showSelector,
+  isLoading,
+  accessibleTenants,
+  handleAccessibleTenants,
+  selectTenant,
+  cancelSelection,
+} = useTenantSelection();
 
 const email = ref('');
 const password = ref('');
@@ -28,6 +38,10 @@ async function handleSubmit(): Promise<void> {
     });
 
     if (success) {
+        // Process tenant selection
+        // Note: Once API response includes accessible_tenants,
+        // call: handleAccessibleTenants(response.accessible_tenants)
+        // For now, auto-redirect to prevent getting stuck on login
         const redirectTo = (router.currentRoute.value.query.redirect as string) || '/';
         router.push(redirectTo);
     }
@@ -178,6 +192,15 @@ onMounted(() => {
                         </button>
                     </form>
                 </div>
+
+                <!-- Tenant selector modal (shows if 2+ tenants) -->
+                <TenantSelector
+                    v-if="showSelector"
+                    :is-loading="isLoading"
+                    :tenants="accessibleTenants"
+                    @selected="selectTenant"
+                    @cancel="cancelSelection"
+                />
 
                 <!-- Dev helpers -->
                 <div v-if="!IS_PRODUCTION && SHOW_DEV_HELPERS" class="px-8 pb-6 pt-0">
