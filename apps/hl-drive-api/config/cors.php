@@ -14,15 +14,22 @@ return [
     |
     */
 
-    'paths' => ['*'],
+    'paths' => [
+        '*',
+        'api/*',
+    ],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
+        'hlcore.com',
+        'api.hlcore.com',
+        'local.hlcore.com',
+        'api.local.hlcore.com',
         ...array_unique(
             array_filter(
-                array_map(fn ($v) => trim("{$v}"), [
-                    env('FRONTEND_URL', 'http://localhost:3000'),
+                array_map(fn($v) => trim("{$v}"), [
+                    env('FRONTEND_URL', 'https://hlcore.com'),
                     ...explode(',', strval(env('CENTRAL_DOMAINS'))),
                     ...explode(',', strval(env('ALLOWED_ORIGINS'))),
                     env('CENTRAL_DOMAIN'),
@@ -39,7 +46,13 @@ return [
         )
     ],
 
-    'allowed_origins_patterns' => [],
+    // Define your regular expressions here
+    'allowed_origins_patterns' => [
+        '/^https?:\/\/([a-z0-9-]+\.)?example\.com$/', // Matches example.com and any of its subdomains
+        '/^http:\/\/localhost:(3000|5173|8080)$/',    // Matches localhost on ports 3000, 5173, or 8080
+        '/^https?:\/\/([a-z0-9-]+\.)?hlcore\.com$/', // Matches hlcore.com and any of its subdomains
+        '/^https?:\/\/([a-z0-9-]+\.)?local\.hlcore\.com$/', // Matches local.hlcore.com and any of its subdomains
+    ],
 
     'allowed_headers' => ['*'],
 
