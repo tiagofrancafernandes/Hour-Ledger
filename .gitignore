@@ -45,3 +45,4 @@ _ide_helper*
 *.ignored.*
 ignored.*
 apps/hl-drive-api/database.sqlite
+.worktrees/
