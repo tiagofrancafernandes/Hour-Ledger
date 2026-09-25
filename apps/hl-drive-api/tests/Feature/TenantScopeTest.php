@@ -96,11 +96,13 @@ class TenantScopeTest extends TestCase
             'name' => 'Client in Tenant 1',
         ]);
 
-        // Manually create a client for tenant2 without scope
-        Client::withoutGlobalScopes()->create([
+        // Create a client for tenant2 under tenant2 context
+        $this->tenantResolver->setTenantId($this->tenant2->id);
+        Client::create([
             'tenant_id' => $this->tenant2->id,
             'name' => 'Client in Tenant 2',
         ]);
+        $this->tenantResolver->setTenantId($this->tenant1->id);
 
         // Query with tenant1 active
         $results = Client::all();
@@ -365,8 +367,10 @@ class TenantScopeTest extends TestCase
         $this->tenantResolver->setTenantId($this->tenant1->id);
 
         // Without scopes should return both
-        $results = Client::withoutGlobalScopes()->get();
+        $results = Client::withoutGlobalScopes()->whereIn('id', [$client1->id, $client2->id])->get();
 
         $this->assertCount(2, $results);
+        $this->assertTrue($results->contains('id', $client1->id));
+        $this->assertTrue($results->contains('id', $client2->id));
     }
 }

@@ -24,12 +24,29 @@ class WalletFactory extends Factory
      */
     public function definition(): array
     {
-        $tenantId = $this->getOrCreateTenantId();
-        $client = Client::factory()->for(Tenant::find($tenantId), 'tenant');
-
         return [
-            'tenant_id' => $tenantId,
-            'client_id' => $client,
+            'tenant_id' => function (array $attributes): int {
+                if (isset($attributes['client_id'])) {
+                    if ($attributes['client_id'] instanceof Client) {
+                        return (int) $attributes['client_id']->tenant_id;
+                    }
+
+                    if (is_numeric($attributes['client_id'])) {
+                        $client = Client::withoutGlobalScopes()->find((int) $attributes['client_id']);
+
+                        if ($client !== null && $client->tenant_id) {
+                            return (int) $client->tenant_id;
+                        }
+                    }
+                }
+
+                return $this->getOrCreateTenantId();
+            },
+            'client_id' => function (array $attributes): int {
+                $tenantId = $attributes['tenant_id'] ?? $this->getOrCreateTenantId();
+
+                return Client::factory()->create(['tenant_id' => $tenantId])->id;
+            },
             'name' => fake()->words(2, true) . ' Wallet',
             'description' => fake()->optional()->sentence(),
             'hourly_rate_reference' => fake()->randomFloat(2, 50, 200),

@@ -16,6 +16,8 @@ class LedgerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private \App\Models\Tenant $tenant;
+
     private User $admin;
 
     private User $operator;
@@ -30,19 +32,34 @@ class LedgerTest extends TestCase
     {
         parent::setUp();
 
+        $this->tenant = \App\Models\Tenant::factory()->create();
+        app(\App\Services\TenantResolver::class)->setTenantId($this->tenant->id);
+
         $this->seedPermissions();
 
-        $this->admin = User::factory()->create();
+        $this->admin = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        $this->admin->tenants()->attach($this->tenant->id);
         $this->admin->assignRole('admin');
 
-        $this->operator = User::factory()->create();
+        $this->operator = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        $this->operator->tenants()->attach($this->tenant->id);
         $this->operator->assignRole('operator');
 
-        $this->viewer = User::factory()->create();
+        $this->viewer = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        $this->viewer->tenants()->attach($this->tenant->id);
         $this->viewer->assignRole('viewer');
 
-        $this->client = Client::factory()->create();
-        $this->wallet = Wallet::factory()->create(['client_id' => $this->client->id]);
+        $this->client = Client::factory()->create(['tenant_id' => $this->tenant->id]);
+        $this->wallet = Wallet::factory()->create([
+            'tenant_id' => $this->tenant->id,
+            'client_id' => $this->client->id,
+        ]);
+    }
+
+    protected function tearDown(): void
+    {
+        app(\App\Services\TenantResolver::class)->clear();
+        parent::tearDown();
     }
 
     private function seedPermissions(): void

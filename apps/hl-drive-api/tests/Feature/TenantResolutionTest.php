@@ -82,7 +82,7 @@ class TenantResolutionTest extends TestCase
         // The middleware should set the tenant on the request
         $this->assertEquals(
             $this->activeTenant->id,
-            $response->getOriginalRequest()?->attributes->get('tenant_id')
+            $response->json('tenant_id')
         );
     }
 
@@ -97,7 +97,7 @@ class TenantResolutionTest extends TestCase
 
         $this->assertEquals(
             $this->activeTenant->id,
-            $response->getOriginalRequest()?->attributes->get('tenant_id')
+            $response->json('tenant_id')
         );
     }
 
@@ -346,7 +346,7 @@ class TenantResolutionTest extends TestCase
 
         $this->assertEquals(
             $this->activeTenant->id,
-            $response->getOriginalRequest()?->attributes->get('tenant_id')
+            $response->json('tenant_id')
         );
     }
 

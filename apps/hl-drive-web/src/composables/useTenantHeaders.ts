@@ -11,11 +11,11 @@ export function useTenantHeaders(): TenantHeadersComposable {
     function getTenantIdHeader(): string | null {
         const { activeTenantId } = tenantStore;
 
-        if (!activeTenantId.value) {
+        if (!activeTenantId) {
             return null;
         }
 
-        return String(activeTenantId.value);
+        return String(activeTenantId);
     }
 
     function headers(): Record<string, string> {

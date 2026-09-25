@@ -1,506 +1,222 @@
-# Tenant Schema Strategy
+# Estratégia de Isolamento Multi-Tenancy por Schemas PostgreSQL
 
-## 1. Naming Convention
+## 1. Visão Geral e Princípios Fundamentais
 
-### 1.1. Pattern
+O ecossistema **Hour Ledger** adota o **PostgreSQL** como seu Sistema de Gerenciamento de Banco de Dados (SGBD) fixo e exclusivo.
 
-```
+A separação dos dados dos tenants é realizada **por Schemas PostgreSQL dedicados**, inspirada no modelo do pacote `stancl/tenancy`, combinada com um modelo de **Defesa em Profundidade (Defense-in-Depth)** na aplicação:
+
+1. **Isolamento Físico de Banco (Camada Primária)**:
+   - Cada tenant possui um schema PostgreSQL dedicado no formato `tenant_{id}_{environment}`.
+   - As conexões ativas utilizam a alternância dinâmica da variável `search_path` do PostgreSQL:
+     ```sql
+     SET search_path TO "tenant_{id}_{environment}", "public";
+     ```
+   - O schema `public` atua como o catálogo central/global e fallback de resolução.
+
+2. **Isolamento Lógico na Aplicação (Camada Secundária - Defesa em Profundidade)**:
+   - Todas as entidades tenantizadas contêm a coluna identificadora `tenant_id` e utilizam o trait `BelongsToTenant`.
+   - O `TenantScope` atua em modo *fail-closed*: se por qualquer motivo uma requisição não possuir contexto de tenant ativo, a query é abortada (`WHERE false`), impedindo qualquer vazamento acidental entre tenants.
+
+---
+
+## 2. Nomenclatura e Ambientes
+
+### 2.1. Padrão de Nomenclatura
+
+```text
 tenant_{id}_{environment}
 ```
 
-### 1.2. Componentes
+- **`tenant_`**: Prefixo obrigatório que identifica schemas pertencentes a tenants da plataforma.
+- **`{id}`**: Identificador numérico único do tenant (ex: `1`, `2`, `42`).
+- **`{environment}`**: Ambiente de execução (`dev`, `staging`, `prod`, `test`).
 
-- **tenant_**: Prefixo obrigatório
-- **{id}**: ID numérico do tenant (ex: 1, 2, 42)
-- **{environment}**: Ambiente (dev, staging, prod)
+### 2.2. Exemplos de Nomenclatura
 
-### 1.3. Exemplos
+| Schema | Descrição |
+| :--- | :--- |
+| `public` | Base central compartilhada (identidade, tenancy, planos, subscrições) |
+| `tenant_1_prod` | Dados de negócio do Tenant 1 em Produção |
+| `tenant_42_staging` | Dados de negócio do Tenant 42 em Staging |
+| `tenant_99_dev` | Dados de negócio do Tenant 99 em Desenvolvimento Local |
+| `tenant_1_test` | Schema temporário para testes automatizados |
 
-```
-tenant_1_prod       → Tenant 1 em produção
-tenant_1_staging    → Tenant 1 em staging
-tenant_1_dev        → Tenant 1 em desenvolvimento
-tenant_42_prod      → Tenant 42 em produção
-tenant_1000_prod    → Tenant 1000 em produção
-```
+---
 
-### 1.4. Justificativa
+## 3. Topologia de Dados: Schema Central vs. Schemas de Tenant
 
-- **Consistência**: Fácil identificar tenant e ambiente
-- **Automação**: Scripts podem processar schemas por padrão
-- **Isolamento**: Evita colisões de naming
-- **Escalabilidade**: Suporta milhares de tenants
-
-## 2. Schemas por Ambiente
-
-### 2.1. Arquitetura Multi-Ambiente
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│                  DESENVOLVIMENTO LOCAL                         │
-├────────────────────────────────────────────────────────────────┤
-│  public  (global)                                              │
-│  tenant_1_dev, tenant_2_dev, ...                               │
-└────────────────────────────────────────────────────────────────┘
-            (Docker Compose com PostgreSQL)
-
-        │
-        │ (Testado localmente)
-        │
-
-┌────────────────────────────────────────────────────────────────┐
-│                      STAGING                                   │
-├────────────────────────────────────────────────────────────────┤
-│  public  (global)                                              │
-│  tenant_1_staging, tenant_2_staging, ...                       │
-│                                                                │
-│  (Replica de prod com dados de teste)                          │
-└────────────────────────────────────────────────────────────────┘
-        (RDS/Managed Database)
-
-        │
-        │ (Testado completo)
-        │
-
-┌────────────────────────────────────────────────────────────────┐
-│                      PRODUÇÃO                                  │
-├────────────────────────────────────────────────────────────────┤
-│  public  (global)                                              │
-│  tenant_1_prod, tenant_2_prod, ..., tenant_N_prod              │
-│                                                                │
-│  (Dados reais de clientes)                                     │
-└────────────────────────────────────────────────────────────────┘
-        (RDS/Managed Database - Alta Disponibilidade)
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    POSTGRESQL DATABASE (hour_ledger)                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│  SCHEMA CENTRAL: public                                                 │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │ users                      subscription_plans                     │  │
+│  │ tenants                    tenant_subscriptions                   │  │
+│  │ user_tenants               subscription_invoices                  │  │
+│  │ invitations                subscription_payment_receipts          │  │
+│  │ personal_access_tokens     roles / permissions                    │  │
+│  │ preferences                activity_logs (global)                 │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+│                                    │                                    │
+│         ┌──────────────────────────┴──────────────────────────┐         │
+│         ▼                                                     ▼         │
+│  SCHEMA TENANT 1: tenant_1_prod        SCHEMA TENANT 2: tenant_2_prod   │
+│  ┌──────────────────────────────┐      ┌──────────────────────────────┐ │
+│  │ clients                      │      │ clients                      │ │
+│  │ wallets                      │      │ wallets                      │ │
+│  │ ledger_entries (imutável)    │      │ ledger_entries (imutável)    │ │
+│  │ credit_purchases             │      │ credit_purchases             │ │
+│  │ instructor_student_links     │      │ instructor_student_links     │ │
+│  │ lessons                      │      │ lessons                      │ │
+│  │ packages                     │      │ packages                     │ │
+│  │ tags / timers                │      │ tags / timers                │ │
+│  │ import_plans                 │      │ import_plans                 │ │
+│  └──────────────────────────────┘      └──────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2. Criação de Schema por Ambiente
+### 3.1. Schema Central (`public`)
 
-#### Desenvolvimento
+Contém as informações operacionais globais do SaaS, comuns a toda a plataforma:
 
-```php
-// Ao criar novo tenant localmente
-Artisan::call('tenant:create', [
-    'name' => 'Test Tenant 1',
-    'environment' => 'dev',
-]);
+- **Autenticação e Identidade**: `users`, `personal_access_tokens`, `password_resets`.
+- **Governança de Tenancy**: `tenants`, `user_tenants`, `invitations`.
+- **RBAC Global**: `roles`, `permissions`, `model_has_roles`, `role_has_permissions`.
+- **Monetização e Assinaturas (SaaS Core)**: `subscription_plans`, `tenant_subscriptions`, `subscription_invoices`, `subscription_payment_receipts`.
+- **Preferências e Configurações Globais**: `preferences`.
 
-// Cria: public (se não existir), tenant_1_dev
-// Popula com dados fake para testes
-```
+### 3.2. Schemas de Tenant (`tenant_{id}_{environment}`)
 
-#### Staging
+Contêm os dados transacionais de negócio exclusivos daquele tenant:
 
-```php
-// Ao promover do dev para staging
-// Usar ferramenta de clonagem segura
+- **Ledger e Wallet (Core do Domínio)**:
+  - `wallets`: Carteiras associadas aos clientes do tenant.
+  - `ledger_entries`: Registro histórico imutável de créditos, débitos e ajustes (saldo derivado).
+  - `credit_purchases`: Compras e pacotes de créditos registrados.
+- **Relacionamento e Operação (HL Drive / HL Consulting)**:
+  - `clients`: Alunos ou clientes gerenciados pelo tenant.
+  - `instructor_student_links`: Vínculos aluno × instrutor.
+  - `lessons`: Aulas e agendamentos.
+  - `packages`: Pacotes de aulas.
+  - `tags`, `timers`, `import_plans`, `import_plan_rows`.
 
-// 1. Backup do schema dev
-pg_dump tenant_1_dev > tenant_1_staging.sql
+---
 
-// 2. Restaurar em staging com dados sanitizados
-// (remover dados sensíveis, emails reais, etc.)
-psql -d staging < tenant_1_staging.sql
+## 4. Dinâmica de Execução e Resolução de Contexto (`search_path`)
 
-// 3. Validar integridade
-php artisan schema:validate tenant_1_staging
-```
+### 4.1. Como Funciona a Alternância
 
-#### Produção
+No PostgreSQL, a resolução de nomes de tabelas sem qualificação explícita de schema depende da diretiva `search_path`.
 
-```php
-// Ao onboard novo cliente
-Artisan::call('tenant:create', [
-    'name' => 'Client Name',
-    'environment' => 'prod',
-]);
+Quando uma requisição HTTP ou Job é processado:
 
-// Cria: tenant_N_prod
-// Com migrations padrão, sem dados
+1. O `TenantMiddleware` resolve o tenant ativo a partir do cabeçalho `X-Tenant-ID`, rota ou usuário autenticado.
+2. O `TenantResolver` valida se o tenant existe e está com status `active`.
+3. O `TenantResolver` define o schema ativo e o `TenantMiddleware` aplica o `search_path` na conexão PostgreSQL:
+   ```sql
+   SET search_path TO "tenant_{id}_{environment}", "public";
+   ```
+4. Durante a execução da requisição:
+   - Se a aplicação consulta `SELECT * FROM wallets`: o PostgreSQL busca primeiro em `tenant_{id}_{environment}`. Encontra a tabela do tenant.
+   - Se a aplicação consulta `SELECT * FROM users`: o PostgreSQL busca em `tenant_{id}_{environment}`, não encontra, e resolve no fallback `public`.
+5. Ao encerrar a requisição (ou em `tearDown` de testes):
+   ```sql
+   SET search_path TO "public";
+   ```
 
-// Cliente popula com dados via API/UI
-```
+### 4.2. Tolerância a Falhas e Resiliência
 
-## 3. Tabelas Globais vs. Tenantizadas
+No PostgreSQL, schemas definidos em `search_path` que ainda não tenham sido criados são silenciosamente ignorados pelo otimizador de consultas, permitindo que a aplicação opere com segurança e execute rotinas de provisionamento antes da primeira consulta a dados tenantizados.
 
-### 3.1. Schema Público (Global)
+---
 
-**Localização**: `public` schema
+## 5. Ciclo de Vida do Tenant: Provisionamento e Migrações
 
-**Propósito**: Dados compartilhados por toda plataforma
+### 5.1. Provisionamento de Novo Tenant
 
-**Tabelas**:
+Ao cadastrar um novo tenant (via comando Artisan ou API de onboarding):
 
-| Tabela | Descrição | Chave | Replicação |
-|--------|-----------|-------|-----------|
-| `users` | Usuários globais | id (UUID) | Multi-region |
-| `tenants` | Configuração de tenants | id (BIGINT) | Multi-region |
-| `user_tenants` | Relacionamento user→tenant | (user_id, tenant_id) | Multi-region |
-| `invitations` | Convites para tenants | id (UUID) | Multi-region |
-| `preferences` | Prefs globais (idioma, tz) | (user_id, key) | Multi-region |
+1. **Registro Central**: É criado o registro em `public.tenants`.
+2. **Criação do Schema**: É invocada a função PostgreSQL `create_tenant_schema` ou o comando DDL:
+   ```sql
+   CREATE SCHEMA IF NOT EXISTS "tenant_{id}_{environment}";
+   GRANT USAGE, CREATE ON SCHEMA "tenant_{id}_{environment}" TO CURRENT_USER;
+   ```
+3. **Execução das Migrações de Tenant**:
+   As migrações de estrutura tenantizada são aplicadas ao novo schema recém-criado:
+   ```bash
+   php artisan tenancy:migrate --tenant={id} --environment={env}
+   ```
 
-**Características**:
+### 5.2. Estrutura de Migrações no Projeto
 
-- Sem informação específica de negócio
-- Dados de identificação e contexto
-- Replicado entre ambientes
-- Índices em (user_id, email, tenant_id)
-
-**Exemplo**:
-
-```sql
-CREATE SCHEMA public;
-
-CREATE TABLE public.users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255),
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE public.tenants (
-    id BIGINT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    slug VARCHAR(100) UNIQUE,
-    status VARCHAR(50) DEFAULT 'active',
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE public.user_tenants (
-    id BIGINT PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES public.users(id),
-    tenant_id BIGINT NOT NULL REFERENCES public.tenants(id),
-    role VARCHAR(50) DEFAULT 'member',
-    created_at TIMESTAMP DEFAULT NOW(),
-    UNIQUE(user_id, tenant_id)
-);
-```
-
-### 3.2. Schemas de Tenant (Tenantizados)
-
-**Localização**: `tenant_{id}_{environment}`
-
-**Propósito**: Dados específicos do tenant, isolado completamente
-
-**Tabelas Padrão**:
-
-| Tabela | Descrição | Notas |
-|--------|-----------|-------|
-| `wallets` | Carteiras de usuários | Saldo derivado do ledger |
-| `ledger_entries` | Movimentações (imutável) | INSERT-only, nunca UPDATE |
-| `students` | Alunos/participantes | Específico de HL Drive |
-| `instructors` | Instrutores | Específico de HL Drive |
-| `lessons` | Aulas agendadas | Específico de HL Drive |
-| `schedules` | Agendas e disponibilidades | Específico de HL Drive |
-| `packages` | Pacotes de horas/créditos | Específico de HL Drive |
-| `audit_logs` | Histórico auditável | Rastreia todas as ações |
-| `student_instructor_links` | Relacionamentos | Vínculo aluno↔instrutor |
-
-**Características**:
-
-- Dados de negócio específicos do tenant
-- Completamente isolado de outros tenants
-- Índices em (user_id, created_at, status)
-- Logs de auditoria para compliance
-
-**Exemplo**:
-
-```sql
--- Schema do tenant
-CREATE SCHEMA tenant_1_prod;
-
--- Tabelas de negócio
-CREATE TABLE tenant_1_prod.wallets (
-    id BIGINT PRIMARY KEY,
-    user_id UUID NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    balance_cents BIGINT DEFAULT 0,
-    currency VARCHAR(3) DEFAULT 'BRL',
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
-    INDEX (user_id, created_at)
-);
-
-CREATE TABLE tenant_1_prod.ledger_entries (
-    id BIGINT PRIMARY KEY,
-    wallet_id BIGINT NOT NULL REFERENCES tenant_1_prod.wallets(id),
-    type VARCHAR(50) NOT NULL,
-    amount_cents BIGINT NOT NULL,
-    description TEXT,
-    reference_id VARCHAR(100),
-    created_by UUID,
-    created_at TIMESTAMP DEFAULT NOW(),
-    -- IMUTÁVEL: sem UPDATE, sem DELETE
-    UNIQUE(reference_id),
-    INDEX (wallet_id, created_at)
-);
-
-CREATE TABLE tenant_1_prod.audit_logs (
-    id BIGINT PRIMARY KEY,
-    user_id UUID NOT NULL,
-    action VARCHAR(100) NOT NULL,
-    model VARCHAR(100),
-    model_id VARCHAR(100),
-    changes JSONB,
-    ip_address INET,
-    created_at TIMESTAMP DEFAULT NOW(),
-    INDEX (user_id, created_at, action)
-);
-```
-
-## 4. Migration Strategy
-
-### 4.1. Estrutura de Migrations
-
-```
+```text
 database/migrations/
-├── global/              # Migrations globais (public schema)
-│   ├── 2024_01_01_create_users_table.php
-│   ├── 2024_01_02_create_tenants_table.php
-│   └── 2024_01_03_create_user_tenants_table.php
-│
-├── tenant/              # Migrations de tenant (executadas em cada tenant)
-│   ├── 2024_01_01_create_wallets_table.php
-│   ├── 2024_01_02_create_ledger_entries_table.php
-│   ├── 2024_01_03_create_audit_logs_table.php
-│   └── ...
+├── 2026_06_24_000001_create_tenant_schema_function.php
+├── ... (migrações centrais: users, tenants, subscription_plans, etc.)
+└── tenant/
+    ├── 2026_01_01_create_wallets_table.php
+    ├── 2026_01_02_create_ledger_entries_table.php
+    ├── 2026_01_03_create_clients_table.php
+    └── 2026_01_04_create_lessons_table.php
 ```
 
-### 4.2. Executar Migrations
+---
 
-#### Global
+## 6. Estratégia de Backup, Restauração e Exclusão (GDPR / LGPD)
 
-```bash
-# Cria public schema e tabelas globais
-php artisan migrate --path=database/migrations/global
+### 6.1. Backup Granular por Tenant
 
-# Resultado: public schema com users, tenants, user_tenants, etc.
-```
-
-#### Tenant
+Como cada tenant possui seu próprio schema, backups pontuais podem ser gerados sem paradas e sem necessidade de exportar todo o banco:
 
 ```bash
-# Cria schema para tenant_1_prod e executa migrations
-php artisan migrate:tenant --tenant=1 --env=prod
-
-# Resultado: tenant_1_prod schema com wallets, ledger_entries, etc.
-
-# Ou todos os tenants em dev
-php artisan migrate:tenant --env=dev
-
-# Resultado: tenant_1_dev, tenant_2_dev, ... com esquemas completos
-```
-
-### 4.3. Migração de Schema Existente
-
-Ao refatorar um schema existente:
-
-```bash
-# 1. Criar versão de teste
-php artisan schema:fork tenant_1_prod --to=tenant_1_test
-
-# 2. Executar migração em teste
-php artisan migrate --path=database/migrations/schema-refactor --database=test
-
-# 3. Validar resultado
-php artisan schema:validate tenant_1_test
-
-# 4. Se OK, aplicar em produção (com backup)
-php artisan migrate --path=database/migrations/schema-refactor --database=prod
-
-# 5. Validar produção
-php artisan schema:validate tenant_1_prod
-```
-
-## 5. Backup e Recovery Strategy
-
-### 5.1. Backup por Tenant
-
-```bash
-# Backup de um tenant específico
+# Backup exclusivo de um único tenant
 pg_dump \
-  --schema=tenant_1_prod \
-  --format=directory \
-  --jobs=4 \
-  postgresql://user:pass@host/dbname \
-  > /backups/tenant_1_prod_$(date +%Y%m%d_%H%M%S).backup
-
-# Resultado: Diretório com backup comprimido e paralelo
+  --schema="tenant_1_prod" \
+  --format=custom \
+  --file="/backups/tenant_1_$(date +%Y%m%d_%H%M%S).dump" \
+  postgresql://postgres:postgres@localhost:5432/hour_ledger
 ```
 
-### 5.2. Backup Global
+### 6.2. Restauração Isolada
+
+A restauração de dados de um cliente corrompido ou que solicitou recuperação de desastre pode ser feita sem impactar qualquer outro cliente da plataforma:
 
 ```bash
-# Backup de todos os schemas
-pg_dump \
-  --format=directory \
-  --jobs=4 \
-  postgresql://user:pass@host/dbname \
-  > /backups/full_$(date +%Y%m%d_%H%M%S).backup
-
-# Ou apenas backup do schema public
-pg_dump \
-  --schema=public \
-  postgresql://user:pass@host/dbname \
-  > /backups/public_$(date +%Y%m%d_%H%M%S).sql
-```
-
-### 5.3. Recovery por Tenant
-
-#### Recuperar Tenant Deletado
-
-```bash
-# 1. Restaurar schema a partir de backup
 pg_restore \
-  --schema=tenant_1_prod \
-  --create \
-  /backups/tenant_1_prod_backup.backup
-
-# 2. Validar dados
-SELECT COUNT(*) FROM tenant_1_prod.wallets;
-
-# 3. Retomar operação
-UPDATE public.tenants SET status='active' WHERE id=1;
+  --schema="tenant_1_prod" \
+  --clean \
+  --dbname=hour_ledger \
+  /backups/tenant_1_20260925.dump
 ```
 
-#### Recuperar Dados Específicos
+### 6.3. Exclusão Limpa (Direito ao Esquecimento / Encerramento de Conta)
+
+Para excluir permanentemente todos os dados transacionais de um tenant:
 
 ```sql
--- Se ledger foi corrompido, restaurar de backup anterior
--- 1. Renomear schema atual
-ALTER SCHEMA tenant_1_prod RENAME TO tenant_1_prod_corrupted;
-
--- 2. Restaurar backup
-pg_restore --schema-only --create /backups/tenant_1_prod_backup.backup
-
--- 3. Copiar dados selecionados de corrupted para prod
-INSERT INTO tenant_1_prod.ledger_entries
-  SELECT * FROM tenant_1_prod_corrupted.ledger_entries
-  WHERE created_at < '2024-01-15'::timestamp;
-
--- 4. Limpar
-DROP SCHEMA tenant_1_prod_corrupted CASCADE;
+DROP SCHEMA IF EXISTS "tenant_{id}_{environment}" CASCADE;
 ```
 
-### 5.4. RPO e RTO
+Essa operação:
+- Remove instantaneamente todas as tabelas, índices e dados do tenant.
+- Não deixa dados órfãos espalhados por tabelas compartilhadas.
+- Preserva intactos os registros centrais e de auditoria da plataforma em `public`.
 
-| Métrica | Target | Notas |
-|---------|--------|-------|
-| RPO | 1 hora | Backups horários, perda máxima de 1h de dados |
-| RTO | 15 min | Restauração de um tenant em até 15 minutos |
-| Retenção | 30 dias | Backups mantidos por 30 dias |
-| Teste | Semanal | Restauração de teste validada semanalmente |
+---
 
-## 6. Performance Considerations
+## 7. Garantias por Testes Automatizados
 
-### 6.1. Índices
+A separação estrita por schema e integridade do catálogo central é validada de forma contínua através de testes automatizados dedicados:
 
-```sql
--- Índices essenciais para cada tenant
-CREATE INDEX idx_wallets_user_id 
-  ON tenant_1_prod.wallets(user_id);
-
-CREATE INDEX idx_wallets_status 
-  ON tenant_1_prod.wallets(status) 
-  WHERE status != 'deleted';
-
-CREATE INDEX idx_ledger_wallet_created 
-  ON tenant_1_prod.ledger_entries(wallet_id, created_at DESC);
-
-CREATE INDEX idx_audit_logs_user_action 
-  ON tenant_1_prod.audit_logs(user_id, action, created_at DESC);
-
-CREATE INDEX idx_audit_logs_model 
-  ON tenant_1_prod.audit_logs(model, model_id, created_at DESC);
-```
-
-### 6.2. Particionamento
-
-Para tenants grandes (bilhões de ledger_entries):
-
-```sql
--- Particionar ledger_entries por ano
-CREATE TABLE tenant_1_prod.ledger_entries (
-    id BIGINT,
-    wallet_id BIGINT,
-    type VARCHAR(50),
-    amount_cents BIGINT,
-    created_at TIMESTAMP,
-    ...
-) PARTITION BY RANGE (YEAR(created_at));
-
-CREATE TABLE ledger_entries_2024 
-    PARTITION OF ledger_entries
-    FOR VALUES FROM (2024) TO (2025);
-
-CREATE TABLE ledger_entries_2025 
-    PARTITION OF ledger_entries
-    FOR VALUES FROM (2025) TO (2026);
-```
-
-### 6.3. Caching de Saldo
-
-Saldo derivado do ledger é custoso de calcular:
-
-```sql
--- Cache desnormalizado
-ALTER TABLE tenant_1_prod.wallets ADD COLUMN cached_balance_cents BIGINT;
-
--- Atualizar cache atomicamente com ledger entry
-BEGIN;
-  INSERT INTO tenant_1_prod.ledger_entries (...) VALUES (...);
-  UPDATE tenant_1_prod.wallets 
-    SET cached_balance_cents = cached_balance_cents + $1
-    WHERE id = $2;
-COMMIT;
-
--- Validação periódica
-php artisan wallet:validate-balances --tenant=1
-```
-
-### 6.4. Connection Pooling
-
-Cada tenant requer conexão com seu schema:
-
-```yaml
-# config/database.php
-
-'connections' => [
-    'pgsql' => [
-        'host' => env('DB_HOST'),
-        'pool' => [
-            'min' => 5,
-            'max' => 20,
-        ],
-        'sticky' => true,
-    ],
-],
-```
-
-### 6.5. Query Analysis
-
-```bash
-# Analisar queries lentas
-EXPLAIN (ANALYZE, BUFFERS) 
-  SELECT * FROM tenant_1_prod.wallets WHERE user_id = 'uuid-123';
-
-# Resultado: Verificar index usage, sequential scans
-# Se sequential scan: Criar índice apropriado
-```
-
-## 7. Checklist de Implementação
-
-- [ ] Schema public criado com usuarios, tenants, user_tenants
-- [ ] Migrations global executadas com sucesso
-- [ ] Primeiro tenant criado (tenant_1_dev)
-- [ ] Migrations de tenant executadas em tenant_1_dev
-- [ ] Testes de isolamento validam que tenant_1_dev não vê dados de tenant_2_dev
-- [ ] Backup automático configurado
-- [ ] Restauração testada e validada
-- [ ] Índices criados em todas as tabelas críticas
-- [ ] Connection pooling configurado
-- [ ] Monitoramento de performance setup
-- [ ] Documentação de operations atualizada
+- **`Tests\Feature\PostgresSchemaIsolationTest`**:
+  - `testTenantResolverSwitchesSearchPath`: Garante que o `search_path` é ajustado ao tenant correto e restaurado para `public` ao limpar o contexto.
+  - `testDataIsolationBetweenTenantSchemas`: Cria dois schemas distintos (`tenant_1_test` e `tenant_2_test`), insere dados em tabelas homônimas e comprova que o Tenant 1 não visualiza nem altera os registros do Tenant 2.
+  - `testGlobalCentralTablesAreAccessibleFromTenantSchema`: Comprova que tabelas do schema central (`public.users`, `public.tenants`) continuam acessíveis e consistentes a partir de qualquer contexto de tenant via fallback do `search_path`.
+  - `testDroppingTenantSchemaPreservesGlobalData`: Comprova que a destruição de um schema de tenant não corrompe nem remove dados centrais no `public`.
+- **`Tests\Feature\TenancySchemaTest`**:
+  - Valida a função nativa `create_tenant_schema`, geração de nomes de schema, integridade de status e validação de nomes duplicados.
+- **`Tests\Feature\TenantSecurityTest` & `Tests\Feature\Architecture\CrossTenantSecurityTest`**:
+  - Validam a segunda camada de proteção (coluna `tenant_id` + `TenantScope` fail-closed) contra injeções ou acessos diretos.

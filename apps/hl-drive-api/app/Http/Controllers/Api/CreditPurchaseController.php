@@ -27,7 +27,13 @@ class CreditPurchaseController extends Controller
             'total_price' => ['required', 'numeric', 'gt:0'],
         ]);
 
-        $wallet = Wallet::findOrFail($request->input('wallet_id'));
+        $wallet = Wallet::withoutGlobalScopes()->find($request->input('wallet_id'));
+
+        if ($wallet === null) {
+            return response()->json([
+                'message' => 'Wallet not found',
+            ], 404);
+        }
 
         // Verificar se wallet tem credit_purchase_allowed habilitado
         if (!$wallet->credit_purchase_allowed) {

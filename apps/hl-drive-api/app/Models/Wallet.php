@@ -76,6 +76,11 @@ class Wallet extends Model
         return $this->hasMany(LedgerEntry::class);
     }
 
+    public function entries(): HasMany
+    {
+        return $this->ledgerEntries();
+    }
+
     public function creditPurchases(): HasMany
     {
         return $this->hasMany(CreditPurchase::class);

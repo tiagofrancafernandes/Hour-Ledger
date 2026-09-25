@@ -271,11 +271,12 @@ class InstructorStudentLink extends Model
      */
     public function revoke(): bool
     {
-        return $this->update([
+        $this->update([
             'status' => LinkStatus::REVOKED,
             'revoked_at' => now(),
-            'deleted_at' => now(),
         ]);
+
+        return (bool) $this->delete();
     }
 
     /**

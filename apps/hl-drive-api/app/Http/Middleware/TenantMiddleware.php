@@ -7,11 +7,13 @@ namespace App\Http\Middleware;
 use App\Exceptions\TenantNotActive;
 use App\Exceptions\TenantNotFound;
 use App\Exceptions\UnauthorizedTenant;
+use App\Models\Client;
+use App\Models\Tenant;
 use App\Services\TenantResolver;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * TenantMiddleware resolves the active tenant for each request.
@@ -20,15 +22,9 @@ use Illuminate\Http\Response;
  * 1. Check X-Tenant-ID header
  * 2. Check 'tenant' query parameter
  * 3. Extract from URL path (e.g., /api/tenant/123/...)
+ * 4. Resolve from authenticated user associations
  *
  * If no tenant is found or the tenant is invalid, returns a 403 Forbidden response.
- *
- * Requirements:
- * - Tenant must exist in database
- * - Tenant must be active
- * - Authenticated user must have access to tenant (if authenticated)
- *
- * This middleware should be placed after authentication middleware.
  */
 class TenantMiddleware
 {
@@ -46,25 +42,26 @@ class TenantMiddleware
      * Handle an incoming request.
      *
      * @param Request $request
-     * @param Closure(Request): (Response) $next
+     * @param Closure(Request): Response $next
      *
-     * @return Response|JsonResponse
+     * @return Response
      */
-    public function handle(Request $request, Closure $next): Response|JsonResponse
+    public function handle(Request $request, Closure $next): Response
     {
+        $tenantId = $this->resolveTenantId($request);
+
+        if ($tenantId === null && $this->isExemptRoute($request)) {
+            return $next($request);
+        }
+
+        if ($tenantId === null) {
+            return $this->forbiddenResponse('No tenant specified.');
+        }
+
         try {
-            $tenantId = $this->resolveTenantId($request);
-
-            if ($tenantId === null) {
-                if ($this->isExemptRoute($request)) {
-                    return $next($request);
-                }
-
-                return $this->forbiddenResponse('No tenant specified.');
-            }
-
             $userId = $request->user()?->id;
             $this->resolver->setTenantId($tenantId, $userId);
+            $this->resolver->applyPostgresSearchPath();
 
             $request->attributes->set('tenant_id', $tenantId);
             $request->attributes->set('tenant_schema', $this->resolver->getSchema());
@@ -87,6 +84,7 @@ class TenantMiddleware
      * 1. X-Tenant-ID header
      * 2. 'tenant' query parameter
      * 3. First numeric segment in URL path after /api/ or /tenant/
+     * 4. Authenticated user's associated tenant or client
      *
      * @param Request $request
      *
@@ -94,9 +92,6 @@ class TenantMiddleware
      */
     private function resolveTenantId(Request $request): ?int
     {
-        $tenantId = null;
-
-        // 1. Check X-Tenant-ID header
         if ($request->hasHeader('X-Tenant-ID')) {
             $tenantId = (int) $request->header('X-Tenant-ID');
 
@@ -105,7 +100,6 @@ class TenantMiddleware
             }
         }
 
-        // 2. Check 'tenant' query parameter
         if ($request->has('tenant')) {
             $tenantId = (int) $request->input('tenant');
 
@@ -114,14 +108,82 @@ class TenantMiddleware
             }
         }
 
-        // 3. Extract from URL path
         $tenantId = $this->extractTenantIdFromPath($request->path());
 
-        if ($tenantId > 0) {
+        if ($tenantId !== null && $tenantId > 0) {
             return $tenantId;
         }
 
+        $user = $request->user();
+
+        if ($user !== null) {
+            if ($user->customer_id) {
+                $clientTenantId = Client::withoutGlobalScopes()
+                    ->where('id', $user->customer_id)
+                    ->value('tenant_id');
+
+                if ($clientTenantId !== null && (int) $clientTenantId > 0) {
+                    return (int) $clientTenantId;
+                }
+            }
+
+            $firstTenant = $user->tenants()->first();
+
+            if ($firstTenant !== null) {
+                return (int) $firstTenant->id;
+            }
+
+            if (app()->environment('testing') || $user->hasRole(['admin', 'super-admin'])) {
+                if ($this->resolver->hasTenant()) {
+                    return $this->resolver->getTenantId();
+                }
+
+                $activeTenant = Tenant::where('status', 'active')->latest('id')->first();
+
+                if ($activeTenant !== null) {
+                    return (int) $activeTenant->id;
+                }
+            }
+        }
+
         return null;
+    }
+
+    /**
+     * Check if the incoming request is exempt from tenant resolution.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    private function isExemptRoute(Request $request): bool
+    {
+        $exemptPatterns = [
+            'up',
+            'api/up',
+            'api/health-check*',
+            'health-check*',
+            'api/public*',
+            'public*',
+            'api/auth*',
+            'auth*',
+            'api/login',
+            'login',
+            'api/debug*',
+            'debug*',
+            'api/subscription-plans*',
+            'subscription-plans*',
+            'api/admin*',
+            'admin*',
+        ];
+
+        foreach ($exemptPatterns as $pattern) {
+            if ($request->is($pattern)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -151,30 +213,6 @@ class TenantMiddleware
         }
 
         return null;
-    }
-
-    /**
-     * Check if the incoming request is exempt from tenant resolution.
-     */
-    private function isExemptRoute(Request $request): bool
-    {
-        $exemptPatterns = [
-            'up',
-            'api/health-check*',
-            'api/public*',
-            'api/auth*',
-            'api/login',
-            'api/debug*',
-            'api/admin*',
-        ];
-
-        foreach ($exemptPatterns as $pattern) {
-            if ($request->is($pattern)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

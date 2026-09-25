@@ -38,7 +38,7 @@ const validateForm = (): boolean => {
         validationErrors.value.hours = 'Horas devem ser maior que 0';
     }
 
-    if (walletBalance.value && hoursConsumed.value > parseFloat(walletBalance.value)) {
+    if (walletBalance.value && hoursConsumed.value > parseFloat(String(walletBalance.value))) {
         validationErrors.value.hours = 'Saldo insuficiente para consumir essas horas';
     }
 

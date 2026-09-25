@@ -77,7 +77,6 @@ class AdminSubscriptionController extends Controller
         }
 
         $payments = $query->orderBy('created_at', 'desc')
-            ->orderBy('id', 'desc')
             ->paginate((int) $request->input('per_page', 20));
 
         return response()->json($payments);

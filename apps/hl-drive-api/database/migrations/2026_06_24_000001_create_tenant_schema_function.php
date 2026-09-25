@@ -85,12 +85,12 @@ DECLARE
 BEGIN
     -- Validate input parameters
     IF tenant_id IS NULL OR tenant_id <= 0 THEN
-        RETURN QUERY SELECT false, '', 'Invalid tenant_id: must be positive integer'::text;
+        RETURN QUERY SELECT false, ''::VARCHAR, 'Invalid tenant_id: must be positive integer'::text;
         RETURN;
     END IF;
 
     IF tenant_name IS NULL OR tenant_name = '' THEN
-        RETURN QUERY SELECT false, '', 'Invalid tenant_name: cannot be empty'::text;
+        RETURN QUERY SELECT false, ''::VARCHAR, 'Invalid tenant_name: cannot be empty'::text;
         RETURN;
     END IF;
 
@@ -99,10 +99,10 @@ BEGIN
 
     -- Check if schema already exists
     IF EXISTS (
-        SELECT 1 FROM information_schema.schemata
-        WHERE schema_name = v_schema_name
+        SELECT 1 FROM information_schema.schemata s
+        WHERE s.schema_name = v_schema_name
     ) THEN
-        RETURN QUERY SELECT false, v_schema_name, 'Schema already exists'::text;
+        RETURN QUERY SELECT false, v_schema_name::VARCHAR, 'Schema already exists'::text;
         RETURN;
     END IF;
 
@@ -126,7 +126,7 @@ BEGIN
     EXCEPTION WHEN OTHERS THEN
         -- Capture error message
         v_error_message := SQLERRM;
-        RETURN QUERY SELECT false, v_schema_name, v_error_message::text;
+        RETURN QUERY SELECT false, v_schema_name::VARCHAR, v_error_message::text;
     END;
 END;
 $$;
@@ -157,8 +157,8 @@ DECLARE
     v_table_def TEXT;
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.tables
-        WHERE table_schema = source_schema AND table_name = table_name
+        SELECT 1 FROM information_schema.tables t
+        WHERE t.table_schema = source_schema AND t.table_name = copy_table_structure.table_name
     ) THEN
         RETURN QUERY SELECT false, 'Source table not found: ' || table_name::text;
         RETURN;

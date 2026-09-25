@@ -28,6 +28,8 @@ class InstructorStudentLinkTest extends TestCase
         parent::setUp();
 
         $this->tenant = Tenant::factory()->create();
+        app(\App\Services\TenantResolver::class)->setTenantId($this->tenant->id);
+
         $this->instructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -37,6 +39,12 @@ class InstructorStudentLinkTest extends TestCase
             'student_id' => $this->student->id,
             'status' => InvitationStatus::ACCEPTED,
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        app(\App\Services\TenantResolver::class)->clear();
+        parent::tearDown();
     }
 
     public function testLinkBecomesActiveAfterAcceptingInvitation(): void

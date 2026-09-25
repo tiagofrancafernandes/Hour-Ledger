@@ -41,6 +41,11 @@ class ImportTest extends TestCase
 
         $this->client = Client::factory()->create();
         $this->wallet = Wallet::factory()->create(['client_id' => $this->client->id]);
+
+        if ($this->wallet->tenant_id) {
+            $this->admin->tenants()->attach($this->wallet->tenant_id, ['role' => 'admin', 'status' => 'active']);
+            $this->operator->tenants()->attach($this->wallet->tenant_id, ['role' => 'operator', 'status' => 'active']);
+        }
     }
 
     private function seedPermissions(): void

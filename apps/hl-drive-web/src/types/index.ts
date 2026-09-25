@@ -511,4 +511,87 @@ export interface LessonConsumptionForm {
     hours_consumed: number;
 }
 
+export interface SubscriptionPlan {
+    id: number;
+    name: string;
+    slug: string;
+    price?: number | string;
+    interval_days: number;
+}
+
+export interface TenantSubscriptionData {
+    id: number;
+    status: 'active' | 'past_due' | 'suspended' | 'cancelled';
+    price: number;
+    current_period_start: string | null;
+    current_period_end: string | null;
+    grace_period_ends_at: string | null;
+    extended_until: string | null;
+    effective_deadline: string | null;
+    is_past_due: boolean;
+    is_in_grace_period: boolean;
+    is_manually_extended: boolean;
+    is_read_only: boolean;
+    plan: SubscriptionPlan | null;
+    tenant?: {
+        id: string;
+        name: string;
+        slug: string;
+        status: string;
+    };
+    banner_data?: SubscriptionBannerData;
+}
+
+export interface SubscriptionBannerData {
+    show_banner: boolean;
+    type: 'warning' | 'danger' | 'info';
+    days_left: number;
+    hours_left: number;
+    is_extended: boolean;
+    deadline: string | null;
+    message: string;
+    action_url: string;
+}
+
+export interface SubscriptionPaymentRecord {
+    id: number;
+    tenant_id: string;
+    subscription_id: number;
+    user_id: number;
+    amount: number | string;
+    payment_method: string;
+    status: 'pending' | 'approved' | 'rejected';
+    pix_code?: string | null;
+    pix_receipt_path?: string | null;
+    receipt_url?: string | null;
+    notes?: string | null;
+    rejection_reason?: string | null;
+    reviewed_by?: number | null;
+    reviewed_at?: string | null;
+    created_at: string;
+    updated_at: string;
+    user?: { id: number; name: string; email: string };
+    reviewer?: { id: number; name: string; email?: string };
+    tenant?: { id: string; name: string; slug: string };
+    subscription?: TenantSubscriptionData;
+}
+
+export interface SubscriptionSummaryResponse {
+    subscription: TenantSubscriptionData;
+    banner: SubscriptionBannerData;
+    can_mutate: boolean;
+    payment_instructions: {
+        pix: {
+            key?: string;
+            key_type?: string;
+            receiver_name?: string;
+            city?: string;
+        };
+        picpay: {
+            user?: string;
+            url?: string;
+        };
+    };
+}
+
 export * from './tenant';

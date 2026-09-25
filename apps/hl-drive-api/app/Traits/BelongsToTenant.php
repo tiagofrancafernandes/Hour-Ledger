@@ -46,6 +46,48 @@ trait BelongsToTenant
     }
 
     /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * Overrides builder to ensure forceDelete applies tenant scopes.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new class($query) extends \Illuminate\Database\Eloquent\Builder {
+            public function all()
+            {
+                return $this->get();
+            }
+
+            public function whereRaw($sql, array $bindings = [], $boolean = 'and')
+            {
+                $cleanSql = trim((string) $sql);
+
+                if (!str_starts_with($cleanSql, '(') || !str_ends_with($cleanSql, ')')) {
+                    $cleanSql = "({$cleanSql})";
+                }
+
+                return parent::whereRaw($cleanSql, $bindings, $boolean);
+            }
+
+            public function orderByRaw($sql, array $bindings = [])
+            {
+                $sanitizedSql = preg_replace('/\s+union\s+select\b.*/i', '', (string) $sql);
+
+                return parent::orderByRaw($sanitizedSql, $bindings);
+            }
+
+            public function forceDelete()
+            {
+                return $this->applyScopes()->query->delete();
+            }
+        };
+    }
+
+    /**
      * Get the tenant_id of this model instance.
      *
      * @return int|null

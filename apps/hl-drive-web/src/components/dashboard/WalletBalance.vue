@@ -22,7 +22,7 @@ onMounted(async () => {
 });
 
 const getBalanceColor = () => {
-    const balanceValue = parseFloat(balance.value || '0');
+    const balanceValue = parseFloat(String(balance.value || '0'));
 
     if (balanceValue > 10) {
         return 'text-green-600 dark:text-green-400';

@@ -230,6 +230,43 @@ const router = createRouter({
             },
         },
         {
+            path: '/packages',
+            name: 'packages',
+            component: () => import('@/views/PackagesView.vue'),
+            meta: {
+                title: 'Pacotes de Aulas',
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/lessons',
+            name: 'lessons',
+            component: () => import('@/views/LessonsView.vue'),
+            meta: {
+                title: 'Aulas',
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/billing/payment',
+            name: 'billing-payment',
+            component: () => import('@/views/BillingView.vue'),
+            meta: {
+                title: 'Assinatura & Pagamento',
+                requiresAuth: true,
+            },
+        },
+        {
+            path: '/admin/subscriptions',
+            name: 'admin-subscriptions',
+            component: () => import('@/views/AdminSubscriptionsView.vue'),
+            meta: {
+                title: 'Moderação de Assinaturas',
+                requiresAuth: true,
+                permissions: ['user.view_any'],
+            },
+        },
+        {
             path: '/products-services',
             name: 'products-services',
             component: () => import('@/views/ProductsServicesView.vue'),
@@ -278,6 +315,9 @@ router.beforeEach(async (to: RouteLocationNormalized, _from: RouteLocationNormal
             'invoice-create',
             'invoice-edit',
             'products-services',
+            'packages',
+            'billing-payment',
+            'admin-subscriptions',
         ];
 
         if (adminRoutes.includes(to.name as string)) {

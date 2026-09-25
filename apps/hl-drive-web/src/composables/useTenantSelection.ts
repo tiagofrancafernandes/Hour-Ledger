@@ -1,10 +1,12 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import type { Tenant } from '~/types/tenant';
-import { useAuthStore } from '~/stores/auth';
+import type { Tenant } from '@/types/tenant';
+import { useAuthStore } from '@/stores/auth';
+import { useTenantStore } from '@/stores/tenant';
 
 export function useTenantSelection() {
     const authStore = useAuthStore();
+    const tenantStore = useTenantStore();
     const router = useRouter();
 
     const showSelector = ref(false);
@@ -30,7 +32,7 @@ export function useTenantSelection() {
     };
 
     const selectTenant = (tenant: Tenant) => {
-        authStore.setActiveTenant(tenant);
+        tenantStore.setActiveTenant(Number(tenant.id));
         showSelector.value = false;
 
         // Navigate to dashboard

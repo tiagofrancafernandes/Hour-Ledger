@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useLessons } from '@/composables/useLessons';
+import { useWallets } from '@/composables/useWallets';
 import type { LessonForm } from '@/types';
 
 interface Props {
     studentId?: number;
     instructorId?: number;
-    walletId: number;
+    walletId?: number;
 }
 
 const props = defineProps<Props>();
@@ -15,12 +16,23 @@ const emit = defineEmits<{
 }>();
 
 const { createLesson, loading, error } = useLessons();
+const { wallets, fetchWallets } = useWallets();
 
+const selectedWalletId = ref<number | null>(props.walletId ?? null);
 const selectedDate = ref<string>('');
 const selectedTime = ref<string>('09:00');
 const durationMinutes = ref<number>(60);
 const notes = ref<string>('');
 const validationErrors = ref<Record<string, string>>({});
+
+onMounted(async () => {
+    if (!props.walletId) {
+        await fetchWallets();
+        if (wallets.value.length > 0 && !selectedWalletId.value) {
+            selectedWalletId.value = wallets.value[0].id;
+        }
+    }
+});
 
 const minDate = computed(() => {
     const today = new Date();
@@ -29,6 +41,12 @@ const minDate = computed(() => {
 
 const validateForm = (): boolean => {
     validationErrors.value = {};
+
+    const effectiveWalletId = props.walletId || selectedWalletId.value;
+
+    if (!effectiveWalletId) {
+        validationErrors.value.wallet = 'Carteira é obrigatória';
+    }
 
     if (!selectedDate.value) {
         validationErrors.value.date = 'Data é obrigatória';
@@ -50,12 +68,18 @@ const handleSchedule = async () => {
         return;
     }
 
+    const effectiveWalletId = props.walletId || selectedWalletId.value;
+
+    if (!effectiveWalletId) {
+        return;
+    }
+
     const [year, month, day] = selectedDate.value.split('-');
     const dateTime = new Date(`${year}-${month}-${day}T${selectedTime.value}:00`).toISOString();
 
     const formData: LessonForm = {
         student_id: props.studentId || 0,
-        wallet_id: props.walletId,
+        wallet_id: effectiveWalletId,
         scheduled_at: dateTime,
         duration_minutes: durationMinutes.value,
         notes: notes.value || undefined,
@@ -86,6 +110,22 @@ const handleSchedule = async () => {
                 class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg"
             >
                 <p class="text-red-800 dark:text-red-200">{{ error }}</p>
+            </div>
+
+            <div v-if="!walletId && wallets.length > 0">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Carteira do Aluno
+                    <span class="text-red-500">*</span>
+                </label>
+                <select
+                    v-model.number="selectedWalletId"
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option v-for="w in wallets" :key="w.id" :value="w.id">
+                        {{ w.name }} (Saldo: {{ w.balance }}h)
+                    </option>
+                </select>
+                <p v-if="validationErrors.wallet" class="text-red-500 text-sm mt-1">{{ validationErrors.wallet }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

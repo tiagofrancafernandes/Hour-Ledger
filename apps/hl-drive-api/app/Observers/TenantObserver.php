@@ -41,7 +41,7 @@ class TenantObserver
         $modelTenantId = $model->getAttribute('tenant_id');
 
         if ($modelTenantId !== null) {
-            if ($modelTenantId !== $activeTenantId) {
+            if ($activeTenantId !== null && $modelTenantId !== $activeTenantId) {
                 throw new UnauthorizedTenant($modelTenantId);
             }
 
@@ -53,5 +53,7 @@ class TenantObserver
 
             return;
         }
+
+        throw new \Exception('Cannot create tenanted record without tenant context or explicit tenant_id.');
     }
 }

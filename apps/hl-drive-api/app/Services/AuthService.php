@@ -133,13 +133,6 @@ class AuthService
             'status' => 'active',
         ]);
 
-        // Auto-provision default SaaS subscription for instructor tenant
-        try {
-            app(SubscriptionService::class)->getOrCreateSubscription($tenant);
-        } catch (\Throwable) {
-            // Subscription auto-provisioning fallback
-        }
-
         $token->delete();
 
         return $user;

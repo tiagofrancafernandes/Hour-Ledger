@@ -1,13 +1,14 @@
+import type { ComputedRef } from 'vue';
 import { computed } from 'vue';
 import { useTenantStore } from '@/stores/tenant';
 import type { Tenant } from '@/stores/tenant';
 
 export interface UseTenantComposable {
-    activeTenantId: ReturnType<typeof computed>;
-    activeTenant: ReturnType<typeof computed>;
-    tenants: ReturnType<typeof computed>;
-    loading: ReturnType<typeof computed>;
-    error: ReturnType<typeof computed>;
+    activeTenantId: ComputedRef<number | null>;
+    activeTenant: ComputedRef<Tenant | null>;
+    tenants: ComputedRef<Tenant[]>;
+    loading: ComputedRef<boolean>;
+    error: ComputedRef<string | null>;
     selectTenant: (id: number) => void;
     fetchTenants: () => Promise<void>;
     clearTenant: () => void;

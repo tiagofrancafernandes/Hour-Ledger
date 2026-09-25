@@ -46,13 +46,6 @@ class TenantSubscription extends Model
         'notes',
     ];
 
-    protected $appends = [
-        'is_past_due',
-        'is_in_grace_period',
-        'is_manually_extended',
-        'is_read_only',
-    ];
-
     protected function casts(): array
     {
         return [
@@ -66,6 +59,33 @@ class TenantSubscription extends Model
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];
+    }
+
+    protected $appends = [
+        'is_past_due',
+        'is_in_grace_period',
+        'is_manually_extended',
+        'is_read_only',
+    ];
+
+    public function getIsPastDueAttribute(): bool
+    {
+        return $this->isPastDue();
+    }
+
+    public function getIsInGracePeriodAttribute(): bool
+    {
+        return $this->isInGracePeriod();
+    }
+
+    public function getIsManuallyExtendedAttribute(): bool
+    {
+        return $this->isManuallyExtended();
+    }
+
+    public function getIsReadOnlyAttribute(): bool
+    {
+        return $this->isReadOnly();
     }
 
     public function tenant(): BelongsTo
@@ -241,25 +261,5 @@ class TenantSubscription extends Model
             'days_left' => $daysLeft,
             'is_read_only' => false,
         ];
-    }
-
-    public function getIsPastDueAttribute(): bool
-    {
-        return $this->isPastDue();
-    }
-
-    public function getIsInGracePeriodAttribute(): bool
-    {
-        return $this->isInGracePeriod();
-    }
-
-    public function getIsManuallyExtendedAttribute(): bool
-    {
-        return $this->isManuallyExtended();
-    }
-
-    public function getIsReadOnlyAttribute(): bool
-    {
-        return $this->isReadOnly();
     }
 }

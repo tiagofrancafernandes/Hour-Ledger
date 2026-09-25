@@ -8,6 +8,7 @@ use App\Exceptions\TenantNotActive;
 use App\Exceptions\TenantNotFound;
 use App\Models\Tenant;
 use App\Models\TenantContext;
+use Illuminate\Support\Facades\DB;
 
 /**
  * TenantResolver is a singleton service that manages the active tenant context.
@@ -59,6 +60,13 @@ class TenantResolver
     private string $environment;
 
     /**
+     * In-memory cache for resolved tenants.
+     *
+     * @var array<int, Tenant>
+     */
+    private static array $tenantCache = [];
+
+    /**
      * Create a new TenantResolver instance.
      *
      * @param string $environment The environment for schema naming (default: 'prod')
@@ -83,7 +91,7 @@ class TenantResolver
      */
     public function setTenantId(int $tenantId, ?int $userId = null): void
     {
-        $tenant = Tenant::find($tenantId);
+        $tenant = self::$tenantCache[$tenantId] ?? Tenant::find($tenantId);
 
         if ($tenant === null) {
             throw new TenantNotFound($tenantId);
@@ -92,6 +100,8 @@ class TenantResolver
         if (!$tenant->isActive()) {
             throw new TenantNotActive($tenantId, $tenant->status);
         }
+
+        self::$tenantCache[$tenantId] = $tenant;
 
         $this->tenantId = $tenantId;
         $this->userId = $userId;
@@ -150,7 +160,7 @@ class TenantResolver
     /**
      * Get the current tenant context.
      *
-     * @throws TenantNotFound If no tenant context is currently active
+     * @throws TenantNotFound If no tenant context is active
      *
      * @return TenantContext
      */
@@ -166,16 +176,54 @@ class TenantResolver
     /**
      * Clear the active tenant context.
      *
-     * This should be called at the end of a request to clean up state.
+     * @param bool $resetSearchPath Whether to also reset PostgreSQL search_path to public
      *
      * @return void
      */
-    public function clear(): void
+    public function clear(bool $resetSearchPath = false): void
     {
         $this->tenantId = null;
         $this->schema = null;
         $this->userId = null;
         $this->context = null;
+
+        if ($resetSearchPath) {
+            $this->applyPostgresSearchPath('public');
+        }
+    }
+
+    /**
+     * Apply PostgreSQL search_path for schema isolation.
+     *
+     * @param string|null $schema Specific schema to set, or defaults to active tenant schema
+     *
+     * @return void
+     */
+    public function applyPostgresSearchPath(?string $schema = null): void
+    {
+        $targetSchema = $schema ?? $this->schema ?? 'public';
+
+        try {
+            if (DB::getDriverName() === 'pgsql') {
+                if ($targetSchema !== 'public') {
+                    DB::statement(sprintf('SET search_path TO "%s", "public"', $targetSchema));
+                } else {
+                    DB::statement('SET search_path TO "public"');
+                }
+            }
+        } catch (\Throwable) {
+            // Fail safely if database connection is not established yet
+        }
+    }
+
+    /**
+     * Clear the static in-memory tenant cache.
+     *
+     * @return void
+     */
+    public static function clearCache(): void
+    {
+        self::$tenantCache = [];
     }
 
     /**

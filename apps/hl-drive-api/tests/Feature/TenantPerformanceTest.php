@@ -455,7 +455,7 @@ class TenantPerformanceTest extends TestCase
         $queries = DB::getQueryLog();
         $this->assertCount(2, $queries);
         $this->assertCount(10, $page2->items());
-        $this->assertNotEquals($page->items()->first()->id, $page2->items()->first()->id);
+        $this->assertNotEquals($page->first()->id, $page2->first()->id);
 
         DB::disableQueryLog();
     }

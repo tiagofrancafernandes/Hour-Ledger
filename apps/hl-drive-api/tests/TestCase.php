@@ -30,8 +30,27 @@ abstract class TestCase extends BaseTestCase
             'prefix_indexes' => true,
             'schema' => 'public',
         ]);
+    }
 
-        // Force migrations to run from fresh
-        $app['config']->set('database.migrations', 'migrations');
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if ($this->app->bound(\App\Services\TenantResolver::class)) {
+            $resolver = $this->app->make(\App\Services\TenantResolver::class);
+            $resolver->clear();
+            $resolver::clearCache();
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->app && $this->app->bound(\App\Services\TenantResolver::class)) {
+            $resolver = $this->app->make(\App\Services\TenantResolver::class);
+            $resolver->clear();
+            $resolver::clearCache();
+        }
+
+        parent::tearDown();
     }
 }

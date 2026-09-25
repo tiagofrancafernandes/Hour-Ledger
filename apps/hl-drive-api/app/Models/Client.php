@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -52,6 +53,7 @@ class Client extends Model
 {
     use HasFactory;
     use BelongsToTenant;
+    use SoftDeletes;
 
     protected $fillable = [
         'tenant_id',

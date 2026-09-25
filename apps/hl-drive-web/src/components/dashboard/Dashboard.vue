@@ -73,7 +73,7 @@ const { balance } = useWallets();
         <!-- Overview Tab -->
         <div v-if="activeTab === 'overview'" class="space-y-8">
             <!-- Quick Stats -->
-            <QuickStats :student-id="studentId" :instructor-id="instructorId" :wallet-balance="balance" />
+            <QuickStats :student-id="studentId" :instructor-id="instructorId" :wallet-balance="String(balance)" />
 
             <!-- Wallet Selection -->
             <div v-if="wallets && wallets.length > 0" class="space-y-4">

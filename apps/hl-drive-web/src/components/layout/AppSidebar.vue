@@ -36,11 +36,32 @@ interface NavItem {
 const navItems = computed((): NavItem[] => {
     return [
         {
+            key: 'lessons',
+            label: 'Aulas',
+            icon: 'heroicons:academic-cap',
+            to: '/lessons',
+            show: !permissions.isCustomer.value,
+        },
+        {
+            key: 'packages',
+            label: 'Pacotes',
+            icon: 'heroicons:cube',
+            to: '/packages',
+            show: !permissions.isCustomer.value,
+        },
+        {
             key: 'clients',
             label: 'Clients',
             icon: 'heroicons:users',
             to: '/clients',
             show: permissions.canViewClients.value,
+        },
+        {
+            key: 'billing',
+            label: 'Assinatura',
+            icon: 'heroicons:banknotes',
+            to: '/billing/payment',
+            show: !permissions.isCustomer.value,
         },
         {
             key: 'invoices',
@@ -131,6 +152,11 @@ const navItems = computed((): NavItem[] => {
                     label: 'Users',
                     to: '/admin/users',
                     icon: 'heroicons:users',
+                },
+                {
+                    label: 'Assinaturas (SaaS)',
+                    to: '/admin/subscriptions',
+                    icon: 'heroicons:shield-check',
                 },
             ],
         },

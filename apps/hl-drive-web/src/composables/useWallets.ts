@@ -148,7 +148,27 @@ export function useWallets() {
         }
     }
 
+    const balance = ref<string | number>(0);
+
+    async function fetchBalance(walletId?: number): Promise<string | number> {
+        const id = walletId || wallet.value?.id;
+        if (!id) {
+            return balance.value;
+        }
+
+        try {
+            const response = await api.get<{ balance: string | number } | any>(`/wallets/${id}/balance`);
+            const val = response?.balance ?? response ?? 0;
+            balance.value = val;
+            return val;
+        } catch {
+            return balance.value;
+        }
+    }
+
     return {
+        balance,
+        fetchBalance,
         wallets,
         wallet,
         entries,
