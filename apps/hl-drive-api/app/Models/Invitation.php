@@ -28,26 +28,40 @@ use Illuminate\Support\Carbon;
  * @property Carbon $expires_at
  * @property Carbon|null $accepted_at
  * @property Carbon|null $rejected_at
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- *
- * @property-read Tenant|null $tenant
- * @property-read User|null $instructor
- * @property-read User|null $student
+ * @property-read User $instructor
  * @property-read InstructorStudentLink|null $link
- *
+ * @property-read User|null $student
+ * @property-read Tenant $tenant
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation accepted()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation byInstructor(int $instructorId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation expired()
+ * @method static \Database\Factories\InvitationFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation forTenant(int $tenantId)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation pending()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation accepted()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation rejected()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation byInstructor(int $instructorId)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation forTenant(int $tenantId)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation notExpired()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation expired()
- *
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation pending()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation rejected()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereInstructorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereStudentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereTenantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invitation withoutTrashed()
  * @mixin \Eloquent
  */
 class Invitation extends Model

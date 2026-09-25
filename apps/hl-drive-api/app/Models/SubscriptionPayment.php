@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,19 +17,44 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $tenant_subscription_id
  * @property int $tenant_id
  * @property int $user_id
- * @property float $amount
- * @property string $payment_method (pix_online, picpay, pix_offline, credit_card)
- * @property string $status (pending, under_review, approved, rejected)
- * @property Carbon $due_date
- * @property Carbon|null $paid_at
+ * @property numeric $amount
+ * @property string $payment_method
+ * @property string $status
+ * @property \Illuminate\Support\Carbon $due_date
+ * @property \Illuminate\Support\Carbon|null $paid_at
  * @property string|null $pix_code
  * @property string|null $receipt_path
  * @property string|null $rejection_reason
  * @property int|null $reviewed_by
- * @property Carbon|null $reviewed_at
+ * @property \Illuminate\Support\Carbon|null $reviewed_at
  * @property string|null $notes
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read User|null $reviewer
+ * @property-read TenantSubscription $subscription
+ * @property-read Tenant $tenant
+ * @property-read User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereDueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment wherePaidAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment wherePixCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereReceiptPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereRejectionReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereReviewedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereReviewedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereTenantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereTenantSubscriptionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SubscriptionPayment whereUserId($value)
+ * @mixin \Eloquent
  */
 class SubscriptionPayment extends Model
 {

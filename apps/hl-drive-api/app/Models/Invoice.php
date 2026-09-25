@@ -15,21 +15,44 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon $issue_date
  * @property \Illuminate\Support\Carbon|null $due_date
  * @property string $currency
- * @property float $subtotal
- * @property float $tax_amount
- * @property float $tax_percentage
- * @property float $discount_amount
- * @property float $total
+ * @property numeric $subtotal
+ * @property numeric $tax_amount
+ * @property numeric $tax_percentage
+ * @property numeric $discount_amount
+ * @property numeric $total
  * @property string $status
- * @property bool $hidden
  * @property string|null $notes
- * @property array|null $issued_by
- * @property array|null $bill_to
+ * @property array<array-key, mixed>|null $issued_by
+ * @property array<array-key, mixed>|null $bill_to
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $hidden
  * @property-read Client $client
  * @property-read \Illuminate\Database\Eloquent\Collection<int, InvoiceItem> $items
  * @property-read int|null $items_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereBillTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereClientInvoiceNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereCurrency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereDueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereHidden($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereInvoiceNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereIssueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereIssuedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereSubtotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereTaxAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereTaxPercentage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Invoice whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Invoice extends Model
 {

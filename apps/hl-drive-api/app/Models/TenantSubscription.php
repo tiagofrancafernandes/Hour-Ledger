@@ -18,15 +18,39 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property int $tenant_id
  * @property int $plan_id
- * @property string $status (active, past_due, suspended, canceled)
- * @property Carbon $current_period_start
- * @property Carbon $current_period_end
- * @property Carbon|null $grace_period_ends_at
- * @property Carbon|null $extended_until
- * @property float $price
+ * @property string $status
+ * @property \Illuminate\Support\Carbon $current_period_start
+ * @property \Illuminate\Support\Carbon $current_period_end
+ * @property \Illuminate\Support\Carbon|null $grace_period_ends_at
+ * @property \Illuminate\Support\Carbon|null $extended_until
+ * @property numeric $price
  * @property string|null $notes
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read bool $is_in_grace_period
+ * @property-read bool $is_manually_extended
+ * @property-read bool $is_past_due
+ * @property-read bool $is_read_only
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SubscriptionPayment> $payments
+ * @property-read int|null $payments_count
+ * @property-read Plan $plan
+ * @property-read Tenant $tenant
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereCurrentPeriodEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereCurrentPeriodStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereExtendedUntil($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereGracePeriodEndsAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription wherePlanId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereTenantId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TenantSubscription whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class TenantSubscription extends Model
 {

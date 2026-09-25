@@ -21,28 +21,40 @@ use Spatie\Permission\Traits\HasRoles;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $customer_id
  * @property string|null $client_role
+ * @property int|null $tenant_id
  * @property int|null $active_instructor_id
+ * @property-read User|null $activeInstructor
  * @property-read Client|null $client
  * @property-read Collection<int, CreditPurchasePayment> $creditPurchasePayments
  * @property-read int|null $credit_purchase_payments_count
  * @property-read Collection<int, CreditPurchase> $creditPurchases
  * @property-read int|null $credit_purchases_count
+ * @property-read Collection<int, InstructorStudentLink> $instructorLinks
+ * @property-read int|null $instructor_links_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
+ * @property-read Collection<int, Invitation> $receivedInvitations
+ * @property-read int|null $received_invitations_count
  * @property-read Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
- * @property-read Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
+ * @property-read Collection<int, Invitation> $sentInvitations
+ * @property-read int|null $sent_invitations_count
+ * @property-read Collection<int, InstructorStudentLink> $studentLinks
+ * @property-read int|null $student_links_count
  * @property-read Collection<int, Tenant> $tenants
  * @property-read int|null $tenants_count
+ * @property-read Collection<int, PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User permission($permissions, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User role($roles, $guard = null, $without = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereActiveInstructorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereClientRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
@@ -51,10 +63,10 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTenantId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereClientRole($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

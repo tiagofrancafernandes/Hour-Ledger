@@ -12,15 +12,29 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property string|null $description
  * @property string $type
- * @property string $unit
- * @property float $default_price
- * @property float $default_quantity
+ * @property string|null $unit
+ * @property numeric $default_price
+ * @property numeric $default_quantity
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, InvoiceItem> $invoiceItems
  * @property-read int|null $invoice_items_count
  * @method static Builder<static>|ProductService active()
+ * @method static Builder<static>|ProductService newModelQuery()
+ * @method static Builder<static>|ProductService newQuery()
+ * @method static Builder<static>|ProductService query()
+ * @method static Builder<static>|ProductService whereCreatedAt($value)
+ * @method static Builder<static>|ProductService whereDefaultPrice($value)
+ * @method static Builder<static>|ProductService whereDefaultQuantity($value)
+ * @method static Builder<static>|ProductService whereDescription($value)
+ * @method static Builder<static>|ProductService whereId($value)
+ * @method static Builder<static>|ProductService whereIsActive($value)
+ * @method static Builder<static>|ProductService whereName($value)
+ * @method static Builder<static>|ProductService whereType($value)
+ * @method static Builder<static>|ProductService whereUnit($value)
+ * @method static Builder<static>|ProductService whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ProductService extends Model
 {

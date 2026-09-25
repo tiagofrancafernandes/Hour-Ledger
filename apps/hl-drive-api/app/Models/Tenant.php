@@ -19,23 +19,26 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string|null $slug
  * @property TenantStatus $status
- * @property Carbon $created_at
- * @property Carbon $updated_at
- * @property Carbon|null $deleted_at
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant active()
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string|null $metadata
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, InstructorStudentLink> $instructorStudentLinks
+ * @property-read int|null $instructor_student_links_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Invitation> $invitations
+ * @property-read int|null $invitations_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant accessible()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant active()
+ * @method static \Database\Factories\TenantFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereMetadata($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tenant whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 class Tenant extends Model

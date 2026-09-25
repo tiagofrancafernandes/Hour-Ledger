@@ -11,15 +11,30 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $invoice_id
  * @property int $line_number
  * @property string $description
- * @property string $unit
- * @property float $quantity
- * @property float $unit_price
- * @property float $line_total
+ * @property string|null $unit
+ * @property numeric $quantity
+ * @property numeric $unit_price
+ * @property numeric $line_total
  * @property int|null $product_service_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read Invoice $invoice
  * @property-read ProductService|null $productService
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereInvoiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereLineNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereLineTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereProductServiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereUnitPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoiceItem whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class InvoiceItem extends Model
 {
