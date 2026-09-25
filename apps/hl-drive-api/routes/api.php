@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\InvitationController;
 use App\Http\Controllers\Api\InstructorStudentLinkController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\LedgerEntryController;
+use App\Http\Controllers\Api\LessonController;
+use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\PaymentApprovalController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PaymentReceiptController;
@@ -19,6 +21,8 @@ use App\Http\Controllers\Api\PublicResourceController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\TimerController;
+use App\Http\Controllers\Api\AdminSubscriptionController;
+use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WalletController;
 use Illuminate\Http\Request;
@@ -42,17 +46,23 @@ Route::prefix('debug')->group(function () {
 });
 
 // Test Tenant Endpoint (for testing TenantMiddleware)
-Route::get('/test-tenant-endpoint', function (Request $request) {
-    return response()->json([
-        'tenant_id' => $request->attributes->get('tenant_id'),
-        'tenant_schema' => $request->attributes->get('tenant_schema'),
-        'message' => 'Tenant endpoint reached successfully',
-    ]);
-});
+Route::get('/test-tenant-endpoint', fn (Request $request) => response()->json([
+    'tenant_id' => $request->attributes->get('tenant_id'),
+    'tenant_schema' => $request->attributes->get('tenant_schema'),
+    'message' => 'Tenant endpoint reached successfully',
+]));
+
+Route::get('/tenant/{tenant_id}/data', fn (Request $request) => response()->json([
+    'tenant_id' => $request->attributes->get('tenant_id'),
+    'tenant_schema' => $request->attributes->get('tenant_schema'),
+    'message' => 'Tenant endpoint reached successfully',
+]));
 
 Route::prefix('public')->name('api.public.')->group(function () {
     Route::any('/timezones', [PublicResourceController::class, 'timezones'])->name('timezones');
 });
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::prefix('auth')->group(function () {
     // Public routes (no authentication required)
@@ -200,5 +210,32 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('my-instructor')->group(function () {
         Route::get('/', [InstructorStudentLinkController::class, 'getMyInstructor']);
         Route::post('/', [InstructorStudentLinkController::class, 'switchMyInstructor']);
+    });
+
+    // Packages Routes
+    Route::apiResource('packages', PackageController::class);
+
+    // Lessons Routes
+    Route::apiResource('lessons', LessonController::class);
+    Route::post('/lessons/{lesson}/complete', [LessonController::class, 'complete']);
+    Route::post('/lessons/{lesson}/cancel', [LessonController::class, 'cancel']);
+    Route::get('/students/{student}/lessons', [LessonController::class, 'byStudent']);
+    Route::get('/instructors/{instructor}/lessons', [LessonController::class, 'byInstructor']);
+
+    // SaaS Subscription Routes (Instructor)
+    Route::prefix('subscription')->group(function (): void {
+        Route::get('/', [SubscriptionController::class, 'summary']);
+        Route::get('/payments', [SubscriptionController::class, 'payments']);
+        Route::post('/pay', [SubscriptionController::class, 'pay']);
+        Route::post('/upload-receipt', [SubscriptionController::class, 'uploadReceipt']);
+    });
+
+    // SaaS Subscription Moderation Routes (Super Admin)
+    Route::prefix('admin')->group(function (): void {
+        Route::get('/subscriptions', [AdminSubscriptionController::class, 'indexSubscriptions']);
+        Route::get('/payments', [AdminSubscriptionController::class, 'indexPayments']);
+        Route::post('/payments/{payment}/approve', [AdminSubscriptionController::class, 'approvePayment']);
+        Route::post('/payments/{payment}/reject', [AdminSubscriptionController::class, 'rejectPayment']);
+        Route::post('/subscriptions/{subscription}/extend', [AdminSubscriptionController::class, 'extendGracePeriod']);
     });
 });

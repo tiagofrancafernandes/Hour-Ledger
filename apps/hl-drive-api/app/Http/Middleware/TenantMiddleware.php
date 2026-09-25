@@ -56,6 +56,10 @@ class TenantMiddleware
             $tenantId = $this->resolveTenantId($request);
 
             if ($tenantId === null) {
+                if ($this->isExemptRoute($request)) {
+                    return $next($request);
+                }
+
                 return $this->forbiddenResponse('No tenant specified.');
             }
 
@@ -147,6 +151,30 @@ class TenantMiddleware
         }
 
         return null;
+    }
+
+    /**
+     * Check if the incoming request is exempt from tenant resolution.
+     */
+    private function isExemptRoute(Request $request): bool
+    {
+        $exemptPatterns = [
+            'up',
+            'api/health-check*',
+            'api/public*',
+            'api/auth*',
+            'api/login',
+            'api/debug*',
+            'api/admin*',
+        ];
+
+        foreach ($exemptPatterns as $pattern) {
+            if ($request->is($pattern)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

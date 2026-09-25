@@ -73,7 +73,8 @@ const totalPrice = () => {
         <form @submit.prevent="handlePurchase" class="space-y-6">
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Selecione um Pacote <span class="text-red-500">*</span>
+                    Selecione um Pacote
+                    <span class="text-red-500">*</span>
                 </label>
 
                 <div v-if="packagesLoading" class="flex items-center justify-center p-8">
@@ -103,7 +104,9 @@ const totalPrice = () => {
                         type="button"
                     >
                         <h3 class="font-semibold text-gray-900 dark:text-white">{{ pkg.name }}</h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ pkg.hours }}h - R$ {{ parseFloat(pkg.price).toFixed(2) }}</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            {{ pkg.hours }}h - R$ {{ parseFloat(pkg.price).toFixed(2) }}
+                        </p>
                     </button>
                 </div>
 
@@ -113,7 +116,8 @@ const totalPrice = () => {
             <div v-if="selectedPackage" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Quantidade <span class="text-red-500">*</span>
+                        Quantidade
+                        <span class="text-red-500">*</span>
                     </label>
                     <input
                         v-model.number="quantity"
@@ -121,7 +125,9 @@ const totalPrice = () => {
                         min="1"
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <p v-if="validationErrors.quantity" class="text-red-500 text-sm mt-1">{{ validationErrors.quantity }}</p>
+                    <p v-if="validationErrors.quantity" class="text-red-500 text-sm mt-1">
+                        {{ validationErrors.quantity }}
+                    </p>
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">

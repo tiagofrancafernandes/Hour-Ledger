@@ -62,14 +62,15 @@ class TenantPerformanceTest extends TestCase
         // Setup phase: create tenants and data
         for ($t = 1; $t <= $tenantCount; $t++) {
             $tenant = Tenant::factory()->create([
-                'name' => "Perf Test Tenant $t",
-                'slug' => "perf-tenant-$t",
+                'name' => "Perf Test Tenant {$t}",
+                'slug' => "perf-tenant-{$t}",
             ]);
             $tenants[$t] = $tenant;
 
             $this->tenantResolver->setTenantId($tenant->id);
+
             for ($c = 1; $c <= $clientsPerTenant; $c++) {
-                Client::create(['name' => "T$t Client $c"]);
+                Client::create(['name' => "T{$t} Client {$c}"]);
             }
 
             $this->tenantResolver->clear();
@@ -94,7 +95,7 @@ class TenantPerformanceTest extends TestCase
 
             // For a simple all() query with proper indexing, should be minimal
             // Expect: 1-3 queries (1 for select, possibly 1-2 for scope application)
-            $this->assertLessThanOrEqual(5, $queryCount, "Query count too high: $queryCount queries for simple all()");
+            $this->assertLessThanOrEqual(5, $queryCount, "Query count too high: {$queryCount} queries for simple all()");
 
             DB::disableQueryLog();
             $this->tenantResolver->clear();
@@ -123,12 +124,14 @@ class TenantPerformanceTest extends TestCase
         // Create clients and wallets in tenant1
         $this->tenantResolver->setTenantId($tenant1->id);
         $clients1 = [];
+
         for ($i = 1; $i <= 3; $i++) {
-            $client = Client::create(['name' => "T1 Client $i"]);
+            $client = Client::create(['name' => "T1 Client {$i}"]);
+
             for ($w = 1; $w <= 2; $w++) {
                 Wallet::create([
                     'client_id' => $client->id,
-                    'name' => "Wallet $w",
+                    'name' => "Wallet {$w}",
                     'currency_code' => 'USD',
                 ]);
             }
@@ -139,12 +142,14 @@ class TenantPerformanceTest extends TestCase
         $this->tenantResolver->clear();
         $this->tenantResolver->setTenantId($tenant2->id);
         $clients2 = [];
+
         for ($i = 1; $i <= 3; $i++) {
-            $client = Client::create(['name' => "T2 Client $i"]);
+            $client = Client::create(['name' => "T2 Client {$i}"]);
+
             for ($w = 1; $w <= 2; $w++) {
                 Wallet::create([
                     'client_id' => $client->id,
-                    'name' => "Wallet $w",
+                    'name' => "Wallet {$w}",
                     'currency_code' => 'USD',
                 ]);
             }
@@ -165,11 +170,9 @@ class TenantPerformanceTest extends TestCase
 
         // Should be minimal: 1 for clients + 1 for wallets
         // With tenant scope, expect 2-3 queries total
-        $this->assertLessThanOrEqual(5, $queryCount, "Too many queries for eager loading: $queryCount");
+        $this->assertLessThanOrEqual(5, $queryCount, "Too many queries for eager loading: {$queryCount}");
         $this->assertCount(3, $loadedClients);
-        $this->assertTrue($loadedClients->every(function (Client $client) {
-            return $client->wallets->isNotEmpty();
-        }));
+        $this->assertTrue($loadedClients->every(fn (Client $client) => $client->wallets->isNotEmpty()));
 
         DB::disableQueryLog();
         $this->tenantResolver->clear();
@@ -205,8 +208,9 @@ class TenantPerformanceTest extends TestCase
     {
         // Create 10 test tenants
         $tenants = [];
+
         for ($i = 1; $i <= 10; $i++) {
-            $tenants[] = Tenant::factory()->create(['name' => "Perf Tenant $i"]);
+            $tenants[] = Tenant::factory()->create(['name' => "Perf Tenant {$i}"]);
         }
 
         // Time switching between tenants
@@ -246,10 +250,11 @@ class TenantPerformanceTest extends TestCase
         // Create clients and wallets
         $this->tenantResolver->setTenantId($tenant->id);
         $client = Client::create(['name' => 'Index Test Client']);
+
         for ($i = 1; $i <= 50; $i++) {
             Wallet::create([
                 'client_id' => $client->id,
-                'name' => "Wallet $i",
+                'name' => "Wallet {$i}",
                 'currency_code' => 'USD',
             ]);
         }
@@ -284,17 +289,20 @@ class TenantPerformanceTest extends TestCase
     {
         // Create 5 tenants with data
         $tenants = [];
+
         for ($t = 1; $t <= 5; $t++) {
-            $tenant = Tenant::factory()->create(['name' => "Load Test Tenant $t"]);
+            $tenant = Tenant::factory()->create(['name' => "Load Test Tenant {$t}"]);
             $tenants[$t] = $tenant;
 
             $this->tenantResolver->setTenantId($tenant->id);
+
             for ($c = 1; $c <= 20; $c++) {
-                $client = Client::create(['name' => "T$t Client $c"]);
+                $client = Client::create(['name' => "T{$t} Client {$c}"]);
+
                 for ($w = 1; $w <= 2; $w++) {
                     Wallet::create([
                         'client_id' => $client->id,
-                        'name' => "Wallet $w",
+                        'name' => "Wallet {$w}",
                         'currency_code' => 'USD',
                     ]);
                 }
@@ -314,7 +322,7 @@ class TenantPerformanceTest extends TestCase
                 $clients = Client::with('wallets')->get();
                 $results["req{$request}_t{$t}"] = count($clients);
 
-                $this->assertCount(20, $clients, "Expected 20 clients for tenant $t, request $request");
+                $this->assertCount(20, $clients, "Expected 20 clients for tenant {$t}, request {$request}");
 
                 $this->tenantResolver->clear();
             }
@@ -329,9 +337,7 @@ class TenantPerformanceTest extends TestCase
 
         // Verify all results are correct
         $this->assertCount(100, $results);
-        $this->assertTrue(collect($results)->every(function ($count) {
-            return $count === 20;
-        }));
+        $this->assertTrue(collect($results)->every(fn ($count) => $count === 20));
     }
 
     /**
@@ -362,7 +368,7 @@ class TenantPerformanceTest extends TestCase
             LedgerEntry::create([
                 'wallet_id' => $wallet->id,
                 'hours' => $i,
-                'title' => "Entry $i",
+                'title' => "Entry {$i}",
             ]);
         }
 
@@ -419,8 +425,9 @@ class TenantPerformanceTest extends TestCase
         $tenant = Tenant::factory()->create(['name' => 'Pagination Test Tenant']);
 
         $this->tenantResolver->setTenantId($tenant->id);
+
         for ($i = 1; $i <= 100; $i++) {
-            Client::create(['name' => "Client $i"]);
+            Client::create(['name' => "Client {$i}"]);
         }
 
         // Test pagination efficiency

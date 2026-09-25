@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\InstructorStudentLink;
-use App\Models\Invitation;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Enums\InvitationStatus;
 use App\Enums\LinkStatus;
 use App\Services\TenantResolver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +34,7 @@ class MultiInstructorFlowTest extends TestCase
         $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
     }
 
-    public function test_student_can_manage_links_with_multiple_instructors(): void
+    public function testStudentCanManageLinksWithMultipleInstructors(): void
     {
         $link1 = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -61,7 +59,7 @@ class MultiInstructorFlowTest extends TestCase
         $this->assertTrue($studentLinks->contains('instructor_id', $this->instructor2->id));
     }
 
-    public function test_student_can_switch_active_instructor(): void
+    public function testStudentCanSwitchActiveInstructor(): void
     {
         InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -88,7 +86,7 @@ class MultiInstructorFlowTest extends TestCase
         $this->assertEquals($this->student->active_instructor_id, $this->instructor1->id);
     }
 
-    public function test_instructor_sees_only_own_student_links(): void
+    public function testInstructorSeesOnlyOwnStudentLinks(): void
     {
         $link1 = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -121,7 +119,7 @@ class MultiInstructorFlowTest extends TestCase
         $this->assertEquals($inst2Links->first()->instructor_id, $this->instructor2->id);
     }
 
-    public function test_revoking_link_removes_instructor_access(): void
+    public function testRevokingLinkRemovesInstructorAccess(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,

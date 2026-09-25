@@ -1,0 +1,96 @@
+### Variables
+@baseUrl = http://localhost:8000/api
+@authToken = your_auth_token_here
+@tenantId = 1
+@superAdminToken = your_super_admin_token_here
+
+### ============================================================================
+### 1. FLUXO DO INSTRUTOR (Tenant Subscriptions & Pagamento)
+### ============================================================================
+
+### 1.1 Consultar Resumo da Assinatura e Estado do Banner
+# Retorna dados do plano, status, deadline de carência, banner de alerta e se está em modo somente leitura
+GET {{baseUrl}}/subscription
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 1.2 Consultar Histórico de Pagamentos (Últimos primeiro)
+GET {{baseUrl}}/subscription/payments?per_page=10
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 1.3 Gerar Intenção de Pagamento Online (PIX Copia e Cola / QR Code)
+POST {{baseUrl}}/subscription/pay
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "payment_method": "pix_online"
+}
+
+### 1.4 Enviar Comprovante de Pagamento PIX Offline (Upload de Comprovante)
+POST {{baseUrl}}/subscription/upload-receipt
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="receipt"; filename="comprovante_pix.png"
+Content-Type: image/png
+
+< ./comprovante_pix.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="notes"
+
+Transferência realizada pelo Banco Inter às 14:30
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### ============================================================================
+### 2. FLUXO DO SUPER ADMINISTRADOR (Moderação de Pagamentos e Carência)
+### ============================================================================
+
+### 2.1 Listar Assinaturas de Todos os Tenants (Filtro opcional: active, past_due, suspended)
+GET {{baseUrl}}/admin/subscriptions?status=past_due
+Authorization: Bearer {{superAdminToken}}
+Accept: application/json
+
+### 2.2 Listar Pagamentos Sob Análise (Comprovantes enviados aguardando moderação)
+GET {{baseUrl}}/admin/payments?status=under_review
+Authorization: Bearer {{superAdminToken}}
+Accept: application/json
+
+### 2.3 Aprovar Pagamento (Ativa / Renova Ciclo por 30 dias e limpa carência)
+POST {{baseUrl}}/admin/payments/1/approve
+Authorization: Bearer {{superAdminToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "notes": "Comprovante validado e crédito confirmado em conta bancária."
+}
+
+### 2.4 Rejeitar Pagamento (Com Justificativa Obrigatória)
+POST {{baseUrl}}/admin/payments/1/reject
+Authorization: Bearer {{superAdminToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "reason": "Comprovante ilegível ou valor diferente da fatura. Por favor reenvie o comprovante legível."
+}
+
+### 2.5 Prorrogar Manualmente o Prazo de Carência de um Tenant (Admin Extension)
+POST {{baseUrl}}/admin/subscriptions/1/extend
+Authorization: Bearer {{superAdminToken}}
+Accept: application/json
+Content-Type: application/json
+
+{
+  "extended_until": "2026-10-15 23:59:59",
+  "notes": "Prorrogação de 7 dias autorizada a pedido do instrutor via WhatsApp."
+}

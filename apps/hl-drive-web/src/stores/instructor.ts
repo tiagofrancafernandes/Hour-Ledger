@@ -125,7 +125,9 @@ export const useInstructorStore = defineStore('instructor', () => {
         state.value.error = null;
 
         try {
-            const response = await api.get<GenericResponse<InstructorStudentLink[]>>('/instructor-links/my-instructors');
+            const response = await api.get<GenericResponse<InstructorStudentLink[]>>(
+                '/instructor-links/my-instructors'
+            );
 
             let linksList: InstructorStudentLink[] = [];
 
@@ -140,7 +142,9 @@ export const useInstructorStore = defineStore('instructor', () => {
 
             // Validate active instructor after fetch
             if (state.value.activeInstructorId) {
-                const isValid = state.value.myInstructors.some((link) => link.instructor?.id === state.value.activeInstructorId);
+                const isValid = state.value.myInstructors.some(
+                    (link) => link.instructor?.id === state.value.activeInstructorId
+                );
 
                 if (!isValid && linksList.length > 0) {
                     // Auto-select first instructor if current is invalid

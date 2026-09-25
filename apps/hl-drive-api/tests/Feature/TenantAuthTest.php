@@ -57,7 +57,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test login without tenant_id works.
      */
-    public function test_login_without_tenant_id_succeeds(): void
+    public function testLoginWithoutTenantIdSucceeds(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -82,7 +82,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test login with valid tenant_id includes tenant_id in token.
      */
-    public function test_login_with_valid_tenant_id_includes_tenant_in_token(): void
+    public function testLoginWithValidTenantIdIncludesTenantInToken(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -108,7 +108,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test login with invalid tenant_id returns 422.
      */
-    public function test_login_with_invalid_tenant_id_returns_unprocessable(): void
+    public function testLoginWithInvalidTenantIdReturnsUnprocessable(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -123,7 +123,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test accessible_tenants includes all user's accessible tenants.
      */
-    public function test_login_response_includes_accessible_tenants(): void
+    public function testLoginResponseIncludesAccessibleTenants(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -143,7 +143,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test token with tenant_id cannot access other tenants.
      */
-    public function test_token_limited_to_tenant_cannot_access_other_tenant(): void
+    public function testTokenLimitedToTenantCannotAccessOtherTenant(): void
     {
         // Login with tenant_id
         $loginResponse = $this->postJson('/api/login', [
@@ -167,7 +167,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test token without tenant_id can access any tenant.
      */
-    public function test_token_without_tenant_id_can_access_any_tenant(): void
+    public function testTokenWithoutTenantIdCanAccessAnyTenant(): void
     {
         // Login without tenant_id
         $loginResponse = $this->postJson('/api/login', [
@@ -188,7 +188,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test user can switch tenant via new login.
      */
-    public function test_user_can_switch_tenant_via_new_login(): void
+    public function testUserCanSwitchTenantViaNewLogin(): void
     {
         // First login to tenant1
         $firstLogin = $this->postJson('/api/login', [
@@ -223,7 +223,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test login with incorrect credentials fails.
      */
-    public function test_login_with_incorrect_credentials_fails(): void
+    public function testLoginWithIncorrectCredentialsFails(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -237,7 +237,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test login with non-existent user fails.
      */
-    public function test_login_with_nonexistent_user_fails(): void
+    public function testLoginWithNonexistentUserFails(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'nonexistent@example.com',
@@ -251,7 +251,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test tenant_id validation rejects non-existent tenant.
      */
-    public function test_login_with_nonexistent_tenant_id_fails_validation(): void
+    public function testLoginWithNonexistentTenantIdFailsValidation(): void
     {
         $response = $this->postJson('/api/login', [
             'email' => 'user@example.com',
@@ -266,7 +266,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test user without access to tenant cannot login to it.
      */
-    public function test_user_without_tenant_access_cannot_login(): void
+    public function testUserWithoutTenantAccessCannotLogin(): void
     {
         // User doesn't have access to tenant3
         $response = $this->postJson('/api/login', [
@@ -282,7 +282,7 @@ class TenantAuthTest extends TestCase
     /**
      * Test token can access tenant via canAccessTenant method.
      */
-    public function test_token_can_check_tenant_access(): void
+    public function testTokenCanCheckTenantAccess(): void
     {
         // Create tokens
         $globalToken = $this->user->createToken('global-token')->accessToken;

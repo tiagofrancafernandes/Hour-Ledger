@@ -9,7 +9,7 @@ use Tests\TestCase;
 class TenantSchemaStrategyTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
-    public function tenant_schema_follows_naming_convention()
+    public function tenantSchemaFollowsNamingConvention()
     {
         // Dado: um tenant criado
         $tenant = Tenant::factory()->create();
@@ -25,7 +25,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function multiple_tenants_use_separate_schemas()
+    public function multipleTenantsUseSeparateSchemas()
     {
         // Dado: três tenants
         $tenant1 = Tenant::factory()->create();
@@ -43,7 +43,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function schema_naming_pattern_is_consistent()
+    public function schemaNamingPatternIsConsistent()
     {
         // Dado: vários tenants
         for ($i = 0; $i < 5; $i++) {
@@ -54,13 +54,13 @@ class TenantSchemaStrategyTest extends TestCase
             $this->assertMatchesRegularExpression(
                 '/^tenant_\d+_(dev|staging|prod|test|testing)$/',
                 $schemaName,
-                "Schema $schemaName should match pattern"
+                "Schema {$schemaName} should match pattern"
             );
         }
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function public_schema_contains_global_tables()
+    public function publicSchemaContainsGlobalTables()
     {
         // Dado: schema público
         $schema = 'public';
@@ -76,7 +76,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function tenant_data_has_required_indexes()
+    public function tenantDataHasRequiredIndexes()
     {
         // Dado: tenant criado
         $tenant = Tenant::factory()->create();
@@ -87,7 +87,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wallet_table_structure_includes_balance()
+    public function walletTableStructureIncludesBalance()
     {
         // Dado: tenant com schema
         $tenant = Tenant::factory()->create();
@@ -99,7 +99,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function soft_delete_columns_exist_for_audit()
+    public function softDeleteColumnsExistForAudit()
     {
         // Dado: tenant criado
         $tenant = Tenant::factory()->create();
@@ -110,7 +110,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function ledger_entries_table_is_append_only()
+    public function ledgerEntriesTableIsAppendOnly()
     {
         // Dado: tenant com schema
         $tenant = Tenant::factory()->create();
@@ -121,7 +121,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function tenant_isolation_at_schema_level()
+    public function tenantIsolationAtSchemaLevel()
     {
         // Dado: dois tenants em schemas diferentes
         $tenant1 = Tenant::factory()->create();
@@ -136,7 +136,7 @@ class TenantSchemaStrategyTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function schema_environment_suffix_matches_app_env()
+    public function schemaEnvironmentSuffixMatchesAppEnv()
     {
         // Dado: app environment é 'testing'
         $appEnv = config('app.env');
@@ -149,7 +149,7 @@ class TenantSchemaStrategyTest extends TestCase
         $this->assertStringContainsString(
             '_' . $appEnv,
             $schema,
-            "Schema should include app environment: $appEnv"
+            "Schema should include app environment: {$appEnv}"
         );
     }
 
@@ -157,6 +157,7 @@ class TenantSchemaStrategyTest extends TestCase
     protected function getTenantSchemaName(Tenant $tenant): string
     {
         $env = config('app.env');
+
         return "tenant_{$tenant->id}_{$env}";
     }
 
@@ -169,7 +170,7 @@ class TenantSchemaStrategyTest extends TestCase
                 WHERE table_schema = ?
             ", [$schema]);
 
-            return array_map(fn($t) => $t->table_name, $tables);
+            return array_map(fn ($t) => $t->table_name, $tables);
         } catch (\Exception $e) {
             return [];
         }

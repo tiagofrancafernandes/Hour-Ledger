@@ -38,7 +38,7 @@ class BypassAttemptsTest extends TenantTestCase
      * Even when using whereRaw(), the global TenantScope should still
      * apply and filter by the active tenant's tenant_id.
      */
-    public function test_raw_sql_still_respects_tenant_scope(): void
+    public function testRawSqlStillRespectsTenantScope(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -74,7 +74,7 @@ class BypassAttemptsTest extends TenantTestCase
      * a record from another tenant, the operation should be scoped
      * to the active tenant.
      */
-    public function test_bulk_update_respects_tenant_scope(): void
+    public function testBulkUpdateRespectsTenantScope(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -111,7 +111,7 @@ class BypassAttemptsTest extends TenantTestCase
      * When using upsert(), the operation should only affect records
      * belonging to the active tenant.
      */
-    public function test_upsert_respects_tenant_isolation(): void
+    public function testUpsertRespectsTenantIsolation(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -149,7 +149,7 @@ class BypassAttemptsTest extends TenantTestCase
      * However, since the wallet belongs to tenant A and active context is tenant B,
      * the wallet becomes inaccessible.
      */
-    public function test_changing_tenant_id_after_creation_is_validated(): void
+    public function testChangingTenantIdAfterCreationIsValidated(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -175,7 +175,7 @@ class BypassAttemptsTest extends TenantTestCase
      * When using setAttribute() or fill() to force a model to have
      * a different tenant_id, the Observer should validate and reject it.
      */
-    public function test_force_assigning_wrong_tenant_is_rejected(): void
+    public function testForceAssigningWrongTenantIsRejected(): void
     {
         $this->switchTenant($this->tenantA);
 
@@ -208,13 +208,14 @@ class BypassAttemptsTest extends TenantTestCase
      * Attempting to pass a wrong tenant_id in create() throws UnauthorizedTenant.
      * However, if tenant_id matches active tenant, auto-assignment works.
      */
-    public function test_mass_assignment_of_tenant_id_is_validated(): void
+    public function testMassAssignmentOfTenantIdIsValidated(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
 
         $this->switchTenant($this->tenantB);
 
         $exceptionThrown = false;
+
         try {
             Wallet::create([
                 'tenant_id' => $this->tenantB->id,
@@ -246,7 +247,7 @@ class BypassAttemptsTest extends TenantTestCase
      * In production, usage of withoutGlobalScopes() should be carefully restricted
      * to privileged contexts only.
      */
-    public function test_disabled_scope_behavior(): void
+    public function testDisabledScopeBehavior(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -279,7 +280,7 @@ class BypassAttemptsTest extends TenantTestCase
      * This test documents this behavior and emphasizes that withoutGlobalScopes()
      * must only be used in privileged, carefully controlled contexts.
      */
-    public function test_withoutGlobalScopes_exposes_all_data(): void
+    public function testWithoutGlobalScopesExposesAllData(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -311,7 +312,7 @@ class BypassAttemptsTest extends TenantTestCase
      * Attempting to create a relationship that crosses tenant boundaries
      * should fail because the related model belongs to a different tenant.
      */
-    public function test_cannot_force_relation_to_different_tenant(): void
+    public function testCannotForceRelationToDifferentTenant(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
 
@@ -350,7 +351,7 @@ class BypassAttemptsTest extends TenantTestCase
      * This test documents that the FK can technically be set to another tenant's
      * client at the database level, but the relationship becomes invalid.
      */
-    public function test_setting_foreign_key_to_different_tenant(): void
+    public function testSettingForeignKeyToDifferentTenant(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -386,7 +387,7 @@ class BypassAttemptsTest extends TenantTestCase
      * When using insert() or insertOrIgnore() with bulk records,
      * only records with the correct tenant_id should be created.
      */
-    public function test_bulk_create_respects_tenant_isolation(): void
+    public function testBulkCreateRespectsTenantIsolation(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
 
@@ -425,7 +426,7 @@ class BypassAttemptsTest extends TenantTestCase
      * Even if attempting to hardcode a tenant_id in whereRaw(),
      * the global TenantScope should still apply and filter results.
      */
-    public function test_whereRaw_with_hardcoded_tenant_id_still_filtered(): void
+    public function testWhereRawWithHardcodedTenantIdStillFiltered(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -464,7 +465,7 @@ class BypassAttemptsTest extends TenantTestCase
      * Creating a LedgerEntry with a wallet_id from another tenant
      * should fail because the wallet is not accessible in the current tenant context.
      */
-    public function test_ledger_entry_creation_respects_tenant_with_wallet_fk(): void
+    public function testLedgerEntryCreationRespectsTenantWithWalletFk(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [

@@ -19,8 +19,7 @@ use Illuminate\Support\Facades\DB;
  * The function uses a template schema 'public' to copy table structures.
  * It creates indexes and constraints but does NOT copy data.
  */
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */

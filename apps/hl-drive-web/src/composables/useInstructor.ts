@@ -5,14 +5,8 @@ import { useInstructorStore } from '@/stores/instructor';
 export function useInstructor() {
     const instructorStore = useInstructorStore();
 
-    const {
-        activeInstructorId,
-        myInstructors,
-        myStudents,
-        pendingInvitations,
-        loading,
-        error,
-    } = storeToRefs(instructorStore);
+    const { activeInstructorId, myInstructors, myStudents, pendingInvitations, loading, error } =
+        storeToRefs(instructorStore);
 
     const activeInstructor = computed(() => instructorStore.getActiveInstructor());
     const instructorName = computed(() => instructorStore.getInstructorName());

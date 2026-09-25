@@ -25,7 +25,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that a tenant can be created with proper schema.
      */
-    public function test_tenant_can_be_created(): void
+    public function testTenantCanBeCreated(): void
     {
         // Arrange
         $tenantId = 1;
@@ -50,7 +50,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that tenant schema name is generated correctly.
      */
-    public function test_tenant_schema_name_generation(): void
+    public function testTenantSchemaNameGeneration(): void
     {
         // Arrange
         $tenant = Tenant::create([
@@ -69,7 +69,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that create_tenant_schema PostgreSQL function exists.
      */
-    public function test_create_tenant_schema_function_exists(): void
+    public function testCreateTenantSchemaFunctionExists(): void
     {
         // Act
         $functionExists = DB::selectOne(
@@ -87,7 +87,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that create_tenant_schema function can be called successfully.
      */
-    public function test_create_tenant_schema_function_creates_schema(): void
+    public function testCreateTenantSchemaFunctionCreatesSchema(): void
     {
         // Arrange
         $tenantId = 99;
@@ -123,7 +123,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that create_tenant_schema rejects duplicate schema.
      */
-    public function test_create_tenant_schema_rejects_duplicate(): void
+    public function testCreateTenantSchemaRejectsDuplicate(): void
     {
         // Arrange
         $tenantId = 100;
@@ -153,7 +153,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that create_tenant_schema validates tenant_id.
      */
-    public function test_create_tenant_schema_validates_tenant_id(): void
+    public function testCreateTenantSchemaValidatesTenantId(): void
     {
         // Act - Call with invalid tenant_id (0)
         $result = DB::selectOne(
@@ -170,7 +170,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that create_tenant_schema validates tenant_name.
      */
-    public function test_create_tenant_schema_validates_tenant_name(): void
+    public function testCreateTenantSchemaValidatesTenantName(): void
     {
         // Act - Call with empty tenant_name
         $result = DB::selectOne(
@@ -187,7 +187,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that copy_table_structure function exists.
      */
-    public function test_copy_table_structure_function_exists(): void
+    public function testCopyTableStructureFunctionExists(): void
     {
         // Act
         $functionExists = DB::selectOne(
@@ -205,7 +205,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test tenant model relationships and scopes.
      */
-    public function test_tenant_active_scope(): void
+    public function testTenantActiveScope(): void
     {
         // Arrange
         Tenant::create([
@@ -231,7 +231,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test tenant accessible scope.
      */
-    public function test_tenant_accessible_scope(): void
+    public function testTenantAccessibleScope(): void
     {
         // Arrange
         Tenant::create([
@@ -257,7 +257,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test tenant status transitions.
      */
-    public function test_tenant_status_transitions(): void
+    public function testTenantStatusTransitions(): void
     {
         // Arrange
         $tenant = Tenant::create([
@@ -285,7 +285,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that slug is generated from name.
      */
-    public function test_tenant_slug_uniqueness(): void
+    public function testTenantSlugUniqueness(): void
     {
         // Arrange
         Tenant::create([
@@ -308,7 +308,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test multiple tenants can coexist.
      */
-    public function test_multiple_tenants_can_coexist(): void
+    public function testMultipleTenantsCanCoexist(): void
     {
         // Arrange & Act
         $tenant1 = Tenant::create([
@@ -338,7 +338,7 @@ class TenancySchemaTest extends TestCase
     /**
      * Test that tenant metadata can be stored.
      */
-    public function test_tenant_metadata_storage(): void
+    public function testTenantMetadataStorage(): void
     {
         // Arrange
         $metadata = [

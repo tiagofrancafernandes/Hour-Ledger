@@ -23,16 +23,8 @@ function handleSelectInstructor(instructorId: number): void {
             class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition-colors font-medium"
             :disabled="loading"
         >
-            <Icon
-                v-if="loading"
-                icon="mdi:loading"
-                class="w-4 h-4 animate-spin"
-            />
-            <Icon
-                v-else
-                icon="fa7-solid:user-tie"
-                class="w-4 h-4"
-            />
+            <Icon v-if="loading" icon="mdi:loading" class="w-4 h-4 animate-spin" />
+            <Icon v-else icon="fa7-solid:user-tie" class="w-4 h-4" />
             <span class="hidden sm:inline max-w-32 truncate">
                 {{ activeInstructor?.name ?? t('instructor.select') }}
             </span>
@@ -52,11 +44,7 @@ function handleSelectInstructor(instructorId: number): void {
                     @click="handleSelectInstructor(link.instructor?.id || 0)"
                 >
                     <span>{{ link.instructor?.name }}</span>
-                    <Icon
-                        v-if="activeInstructor?.id === link.instructor?.id"
-                        icon="fa7-solid:check"
-                        class="w-4 h-4"
-                    />
+                    <Icon v-if="activeInstructor?.id === link.instructor?.id" icon="fa7-solid:check" class="w-4 h-4" />
                 </button>
             </div>
         </div>

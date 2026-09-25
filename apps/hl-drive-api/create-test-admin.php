@@ -4,7 +4,7 @@ require 'vendor/autoload.php';
 
 $app = require_once 'bootstrap/app.php';
 
-$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 use App\Models\User;
 use Spatie\Permission\Models\Role;
@@ -36,7 +36,7 @@ try {
 
     echo "\n✅ Role 'admin' atribuído ao usuário!\n";
     echo "Roles: " . implode(', ', $admin->getRoleNames()->toArray()) . "\n";
-} catch (\Exception $e) {
+} catch (Exception $e) {
     echo "\n⚠️  Erro ao atribuir role: " . $e->getMessage() . "\n";
     echo "   Isso pode ser esperado se as policies não usam roles\n";
 }
@@ -58,7 +58,7 @@ try {
 
     echo "\n✅ Permissões atribuídas:\n";
     echo "   - " . implode("\n   - ", $permissions) . "\n";
-} catch (\Exception $e) {
+} catch (Exception $e) {
     echo "\n⚠️  Erro ao atribuir permissões: " . $e->getMessage() . "\n";
 }
 

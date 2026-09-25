@@ -9,7 +9,6 @@ use App\Models\Invitation;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Enums\InvitationStatus;
-use App\Enums\LinkStatus;
 use App\Services\TenantResolver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -34,7 +33,7 @@ class InvitationAcceptanceFlowTest extends TestCase
         $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
     }
 
-    public function test_accepting_invitation_transitions_to_accepted_state(): void
+    public function testAcceptingInvitationTransitionsToAcceptedState(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -52,7 +51,7 @@ class InvitationAcceptanceFlowTest extends TestCase
         $this->assertNotNull($invitation->accepted_at);
     }
 
-    public function test_rejecting_invitation_does_not_create_link(): void
+    public function testRejectingInvitationDoesNotCreateLink(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -70,7 +69,7 @@ class InvitationAcceptanceFlowTest extends TestCase
         $this->assertCount(0, InstructorStudentLink::where('student_id', $this->student->id)->get());
     }
 
-    public function test_cannot_accept_expired_invitation(): void
+    public function testCannotAcceptExpiredInvitation(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -84,7 +83,7 @@ class InvitationAcceptanceFlowTest extends TestCase
         $this->assertFalse($invitation->isResolvable());
     }
 
-    public function test_multiple_invitations_can_be_sent_to_same_student(): void
+    public function testMultipleInvitationsCanBeSentToSameStudent(): void
     {
         $inv1 = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,

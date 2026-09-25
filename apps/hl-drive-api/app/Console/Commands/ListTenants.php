@@ -54,6 +54,7 @@ class ListTenants extends Command
 
         // Apply status filter if provided
         $statusFilter = $this->option('status');
+
         if ($statusFilter !== null) {
             $query->where('status', $statusFilter);
         }
@@ -63,11 +64,13 @@ class ListTenants extends Command
 
         if ($tenants->isEmpty()) {
             $this->warn('No tenants found');
+
             return self::SUCCESS;
         }
 
         // Build table rows
         $rows = [];
+
         foreach ($tenants as $tenant) {
             $row = [
                 'id' => $tenant->id,
@@ -139,6 +142,7 @@ class ListTenants extends Command
             ];
         } catch (\Exception $exception) {
             $this->warn(sprintf('Error getting stats for tenant %d: %s', $tenantId, $exception->getMessage()));
+
             return ['table_count' => 0, 'row_count' => 0];
         }
     }

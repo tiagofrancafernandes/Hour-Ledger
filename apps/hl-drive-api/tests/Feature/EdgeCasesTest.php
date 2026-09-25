@@ -36,7 +36,7 @@ class EdgeCasesTest extends TestCase
         $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
     }
 
-    public function test_invitation_tokens_must_be_unique(): void
+    public function testInvitationTokensMustBeUnique(): void
     {
         $token = 'unique-token-abc123';
 
@@ -60,7 +60,7 @@ class EdgeCasesTest extends TestCase
         ]);
     }
 
-    public function test_cannot_accept_invitation_twice(): void
+    public function testCannotAcceptInvitationTwice(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -79,7 +79,7 @@ class EdgeCasesTest extends TestCase
         $this->assertFalse($invitation->isPending());
     }
 
-    public function test_soft_delete_preserves_link_history(): void
+    public function testSoftDeletePreservesLinkHistory(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -101,7 +101,7 @@ class EdgeCasesTest extends TestCase
         $this->assertNotNull($deletedLink->deleted_at);
     }
 
-    public function test_cannot_create_duplicate_active_link(): void
+    public function testCannotCreateDuplicateActiveLink(): void
     {
         InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -120,7 +120,7 @@ class EdgeCasesTest extends TestCase
         ]);
     }
 
-    public function test_link_can_be_revoked_and_recreated(): void
+    public function testLinkCanBeRevokedAndRecreated(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,

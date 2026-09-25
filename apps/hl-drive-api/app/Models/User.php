@@ -23,19 +23,19 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $client_role
  * @property int|null $active_instructor_id
  * @property-read Client|null $client
- * @property-read \Illuminate\Database\Eloquent\Collection<int, CreditPurchasePayment> $creditPurchasePayments
+ * @property-read Collection<int, CreditPurchasePayment> $creditPurchasePayments
  * @property-read int|null $credit_purchase_payments_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, CreditPurchase> $creditPurchases
+ * @property-read Collection<int, CreditPurchase> $creditPurchases
  * @property-read int|null $credit_purchases_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read Collection<int, \Spatie\Permission\Models\Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read Collection<int, \Spatie\Permission\Models\Role> $roles
  * @property-read int|null $roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Tenant> $tenants
+ * @property-read Collection<int, Tenant> $tenants
  * @property-read int|null $tenants_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()

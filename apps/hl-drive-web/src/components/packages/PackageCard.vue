@@ -74,11 +74,17 @@ const totalPrice = () => {
         </button>
 
         <!-- Purchase Modal -->
-        <div v-if="showPurchaseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+            v-if="showPurchaseModal"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-96 max-w-full mx-4">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Comprar Pacote</h2>
 
-                <div v-if="purchaseError" class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg mb-4">
+                <div
+                    v-if="purchaseError"
+                    class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg mb-4"
+                >
                     <p class="text-red-800 dark:text-red-200 text-sm">{{ purchaseError }}</p>
                 </div>
 

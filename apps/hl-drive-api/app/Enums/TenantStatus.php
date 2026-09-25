@@ -31,7 +31,7 @@ enum TenantStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Ativo',
             self::SUSPENDED => 'Suspenso',
             self::DELETED => 'Deletado',
@@ -43,7 +43,7 @@ enum TenantStatus: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Tenant operacional e acessível',
             self::SUSPENDED => 'Tenant suspenso, sem acesso a dados',
             self::DELETED => 'Tenant deletado, em período de retenção',

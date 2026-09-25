@@ -6,7 +6,6 @@ namespace App\Services;
 
 use App\Models\Tenant;
 use App\Models\User;
-use Illuminate\Contracts\Database\Query\Builder;
 
 /**
  * TenantValidationService.
@@ -75,14 +74,12 @@ class TenantValidationService
     public function getUserAccessibleTenants(User $user): array
     {
         return $user->getAccessibleTenants()
-            ->map(static function (Tenant $tenant): array {
-                return [
-                    'id' => $tenant->id,
-                    'name' => $tenant->name,
-                    'slug' => $tenant->slug,
-                    'status' => $tenant->status->value,
-                ];
-            })
+            ->map(static fn (Tenant $tenant): array => [
+                'id' => $tenant->id,
+                'name' => $tenant->name,
+                'slug' => $tenant->slug,
+                'status' => $tenant->status->value,
+            ])
             ->toArray();
     }
 

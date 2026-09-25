@@ -43,7 +43,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function user_cannot_see_wallet_from_other_tenant()
+    public function userCannotSeeWalletFromOtherTenant()
     {
         // Dado: carteira em tenant1
         $this->resolver->setTenantId($this->tenant1->id);
@@ -61,7 +61,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wallet_list_respects_tenant_isolation()
+    public function walletListRespectsTenantIsolation()
     {
         // Dado: wallets em tenant1 e tenant2
         $this->resolver->setTenantId($this->tenant1->id);
@@ -84,7 +84,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function raw_query_still_respects_tenant_isolation()
+    public function rawQueryStillRespectsTenantIsolation()
     {
         // Dado: wallet em tenant1
         $this->resolver->setTenantId($this->tenant1->id);
@@ -102,7 +102,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function changing_tenant_context_isolates_data()
+    public function changingTenantContextIsolatesData()
     {
         // Dado: dados em tenant1 e tenant2
         $this->resolver->setTenantId($this->tenant1->id);
@@ -126,7 +126,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wrong_tenant_id_blocks_access()
+    public function wrongTenantIdBlocksAccess()
     {
         // Dado: user1 em tenant1
         $user1 = User::factory()->create();
@@ -140,7 +140,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function tenant_isolation_persists_across_connection_changes()
+    public function tenantIsolationPersistsAcrossConnectionChanges()
     {
         // Dado: wallets criados em tenants diferentes
         $this->resolver->setTenantId($this->tenant1->id);
@@ -172,7 +172,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function context_switch_is_explicit_and_safe()
+    public function contextSwitchIsExplicitAndSafe()
     {
         // Dado: user consultando dados
         $this->resolver->setTenantId($this->tenant1->id);
@@ -194,7 +194,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function multiple_tenants_never_mix_in_single_query()
+    public function multipleTenantsNeverMixInSingleQuery()
     {
         // Dado: 3 tenants com dados
         $tenants = [];
@@ -224,7 +224,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function find_by_id_respects_tenant_boundary()
+    public function findByIdRespectsTenantBoundary()
     {
         // Dado: wallet em tenant1
         $this->resolver->setTenantId($this->tenant1->id);
@@ -241,7 +241,7 @@ class CrossTenantSecurityTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function cross_tenant_direct_id_query_blocked()
+    public function crossTenantDirectIdQueryBlocked()
     {
         // Dado: wallet1 em tenant1, tentamos consultá-lo via raw ID
         $this->resolver->setTenantId($this->tenant1->id);

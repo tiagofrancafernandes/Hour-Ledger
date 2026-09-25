@@ -21,10 +21,7 @@ async function handleReject(invitationId: number): Promise<void> {
 
 <template>
     <div class="space-y-3">
-        <div
-            v-if="pendingInvitations.length === 0"
-            class="text-center py-8 text-gray-500"
-        >
+        <div v-if="pendingInvitations.length === 0" class="text-center py-8 text-gray-500">
             <Icon icon="fa7-regular:envelope" class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p>{{ t('invitation.no_pending') }}</p>
         </div>
@@ -38,9 +35,7 @@ async function handleReject(invitationId: number): Promise<void> {
             <div class="flex items-start justify-between mb-3">
                 <div>
                     <p class="font-medium text-gray-900">{{ invitation.email }}</p>
-                    <p class="text-xs text-gray-500 mt-1">
-                        {{ t('invitation.from') }}: {{ invitation.inviter?.name }}
-                    </p>
+                    <p class="text-xs text-gray-500 mt-1">{{ t('invitation.from') }}: {{ invitation.inviter?.name }}</p>
                 </div>
                 <span
                     class="inline-block px-2 py-1 rounded text-xs font-medium"
@@ -66,16 +61,8 @@ async function handleReject(invitationId: number): Promise<void> {
                     class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     @click="handleAccept(invitation.id)"
                 >
-                    <Icon
-                        v-if="loading"
-                        icon="mdi:loading"
-                        class="w-4 h-4 animate-spin"
-                    />
-                    <Icon
-                        v-else
-                        icon="fa7-solid:check"
-                        class="w-4 h-4"
-                    />
+                    <Icon v-if="loading" icon="mdi:loading" class="w-4 h-4 animate-spin" />
+                    <Icon v-else icon="fa7-solid:check" class="w-4 h-4" />
                     {{ t('invitation.accept') }}
                 </button>
 
@@ -84,16 +71,8 @@ async function handleReject(invitationId: number): Promise<void> {
                     class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     @click="handleReject(invitation.id)"
                 >
-                    <Icon
-                        v-if="loading"
-                        icon="mdi:loading"
-                        class="w-4 h-4 animate-spin"
-                    />
-                    <Icon
-                        v-else
-                        icon="fa7-solid:times"
-                        class="w-4 h-4"
-                    />
+                    <Icon v-if="loading" icon="mdi:loading" class="w-4 h-4 animate-spin" />
+                    <Icon v-else icon="fa7-solid:times" class="w-4 h-4" />
                     {{ t('invitation.reject') }}
                 </button>
             </div>

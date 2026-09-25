@@ -35,7 +35,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - Token is global (no tenant_id in database)
      * - accessible_tenants is array with all user's tenants
      */
-    public function test_login_without_tenant_id_returns_global_token(): void
+    public function testLoginWithoutTenantIdReturnsGlobalToken(): void
     {
         // User A has access to Tenant A
         // Pass X-Tenant-ID header to satisfy TenantMiddleware but don't send tenant_id in body
@@ -88,7 +88,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - Token has tenant_id set in database
      * - Token is limited to the specified tenant
      */
-    public function test_login_with_valid_tenant_id_returns_scoped_token(): void
+    public function testLoginWithValidTenantIdReturnsScopedToken(): void
     {
         $response = $this->postJson('/api/auth/login', [
             'email' => 'usera@test.com',
@@ -133,7 +133,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - Error message about tenant_id
      * - No token is created
      */
-    public function test_login_with_invalid_tenant_id_denied(): void
+    public function testLoginWithInvalidTenantIdDenied(): void
     {
         // User A tries to login to Tenant B (no access)
         // Use Tenant A in header to pass middleware, but request Tenant B in body
@@ -166,7 +166,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - tenant_id validation fails (exists:tenants,id rule)
      * - No token is created
      */
-    public function test_login_with_nonexistent_tenant_id_validation_fails(): void
+    public function testLoginWithNonexistentTenantIdValidationFails(): void
     {
         $fakeId = 99999;
 
@@ -199,7 +199,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - Each item has: id, name, slug, status
      * - Only includes tenants user has access to
      */
-    public function test_login_response_includes_accessible_tenants_list(): void
+    public function testLoginResponseIncludesAccessibleTenantsList(): void
     {
         // Grant User A access to Tenant B as well
         $this->userA->tenants()->attach(
@@ -250,7 +250,7 @@ class AuthControllerTenantLoginTest extends TenantTestCase
      * - accessible_tenants is empty array []
      * - Token is created globally
      */
-    public function test_login_with_no_accessible_tenants_still_succeeds(): void
+    public function testLoginWithNoAccessibleTenantsStillSucceeds(): void
     {
         // Create a user with no tenant associations
         $userWithoutTenants = User::factory()->create([

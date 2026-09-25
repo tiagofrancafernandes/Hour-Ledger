@@ -42,7 +42,7 @@ class DataLeakageTest extends TenantTestCase
      * if the Client belongs to a different tenant, the relation
      * should return null (or be filtered by the TenantScope).
      */
-    public function test_belongsTo_relation_prevents_leakage(): void
+    public function testBelongsToRelationPreventsLeakage(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -75,7 +75,7 @@ class DataLeakageTest extends TenantTestCase
      * When loading Client.wallets(), only wallets from the active
      * tenant should be returned.
      */
-    public function test_hasMany_relation_respects_scope(): void
+    public function testHasManyRelationRespectsScope(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -119,7 +119,7 @@ class DataLeakageTest extends TenantTestCase
      * When loading Client.ledgerEntries through Wallet,
      * only entries from the active tenant should be returned.
      */
-    public function test_hasManyThrough_respects_isolation(): void
+    public function testHasManyThroughRespectsIsolation(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -161,7 +161,7 @@ class DataLeakageTest extends TenantTestCase
      * Verify that accessing Wallet -> Client -> anotherWallet
      * doesn't leak data across tenants through multiple relation hops.
      */
-    public function test_nested_relation_prevents_cross_tenant_access(): void
+    public function testNestedRelationPreventsCrossTenantAccess(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -201,7 +201,7 @@ class DataLeakageTest extends TenantTestCase
      * When using with('wallets'), only wallets from the active
      * tenant should be loaded.
      */
-    public function test_with_eager_loading_prevents_leakage(): void
+    public function testWithEagerLoadingPreventsLeakage(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -238,7 +238,7 @@ class DataLeakageTest extends TenantTestCase
      * When using load() on an already-fetched model,
      * the scope should still apply to loaded relations.
      */
-    public function test_load_eager_loading_respects_scope(): void
+    public function testLoadEagerLoadingRespectsScope(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -278,7 +278,7 @@ class DataLeakageTest extends TenantTestCase
      * When using whereHas() to filter by related model existence,
      * only tenant records should be counted.
      */
-    public function test_whereHas_only_counts_tenant_records(): void
+    public function testWhereHasOnlyCountsTenantRecords(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -311,7 +311,7 @@ class DataLeakageTest extends TenantTestCase
      * When using withCount(), the count should reflect only
      * related records from the active tenant.
      */
-    public function test_withCount_doesnt_leak_cross_tenant_counts(): void
+    public function testWithCountDoesntLeakCrossTenantCounts(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -352,7 +352,7 @@ class DataLeakageTest extends TenantTestCase
      * When calling Wallet::count(), only wallets from the active
      * tenant should be counted.
      */
-    public function test_wallet_count_only_counts_tenant_wallets(): void
+    public function testWalletCountOnlyCountsTenantWallets(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -395,7 +395,7 @@ class DataLeakageTest extends TenantTestCase
      * When calling sum() on LedgerEntry::hours, only entries
      * from the active tenant should be summed.
      */
-    public function test_ledger_sum_only_sums_tenant_entries(): void
+    public function testLedgerSumOnlySumsTenantEntries(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -441,7 +441,7 @@ class DataLeakageTest extends TenantTestCase
      * When calling $client->wallets()->count(), only wallets
      * from the active tenant should be counted.
      */
-    public function test_count_through_relation_respects_tenant(): void
+    public function testCountThroughRelationRespectsTenant(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [
@@ -478,7 +478,7 @@ class DataLeakageTest extends TenantTestCase
      * When calling Wallet::where(...)->count(), the where clause
      * should work in conjunction with the tenant scope.
      */
-    public function test_aggregate_with_where_clause_respects_tenant(): void
+    public function testAggregateWithWhereClauseRespectsTenant(): void
     {
         $clientA = $this->createModelInTenant($this->tenantA, Client::class, ['name' => 'Client A']);
         $walletA1 = $this->createModelInTenant($this->tenantA, Wallet::class, [

@@ -28,7 +28,7 @@ return [
         'api.local.hlcore.com',
         ...array_unique(
             array_filter(
-                array_map(fn($v) => trim("{$v}"), [
+                array_map(fn ($v) => trim("{$v}"), [
                     env('FRONTEND_URL', 'https://hlcore.com'),
                     ...explode(',', strval(env('CENTRAL_DOMAINS'))),
                     ...explode(',', strval(env('ALLOWED_ORIGINS'))),

@@ -10,7 +10,6 @@ use App\Models\InstructorStudentLink;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * CreateInstructorStudentLink Command
@@ -62,33 +61,41 @@ class CreateInstructorStudentLink extends Command
         // Validate options
         if (!$instructorId || !$studentId || !$tenantId) {
             $this->error('Missing required options: --instructor, --student, --tenant');
+
             return self::FAILURE;
         }
 
         // Validate instructor exists
         $instructor = User::find($instructorId);
+
         if (!$instructor) {
             $this->error("Instructor with ID {$instructorId} not found");
+
             return self::FAILURE;
         }
 
         // Validate student exists
         $student = User::find($studentId);
+
         if (!$student) {
             $this->error("Student with ID {$studentId} not found");
+
             return self::FAILURE;
         }
 
         // Validate tenant exists
         $tenant = Tenant::find($tenantId);
+
         if (!$tenant) {
             $this->error("Tenant with ID {$tenantId} not found");
+
             return self::FAILURE;
         }
 
         // Validate instructor is not the student
         if ($instructor->id === $student->id) {
             $this->error('Instructor cannot be the same as student');
+
             return self::FAILURE;
         }
 
@@ -98,6 +105,7 @@ class CreateInstructorStudentLink extends Command
         } catch (\ValueError $e) {
             $this->error("Invalid access level: {$accessLevel}");
             $this->info('Valid options: BASIC, FULL, CUSTOM');
+
             return self::FAILURE;
         }
 
@@ -107,6 +115,7 @@ class CreateInstructorStudentLink extends Command
         } catch (\ValueError $e) {
             $this->error("Invalid status: {$status}");
             $this->info('Valid options: ACTIVE, SUSPENDED, REVOKED');
+
             return self::FAILURE;
         }
 
@@ -119,6 +128,7 @@ class CreateInstructorStudentLink extends Command
 
         if ($existingLink && !$existingLink->trashed()) {
             $this->error('Active link already exists between these users');
+
             return self::FAILURE;
         }
 

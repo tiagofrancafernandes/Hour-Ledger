@@ -4,7 +4,7 @@ require 'vendor/autoload.php';
 
 $app = require_once 'bootstrap/app.php';
 
-$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 use App\Models\User;
 use App\Models\Client;
@@ -15,6 +15,7 @@ $user = User::where('email', 'test@example.com')->first();
 
 if (!$user) {
     echo "❌ Usuário não encontrado\n";
+
     exit(1);
 }
 
@@ -83,5 +84,5 @@ echo "Esperado: 12,50 horas\n";
 if ($balance == 12.50) {
     echo "✅ Saldo correto!\n";
 } else {
-    echo "⚠️  Saldo incorreto (esperado 12.50, obtido $balance)\n";
+    echo "⚠️  Saldo incorreto (esperado 12.50, obtido {$balance})\n";
 }

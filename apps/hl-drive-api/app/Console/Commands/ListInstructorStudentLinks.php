@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Models\InstructorStudentLink;
 use App\Models\Tenant;
-use App\Models\User;
 use Illuminate\Console\Command;
 
 /**
@@ -70,6 +69,7 @@ class ListInstructorStudentLinks extends Command
         // Display results
         if ($links->isEmpty()) {
             $this->info('No instructor-student links found.');
+
             return self::SUCCESS;
         }
 

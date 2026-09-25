@@ -28,7 +28,9 @@ const handleConfirm = () => {
             <div v-if="!confirmed" class="p-6">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Confirmar Compra</h2>
 
-                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6 space-y-3">
+                <div
+                    class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-6 space-y-3"
+                >
                     <div class="flex justify-between">
                         <span class="text-gray-700 dark:text-gray-300">Pacote:</span>
                         <span class="font-semibold text-gray-900 dark:text-white">
@@ -78,15 +80,26 @@ const handleConfirm = () => {
 
             <div v-else class="p-6 text-center">
                 <div class="mb-6">
-                    <svg class="w-16 h-16 mx-auto text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                        class="w-16 h-16 mx-auto text-green-600 dark:text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                     </svg>
                 </div>
 
                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Compra Realizada!</h3>
 
                 <p class="text-gray-600 dark:text-gray-400">
-                    {{ parseFloat(purchase.package?.hours || '0') * purchase.quantity }} horas foram adicionadas à sua carteira.
+                    {{ parseFloat(purchase.package?.hours || '0') * purchase.quantity }} horas foram adicionadas à sua
+                    carteira.
                 </p>
             </div>
         </div>

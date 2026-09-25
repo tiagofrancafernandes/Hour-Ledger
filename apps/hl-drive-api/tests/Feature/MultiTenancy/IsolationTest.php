@@ -33,7 +33,7 @@ class IsolationTest extends TenantTestCase
      * When switching between tenants, Client::all() should only return
      * clients that belong to the active tenant.
      */
-    public function test_client_all_returns_only_tenant_clients(): void
+    public function testClientAllReturnsOnlyTenantClients(): void
     {
         // Create clients for each tenant using context-aware creation
         // The Observer will automatically set tenant_id based on active context
@@ -102,7 +102,7 @@ class IsolationTest extends TenantTestCase
      * When switching between tenants, Wallet::all() should only return
      * wallets that belong to the active tenant.
      */
-    public function test_wallet_all_returns_only_tenant_wallets(): void
+    public function testWalletAllReturnsOnlyTenantWallets(): void
     {
         // Create wallets for each tenant (must create clients and wallets in tenant context)
         // Create clients first
@@ -186,7 +186,7 @@ class IsolationTest extends TenantTestCase
      * When switching between tenants, LedgerEntry::all() should only return
      * ledger entries that belong to the active tenant.
      */
-    public function test_ledger_entry_all_returns_only_tenant_entries(): void
+    public function testLedgerEntryAllReturnsOnlyTenantEntries(): void
     {
         // Create ledger entries for each tenant using context-aware creation
         $this->switchTenant($this->tenantA);
@@ -280,7 +280,7 @@ class IsolationTest extends TenantTestCase
      * Users are globally-scoped but have tenant associations through the user_tenants pivot table.
      * This test verifies that tenant access relationships are correctly isolated.
      */
-    public function test_user_tenant_access_isolation(): void
+    public function testUserTenantAccessIsolation(): void
     {
         // Verify the setup: each user has access to their respective tenant
         $this->assertTrue(
@@ -317,7 +317,7 @@ class IsolationTest extends TenantTestCase
      * InstructorStudentLink uses the BelongsToTenant trait for automatic tenant isolation.
      * This test verifies that links are properly isolated by tenant context.
      */
-    public function test_link_isolation_by_tenant(): void
+    public function testLinkIsolationByTenant(): void
     {
         $instructorA = User::factory()->create(['email' => 'instructor_a@test.com']);
         $studentA = User::factory()->create(['email' => 'student_a@test.com']);
@@ -397,7 +397,7 @@ class IsolationTest extends TenantTestCase
      * - When switching tenants, results change correctly
      * - No cross-tenant data leakage
      */
-    public function test_tenant_isolation_comprehensive(): void
+    public function testTenantIsolationComprehensive(): void
     {
         // Setup: Create data for all three tenants using context-aware creation
         $this->switchTenant($this->tenantA);

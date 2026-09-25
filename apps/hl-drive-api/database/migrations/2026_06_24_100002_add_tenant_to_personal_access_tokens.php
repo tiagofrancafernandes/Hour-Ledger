@@ -22,8 +22,7 @@ use Illuminate\Support\Facades\Schema;
  * Composed index (tokenable_id, tokenable_type, tenant_id) allows efficient
  * lookup of tokens by tokenable resource and optional tenant scope.
  */
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */

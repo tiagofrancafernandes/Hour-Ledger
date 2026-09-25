@@ -44,7 +44,7 @@ class IsolationAndSecurityTest extends TestCase
         $this->studentB = User::factory()->create(['tenant_id' => $this->tenantB->id]);
     }
 
-    public function test_invitations_isolated_by_tenant(): void
+    public function testInvitationsIsolatedByTenant(): void
     {
         $this->tenantResolver->setTenantId($this->tenantA->id);
         $invitationA = Invitation::factory()->create([
@@ -73,8 +73,7 @@ class IsolationAndSecurityTest extends TestCase
         $this->assertFalse($invitationsInB->contains('id', $invitationA->id));
     }
 
-
-    public function test_instructor_cannot_see_other_instructor_students(): void
+    public function testInstructorCannotSeeOtherInstructorStudents(): void
     {
         $this->tenantResolver->setTenantId($this->tenantA->id);
 
@@ -110,7 +109,7 @@ class IsolationAndSecurityTest extends TestCase
         $this->assertEquals($instructor2ALinks->first()->instructor_id, $instructor2A->id);
     }
 
-    public function test_student_cannot_see_other_student_invitations(): void
+    public function testStudentCannotSeeOtherStudentInvitations(): void
     {
         $this->tenantResolver->setTenantId($this->tenantA->id);
 

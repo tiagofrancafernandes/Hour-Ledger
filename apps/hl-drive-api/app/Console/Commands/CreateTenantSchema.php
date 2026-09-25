@@ -52,15 +52,19 @@ class CreateTenantSchema extends Command
 
         // Validate inputs
         $validationError = $this->validateInputs($tenantId, $tenantName, $environment);
+
         if ($validationError !== null) {
             $this->error($validationError);
+
             return self::FAILURE;
         }
 
         // Check if tenant already exists in database
         $existingTenant = Tenant::find($tenantId);
+
         if ($existingTenant !== null) {
             $this->error("Tenant with ID {$tenantId} already exists in database");
+
             return self::FAILURE;
         }
 
@@ -70,6 +74,7 @@ class CreateTenantSchema extends Command
 
         if (!$result) {
             $this->error('Failed to create tenant record in database');
+
             return self::FAILURE;
         }
 
@@ -79,6 +84,7 @@ class CreateTenantSchema extends Command
 
         if (!$createResult['success']) {
             $this->handleSchemaCreationFailure($tenantId, $createResult['message']);
+
             return self::FAILURE;
         }
 
@@ -102,6 +108,7 @@ class CreateTenantSchema extends Command
         }
 
         $validEnvironments = ['dev', 'staging', 'prod'];
+
         if (!in_array($environment, $validEnvironments, true)) {
             return sprintf(
                 'Error: environment must be one of: %s',
@@ -128,6 +135,7 @@ class CreateTenantSchema extends Command
             return true;
         } catch (\Exception $exception) {
             $this->error(sprintf('Database error: %s', $exception->getMessage()));
+
             return false;
         }
     }

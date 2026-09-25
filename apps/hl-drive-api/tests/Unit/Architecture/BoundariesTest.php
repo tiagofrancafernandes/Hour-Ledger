@@ -7,7 +7,7 @@ use Tests\TestCase;
 class BoundariesTest extends TestCase
 {
     #[\PHPUnit\Framework\Attributes\Test]
-    public function core_does_not_depend_on_drive()
+    public function coreDoesNotDependOnDrive()
     {
         // Dado: módulo Core
         $coreFiles = [
@@ -18,9 +18,11 @@ class BoundariesTest extends TestCase
 
         // Quando: verificar imports em Core
         $coreFilesExist = true;
+
         foreach ($coreFiles as $path) {
-            if (!is_dir(base_path($path)) && !file_exists(base_path("$path.php"))) {
+            if (!is_dir(base_path($path)) && !file_exists(base_path("{$path}.php"))) {
                 $coreFilesExist = false;
+
                 break;
             }
         }
@@ -30,7 +32,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function drive_depends_on_core_not_opposite()
+    public function driveDependsOnCoreNotOpposite()
     {
         // Dado: Drive pode depender de Core
         // Quando: verificar padrão
@@ -44,7 +46,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wallet_operations_are_in_core_not_drive()
+    public function walletOperationsAreInCoreNotDrive()
     {
         // Dado: Wallet é genérico (Core)
         // Quando: procurar classe Wallet
@@ -60,7 +62,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function ledger_is_core_abstraction()
+    public function ledgerIsCoreAbstraction()
     {
         // Dado: Ledger é transversal
         // Quando: procurar classe Ledger
@@ -76,7 +78,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function instructor_model_is_drive_specific()
+    public function instructorModelIsDriveSpecific()
     {
         // Dado: Instructor é conceito Drive (não reutilizável)
         // Quando: procurar classe Instructor
@@ -91,7 +93,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function service_locator_pattern_isolates_domain()
+    public function serviceLocatorPatternIsolatesDomain()
     {
         // Dado: Controllers em Drive não importam diretamente Core models
         // Quando: procurar por imports
@@ -106,7 +108,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function features_dont_leak_across_domains()
+    public function featuresDontLeakAcrossDomains()
     {
         // Dado: Conceitos específicos do Drive (como lesão)
         // Quando: procurar em outros domínios
@@ -117,7 +119,7 @@ class BoundariesTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function configuration_respects_boundaries()
+    public function configurationRespectsBoundaries()
     {
         // Dado: Service providers registram bindings
         // Quando: verificar config/app.php

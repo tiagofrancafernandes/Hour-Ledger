@@ -12,14 +12,8 @@ import { isValidEmail } from '@/utils/data-helpers';
 const router = useRouter();
 const { login, loading, error } = useAuth();
 const { canRegister, canRecoverPassword, fetchAuthResources } = useAuthResources();
-const {
-  showSelector,
-  isLoading,
-  accessibleTenants,
-  handleAccessibleTenants,
-  selectTenant,
-  cancelSelection,
-} = useTenantSelection();
+const { showSelector, isLoading, accessibleTenants, handleAccessibleTenants, selectTenant, cancelSelection } =
+    useTenantSelection();
 
 const email = ref('');
 const password = ref('');
@@ -107,7 +101,9 @@ onMounted(() => {
                     <form class="space-y-4" @submit.prevent="handleSubmit">
                         <!-- Email -->
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">{{ $t('auth.email') }}</label>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
+                                {{ $t('auth.email') }}
+                            </label>
                             <input
                                 id="email"
                                 v-model="email"
@@ -226,7 +222,9 @@ onMounted(() => {
             <!-- Footer -->
             <div v-if="canRegister" class="text-center mt-6 text-sm text-gray-600">
                 {{ $t('auth.dont_have_account') }}
-                <router-link to="/register" class="font-medium text-red-600 hover:text-red-700">{{ $t('auth.register') }}</router-link>
+                <router-link to="/register" class="font-medium text-red-600 hover:text-red-700">
+                    {{ $t('auth.register') }}
+                </router-link>
             </div>
         </div>
     </div>

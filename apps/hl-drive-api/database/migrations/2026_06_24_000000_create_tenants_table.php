@@ -22,8 +22,7 @@ use Illuminate\Support\Facades\Schema;
  *   - suspended: Tenant is suspended, no access to data
  *   - deleted: Tenant is soft-deleted, schema may be archived
  */
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */

@@ -116,7 +116,11 @@ const handleConsumptionCompleted = async () => {
         </div>
 
         <div v-else class="space-y-4">
-            <div v-for="lesson in filteredLessons()" :key="lesson.id" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <div
+                v-for="lesson in filteredLessons()"
+                :key="lesson.id"
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
+            >
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -133,13 +137,16 @@ const handleConsumptionCompleted = async () => {
 
                 <div class="space-y-2 mb-4">
                     <p class="text-gray-600 dark:text-gray-400">
-                        <span class="font-medium">Duração:</span> {{ lesson.duration_minutes }} minutos
+                        <span class="font-medium">Duração:</span>
+                        {{ lesson.duration_minutes }} minutos
                     </p>
                     <p v-if="lesson.hours_consumed" class="text-gray-600 dark:text-gray-400">
-                        <span class="font-medium">Horas consumidas:</span> {{ lesson.hours_consumed }}h
+                        <span class="font-medium">Horas consumidas:</span>
+                        {{ lesson.hours_consumed }}h
                     </p>
                     <p v-if="lesson.notes" class="text-gray-600 dark:text-gray-400">
-                        <span class="font-medium">Observações:</span> {{ lesson.notes }}
+                        <span class="font-medium">Observações:</span>
+                        {{ lesson.notes }}
                     </p>
                 </div>
 
@@ -156,9 +163,16 @@ const handleConsumptionCompleted = async () => {
         </div>
 
         <!-- Consumption Modal -->
-        <div v-if="showConsumptionModal && selectedLesson" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div
+            v-if="showConsumptionModal && selectedLesson"
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-96 max-w-full mx-4">
-                <LessonConsumption :lesson-id="selectedLesson" @completed="handleConsumptionCompleted" @cancel="showConsumptionModal = false" />
+                <LessonConsumption
+                    :lesson-id="selectedLesson"
+                    @completed="handleConsumptionCompleted"
+                    @cancel="showConsumptionModal = false"
+                />
             </div>
         </div>
     </div>

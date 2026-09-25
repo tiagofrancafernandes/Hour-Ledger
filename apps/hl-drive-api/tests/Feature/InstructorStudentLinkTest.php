@@ -39,7 +39,7 @@ class InstructorStudentLinkTest extends TestCase
         ]);
     }
 
-    public function test_link_becomes_active_after_accepting_invitation(): void
+    public function testLinkBecomesActiveAfterAcceptingInvitation(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -59,7 +59,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertTrue($link->grantAccess());
     }
 
-    public function test_student_sets_link_instructor_as_active(): void
+    public function testStudentSetsLinkInstructorAsActive(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -73,7 +73,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertEquals($this->student->fresh()->active_instructor_id, $this->instructor->id);
     }
 
-    public function test_cannot_create_duplicate_active_link(): void
+    public function testCannotCreateDuplicateActiveLink(): void
     {
         InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -92,7 +92,7 @@ class InstructorStudentLinkTest extends TestCase
         ]);
     }
 
-    public function test_link_related_data_loads_correctly(): void
+    public function testLinkRelatedDataLoadsCorrectly(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -113,7 +113,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertEquals($loadedLink->invitation->id, $this->invitation->id);
     }
 
-    public function test_revoke_link_blocks_access(): void
+    public function testRevokeLinkBlocksAccess(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -132,7 +132,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertNotNull($link->fresh()->deleted_at);
     }
 
-    public function test_revoked_link_soft_deletes(): void
+    public function testRevokedLinkSoftDeletes(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -151,7 +151,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertNotNull(InstructorStudentLink::withTrashed()->find($linkId));
     }
 
-    public function test_suspend_link_temporarily(): void
+    public function testSuspendLinkTemporarily(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -166,7 +166,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertNull($link->fresh()->deleted_at);
     }
 
-    public function test_soft_deleted_links_not_listed(): void
+    public function testSoftDeletedLinksNotListed(): void
     {
         $activeLink = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -193,7 +193,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertFalse($activeLinks->pluck('id')->contains($revokedLink->id));
     }
 
-    public function test_instructor_can_list_only_own_students(): void
+    public function testInstructorCanListOnlyOwnStudents(): void
     {
         $otherInstructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $otherStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -218,7 +218,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertEquals($instructorStudents->first()->instructor_id, $this->instructor->id);
     }
 
-    public function test_student_can_list_only_own_instructors(): void
+    public function testStudentCanListOnlyOwnInstructors(): void
     {
         $otherStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $otherInstructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -243,7 +243,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertEquals($studentInstructors->first()->student_id, $this->student->id);
     }
 
-    public function test_cannot_access_other_instructor_links(): void
+    public function testCannotAccessOtherInstructorLinks(): void
     {
         $otherInstructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $otherStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -260,7 +260,7 @@ class InstructorStudentLinkTest extends TestCase
         $this->assertFalse($myLinks->pluck('id')->contains($otherLink->id));
     }
 
-    public function test_can_have_multiple_instructors(): void
+    public function testCanHaveMultipleInstructors(): void
     {
         $instructor2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $instructor3 = User::factory()->create(['tenant_id' => $this->tenant->id]);

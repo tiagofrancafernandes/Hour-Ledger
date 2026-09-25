@@ -66,7 +66,8 @@ const stats = [
             </div>
 
             <p v-else class="text-3xl font-bold flex items-baseline gap-1">
-                {{ stat.value() }}<span class="text-lg">{{ stat.unit }}</span>
+                {{ stat.value() }}
+                <span class="text-lg">{{ stat.unit }}</span>
             </p>
         </div>
     </div>

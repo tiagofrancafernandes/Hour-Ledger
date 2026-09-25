@@ -9,7 +9,6 @@ use App\Models\Invitation;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Enums\LinkStatus;
-use App\Enums\InvitationStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -35,7 +34,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->instructor2 = User::factory()->create(['tenant_id' => $this->tenant2->id]);
     }
 
-    public function test_sql_injection_in_instructor_filter_does_not_leak_data(): void
+    public function testSqlInjectionInInstructorFilterDoesNotLeakData(): void
     {
         InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,
@@ -50,7 +49,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertCount(0, $results);
     }
 
-    public function test_cannot_change_status_to_invalid_enum(): void
+    public function testCannotChangeStatusToInvalidEnum(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,
@@ -64,7 +63,7 @@ class InstructorContextSecurityTest extends TestCase
         $link->update(['status' => 'INVALID_STATUS']);
     }
 
-    public function test_middleware_blocks_invalid_instructor_context(): void
+    public function testMiddlewareBlocksInvalidInstructorContext(): void
     {
         $invalidInstructorId = 9999;
 
@@ -73,7 +72,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertCount(0, $links);
     }
 
-    public function test_soft_deleted_links_not_accessible(): void
+    public function testSoftDeletedLinksNotAccessible(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,
@@ -91,7 +90,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertNull($found);
     }
 
-    public function test_policy_blocks_unauthorized_users(): void
+    public function testPolicyBlocksUnauthorizedUsers(): void
     {
         $otherInstructor = User::factory()->create(['tenant_id' => $this->tenant1->id]);
 
@@ -105,7 +104,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertFalse($otherInstructor->can('update', $link));
     }
 
-    public function test_cross_tenant_access_blocked(): void
+    public function testCrossTenantAccessBlocked(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,
@@ -121,7 +120,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertCount(0, $crossTenantLinks);
     }
 
-    public function test_email_validation_prevents_injection(): void
+    public function testEmailValidationPreventsInjection(): void
     {
         $maliciousEmail = "'; DROP TABLE invitations; --";
 
@@ -134,7 +133,7 @@ class InstructorContextSecurityTest extends TestCase
         ]);
     }
 
-    public function test_soft_delete_integrity_maintained(): void
+    public function testSoftDeleteIntegrityMaintained(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,
@@ -154,7 +153,7 @@ class InstructorContextSecurityTest extends TestCase
         $this->assertEquals($deletedLink->status->value, LinkStatus::REVOKED->value);
     }
 
-    public function test_status_transitions_validated(): void
+    public function testStatusTransitionsValidated(): void
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant1->id,

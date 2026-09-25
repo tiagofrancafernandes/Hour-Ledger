@@ -9,7 +9,8 @@ export const InstructorStudentLinkStatus = {
     ACTIVE: 'ACTIVE',
     REVOKED: 'REVOKED',
 } as const;
-export type InstructorStudentLinkStatus = (typeof InstructorStudentLinkStatus)[keyof typeof InstructorStudentLinkStatus];
+export type InstructorStudentLinkStatus =
+    (typeof InstructorStudentLinkStatus)[keyof typeof InstructorStudentLinkStatus];
 
 export const UserRole = {
     INSTRUCTOR: 'INSTRUCTOR',

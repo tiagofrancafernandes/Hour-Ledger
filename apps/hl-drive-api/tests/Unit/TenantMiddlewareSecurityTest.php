@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use App\Exceptions\TenantNotFound;
-use App\Exceptions\UnauthorizedTenant;
 use App\Http\Middleware\TenantMiddleware;
 use App\Models\Tenant;
 use App\Models\User;
@@ -72,6 +70,7 @@ class TenantMiddlewareSecurityTest extends TestCase
         $result = $this->middleware->handle($request, function (Request $req) use (&$called, &$response) {
             $called = true;
             $response = Response::create('OK', 200);
+
             return $response;
         });
 
@@ -115,18 +114,19 @@ class TenantMiddlewareSecurityTest extends TestCase
         ];
 
         foreach ($invalidIds as $invalidId) {
-            $request = Request::create("/api/tenant/$invalidId/clients", 'GET');
+            $request = Request::create("/api/tenant/{$invalidId}/clients", 'GET');
 
             $called = false;
             $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
                 $called = true;
+
                 return Response::create('OK', 200);
             });
 
             // Most invalid IDs should be rejected
             // (unless they're extracted and found to not exist)
             if ($invalidId === '0' || $invalidId === '-1' || !is_numeric($invalidId)) {
-                $this->assertFalse($called, "Middleware should reject invalid ID: $invalidId");
+                $this->assertFalse($called, "Middleware should reject invalid ID: {$invalidId}");
                 $this->assertEquals(Response::HTTP_FORBIDDEN, $result->status());
             } else {
                 // Numeric but non-existent tenant
@@ -172,6 +172,7 @@ class TenantMiddlewareSecurityTest extends TestCase
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
+
             return Response::create('OK', 200);
         });
 
@@ -184,6 +185,7 @@ class TenantMiddlewareSecurityTest extends TestCase
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
+
             return Response::create('OK', 200);
         });
 
@@ -199,6 +201,7 @@ class TenantMiddlewareSecurityTest extends TestCase
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
+
             return Response::create('OK', 200);
         });
 
@@ -224,15 +227,14 @@ class TenantMiddlewareSecurityTest extends TestCase
         // Request with X-Tenant-ID header
         $request = Request::create('/api/clients', 'GET');
         $request->headers->set('X-Tenant-ID', $tenant->id);
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
             // Verify tenant_id was set
             $this->assertEquals($tenant->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -256,14 +258,13 @@ class TenantMiddlewareSecurityTest extends TestCase
 
         // Request with tenant query parameter
         $request = Request::create('/api/clients?tenant=' . $tenant->id, 'GET');
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
             $this->assertEquals($tenant->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -287,14 +288,13 @@ class TenantMiddlewareSecurityTest extends TestCase
 
         // Test /api/tenant/123/... pattern
         $request = Request::create("/api/tenant/{$tenant->id}/clients", 'GET');
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
             $this->assertEquals($tenant->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -302,14 +302,13 @@ class TenantMiddlewareSecurityTest extends TestCase
 
         // Test /tenant/123/... pattern
         $request = Request::create("/tenant/{$tenant->id}/dashboard", 'GET');
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
             $this->assertEquals($tenant->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -334,15 +333,14 @@ class TenantMiddlewareSecurityTest extends TestCase
         // Request with both header and query parameter (different values)
         $request = Request::create("/api/clients?tenant={$tenant2->id}", 'GET');
         $request->headers->set('X-Tenant-ID', $tenant1->id);
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called, $tenant1) {
             $called = true;
             // Should use header value (tenant1), not query value (tenant2)
             $this->assertEquals($tenant1->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -377,6 +375,7 @@ class TenantMiddlewareSecurityTest extends TestCase
             $called = false;
             $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
                 $called = true;
+
                 return Response::create('OK', 200);
             });
 
@@ -403,14 +402,13 @@ class TenantMiddlewareSecurityTest extends TestCase
 
         // First request for tenant1
         $request1 = Request::create("/api/tenant/{$tenant1->id}/clients", 'GET');
-        $request1->setUserResolver(function () {
-            return null;
-        });
+        $request1->setUserResolver(fn () => null);
 
         $this->middleware->handle($request1, function (Request $req) {
             $this->assertEquals($tenant1->id, $req->attributes->get('tenant_id'));
             // Manually reset to simulate end of request
             $this->resolver->clear();
+
             return Response::create('OK', 200);
         });
 
@@ -420,14 +418,13 @@ class TenantMiddlewareSecurityTest extends TestCase
 
         // Second request for tenant2
         $request2 = Request::create("/api/tenant/{$tenant2->id}/clients", 'GET');
-        $request2->setUserResolver(function () {
-            return null;
-        });
+        $request2->setUserResolver(fn () => null);
 
         $this->middleware->handle($request2, function (Request $req) {
             $this->assertEquals($tenant2->id, $req->attributes->get('tenant_id'));
             // Should not see tenant1's context
             $this->assertNotEquals($tenant1->id, $req->attributes->get('tenant_id'));
+
             return Response::create('OK', 200);
         });
 
@@ -449,11 +446,12 @@ class TenantMiddlewareSecurityTest extends TestCase
     {
         $nonExistentId = 99999;
 
-        $request = Request::create("/api/tenant/$nonExistentId/clients", 'GET');
+        $request = Request::create("/api/tenant/{$nonExistentId}/clients", 'GET');
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called) {
             $called = true;
+
             return Response::create('OK', 200);
         });
 
@@ -479,9 +477,7 @@ class TenantMiddlewareSecurityTest extends TestCase
         $tenant = Tenant::factory()->create(['name' => 'Schema Test Tenant']);
 
         $request = Request::create("/api/tenant/{$tenant->id}/clients", 'GET');
-        $request->setUserResolver(function () {
-            return null;
-        });
+        $request->setUserResolver(fn () => null);
 
         $called = false;
         $result = $this->middleware->handle($request, function (Request $req) use (&$called, $tenant) {

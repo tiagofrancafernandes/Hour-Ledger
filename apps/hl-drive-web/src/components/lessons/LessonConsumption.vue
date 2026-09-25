@@ -80,14 +80,16 @@ const handleComplete = async () => {
                         {{ new Date(lesson.scheduled_at).toLocaleDateString('pt-BR') }}
                     </p>
                     <p class="text-gray-900 dark:text-white">
-                        <span class="font-medium">Duração:</span> {{ lesson.duration_minutes }} minutos
+                        <span class="font-medium">Duração:</span>
+                        {{ lesson.duration_minutes }} minutos
                     </p>
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Horas Consumidas <span class="text-red-500">*</span>
+                    Horas Consumidas
+                    <span class="text-red-500">*</span>
                 </label>
                 <input
                     v-model.number="hoursConsumed"

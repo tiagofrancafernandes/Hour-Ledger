@@ -46,6 +46,7 @@ class InvitationAndLinkSeeder extends Seeder
         // Validate we have enough users
         if ($instructors->count() < 3 || $students->count() < 5) {
             $this->command->warn('Not enough instructors or students. Skipping seeding.');
+
             return;
         }
 

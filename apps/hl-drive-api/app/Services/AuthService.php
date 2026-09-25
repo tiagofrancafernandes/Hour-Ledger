@@ -112,10 +112,32 @@ class AuthService
         ]);
 
         // Assign default role if configured
-        $defaultRole = config('application.resources.auth.default_role_on_register');
+        $defaultRole = config('application.resources.auth.default_role_on_register') ?? 'admin';
 
-        if ($defaultRole) {
+        if ($defaultRole && \Spatie\Permission\Models\Role::where('name', $defaultRole)->exists()) {
             $user->assignRole($defaultRole);
+        }
+
+        // Auto-provision Tenant for new instructor
+        $slugBase = Str::slug($user->name);
+        $slug = !empty($slugBase) ? $slugBase . '-' . Str::random(4) : 'tenant-' . Str::random(6);
+
+        $tenant = \App\Models\Tenant::create([
+            'name' => $user->name,
+            'slug' => strtolower($slug),
+            'status' => 'active',
+        ]);
+
+        $user->tenants()->attach($tenant->id, [
+            'role' => 'admin',
+            'status' => 'active',
+        ]);
+
+        // Auto-provision default SaaS subscription for instructor tenant
+        try {
+            app(SubscriptionService::class)->getOrCreateSubscription($tenant);
+        } catch (\Throwable) {
+            // Subscription auto-provisioning fallback
         }
 
         $token->delete();

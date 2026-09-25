@@ -37,7 +37,9 @@ const getBalanceColor = () => {
 </script>
 
 <template>
-    <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg shadow-md p-8 border border-blue-200 dark:border-blue-800">
+    <div
+        class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg shadow-md p-8 border border-blue-200 dark:border-blue-800"
+    >
         <p class="text-blue-700 dark:text-blue-300 text-sm font-medium mb-2">Saldo Disponível</p>
 
         <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg">
@@ -59,11 +61,13 @@ const getBalanceColor = () => {
 
         <div v-else class="space-y-2">
             <p :class="['text-5xl font-bold', getBalanceColor()]">
-                {{ balance }} <span class="text-2xl">horas</span>
+                {{ balance }}
+                <span class="text-2xl">horas</span>
             </p>
 
             <p v-if="wallet" class="text-blue-700 dark:text-blue-300 text-sm">
-                Carteira: <span class="font-semibold">{{ wallet.name }}</span>
+                Carteira:
+                <span class="font-semibold">{{ wallet.name }}</span>
             </p>
 
             <p v-if="wallet?.description" class="text-blue-600 dark:text-blue-400 text-sm">

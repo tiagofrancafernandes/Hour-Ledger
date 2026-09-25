@@ -26,18 +26,10 @@
             </span>
 
             <!-- Loading Spinner -->
-            <Icon
-                v-if="loading"
-                icon="fa7-solid:spinner"
-                class="w-4 h-4 text-neutral-500 animate-spin ml-auto"
-            />
+            <Icon v-if="loading" icon="fa7-solid:spinner" class="w-4 h-4 text-neutral-500 animate-spin ml-auto" />
 
             <!-- Dropdown Icon -->
-            <Icon
-                v-else
-                icon="fa7-solid:chevron-down"
-                class="w-4 h-4 text-neutral-500 ml-auto"
-            />
+            <Icon v-else icon="fa7-solid:chevron-down" class="w-4 h-4 text-neutral-500 ml-auto" />
         </button>
 
         <!-- Dropdown Menu -->
@@ -52,10 +44,7 @@
             </div>
 
             <!-- Error State -->
-            <div
-                v-else-if="error && tenants.length === 0"
-                class="flex items-center gap-2 p-4 text-red-600 bg-red-50"
-            >
+            <div v-else-if="error && tenants.length === 0" class="flex items-center gap-2 p-4 text-red-600 bg-red-50">
                 <Icon icon="fa7-solid:circle-exclamation" class="w-4 h-4 flex-shrink-0" />
                 <span class="text-sm">{{ error }}</span>
             </div>
@@ -92,10 +81,7 @@
 
                         <!-- Status Badge -->
                         <div class="flex items-center gap-1 mt-1">
-                            <Icon
-                                icon="fa7-solid:circle-small"
-                                :class="getStatusIconClass(tenant.status)"
-                            />
+                            <Icon icon="fa7-solid:circle-small" :class="getStatusIconClass(tenant.status)" />
                             <span class="text-xs capitalize" :class="getStatusTextClass(tenant.status)">
                                 {{ tenant.status }}
                             </span>
@@ -111,11 +97,7 @@
         </div>
 
         <!-- Backdrop -->
-        <div
-            v-if="isOpen"
-            @click="closeDropdown"
-            class="fixed inset-0 z-40"
-        ></div>
+        <div v-if="isOpen" @click="closeDropdown" class="fixed inset-0 z-40"></div>
     </div>
 </template>
 

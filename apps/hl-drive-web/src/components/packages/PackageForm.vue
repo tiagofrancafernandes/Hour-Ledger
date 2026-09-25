@@ -68,7 +68,8 @@ const handleSubmit = async () => {
 
         <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Nome do Pacote <span class="text-red-500">*</span>
+                Nome do Pacote
+                <span class="text-red-500">*</span>
             </label>
             <input
                 v-model="formData.name"
@@ -80,7 +81,7 @@ const handleSubmit = async () => {
         </div>
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Descrição </label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Descrição</label>
             <textarea
                 v-model="formData.description"
                 placeholder="Descreva os benefícios deste pacote"
@@ -92,7 +93,8 @@ const handleSubmit = async () => {
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Horas <span class="text-red-500">*</span>
+                    Horas
+                    <span class="text-red-500">*</span>
                 </label>
                 <input
                     v-model.number="formData.hours"
@@ -107,7 +109,8 @@ const handleSubmit = async () => {
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Preço <span class="text-red-500">*</span>
+                    Preço
+                    <span class="text-red-500">*</span>
                 </label>
                 <input
                     v-model.number="formData.price"

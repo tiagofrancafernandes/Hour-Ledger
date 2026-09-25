@@ -1,0 +1,56 @@
+### Variables
+@baseUrl = http://localhost:8000/api
+@authToken = your_auth_token_here
+@tenantId = 1
+
+### 1. List All Active Packages
+GET {{baseUrl}}/packages
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 2. List Packages by Specific Instructor
+GET {{baseUrl}}/packages?instructor_id=1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 3. Create a New Package
+POST {{baseUrl}}/packages
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Pacote Básico 10 Aulas",
+    "description": "10 aulas práticas de direção veicular de 50 minutos cada",
+    "hours": 10.00,
+    "price": 850.00,
+    "currency_code": "BRL",
+    "active": true
+}
+
+### 4. Show Single Package
+GET {{baseUrl}}/packages/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 5. Update Package
+PUT {{baseUrl}}/packages/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Pacote Básico 10 Aulas - Especial",
+    "price": 800.00
+}
+
+### 6. Delete Package (Soft Delete)
+DELETE {{baseUrl}}/packages/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json

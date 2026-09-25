@@ -82,7 +82,11 @@ const formatDate = (date: Date) => {
         </div>
 
         <div v-else class="space-y-4">
-            <div v-for="transaction in transactions.slice(0, limit)" :key="transaction.id" class="flex items-start justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <div
+                v-for="transaction in transactions.slice(0, limit)"
+                :key="transaction.id"
+                class="flex items-start justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
                 <div class="flex-1">
                     <h3 class="font-semibold text-gray-900 dark:text-white">{{ transaction.title }}</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400">{{ transaction.description }}</p>
@@ -96,7 +100,9 @@ const formatDate = (date: Date) => {
                 </div>
             </div>
 
-            <button class="w-full text-center py-3 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm">
+            <button
+                class="w-full text-center py-3 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm"
+            >
                 Ver todas as transações →
             </button>
         </div>

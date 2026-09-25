@@ -107,9 +107,7 @@ class TenantSecurityTest extends TestCase
         // Payload 3: Try to retrieve via raw condition (if allowed, scope should still apply)
         $result = Client::whereRaw("1=1 OR tenant_id = " . $this->tenant2->id)->get();
         // Should still apply tenant scope and return only tenant1's records
-        $this->assertTrue($result->every(function (Client $client) {
-            return $client->tenant_id === $this->tenant1->id;
-        }));
+        $this->assertTrue($result->every(fn (Client $client) => $client->tenant_id === $this->tenant1->id));
         $this->assertCount(1, $result);
 
         // Payload 4: UNION SELECT attempt (checking name field)
@@ -165,9 +163,7 @@ class TenantSecurityTest extends TestCase
         $result = Client::orderByRaw("name ASC UNION SELECT * FROM clients WHERE '1'='1'")->get();
         // Tenant scope should still apply
         $this->assertCount(2, $result);
-        $this->assertTrue($result->every(function (Client $client) {
-            return $client->tenant_id === $this->tenant1->id;
-        }));
+        $this->assertTrue($result->every(fn (Client $client) => $client->tenant_id === $this->tenant1->id));
 
         // Verify tenant2's client not returned
         $this->assertFalse($result->pluck('id')->contains($t2Client->id));

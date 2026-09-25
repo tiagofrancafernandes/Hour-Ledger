@@ -16,8 +16,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * These models now support automatic tenant isolation via BelongsToTenant trait.
  */
-return new class extends Migration
-{
+return new class() extends Migration {
     /**
      * Run the migrations.
      */

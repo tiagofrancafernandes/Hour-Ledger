@@ -17,7 +17,9 @@ class TenantIsolationComprehensiveTest extends TestCase
     use RefreshDatabase;
 
     protected TenantResolver $resolver;
-    protected Tenant $t1, $t2, $t3;
+    protected Tenant $t1;
+    protected Tenant $t2;
+    protected Tenant $t3;
 
     protected function setUp(): void
     {
@@ -35,7 +37,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         parent::tearDown();
     }
 
-    public function test_clients_isolated_by_tenant(): void
+    public function testClientsIsolatedByTenant(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         // $c1 = Client::create(['tenant_id' => $this->t1->id, 'name' => 'C1']);
@@ -71,7 +73,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertTrue($all->pluck('id')->contains($c4->id));
     }
 
-    public function test_wallet_relationships_isolated(): void
+    public function testWalletRelationshipsIsolated(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         // $c1 = Client::create(['tenant_id' => $this->t1->id, 'name' => 'C']);
@@ -99,7 +101,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertTrue($loaded->wallets->pluck('id')->contains($w3->id));
     }
 
-    public function test_ledger_entries_isolated(): void
+    public function testLedgerEntriesIsolated(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         $c = Client::create(['tenant_id' => $this->t1->id, 'name' => 'C']);
@@ -133,7 +135,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertCount(2, $wallet->entries);
     }
 
-    public function test_where_clauses_respect_scope(): void
+    public function testWhereClausesRespectScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         Client::create(['tenant_id' => $this->t1->id, 'name' => 'Active']);
@@ -155,7 +157,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertCount(2, $active);
     }
 
-    public function test_update_respects_scope(): void
+    public function testUpdateRespectsScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         Client::create(['tenant_id' => $this->t1->id, 'name' => 'A']);
@@ -180,7 +182,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertEquals('C', $all->first()->name);
     }
 
-    public function test_delete_respects_scope(): void
+    public function testDeleteRespectsScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         // $c1 = Client::create(['tenant_id' => $this->t1->id, 'name' => 'A']);
@@ -205,7 +207,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertTrue($all->pluck('id')->contains($c3->id));
     }
 
-    public function test_aggregates_respect_scope(): void
+    public function testAggregatesRespectScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         $c = Client::create(['tenant_id' => $this->t1->id, 'name' => 'C']);
@@ -231,7 +233,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertEquals(100, LedgerEntry::sum('hours'));
     }
 
-    public function test_find_respects_scope(): void
+    public function testFindRespectsScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         // $c1 = Client::create(['tenant_id' => $this->t1->id, 'name' => 'C']);
@@ -249,7 +251,7 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    public function test_first_or_create_respects_scope(): void
+    public function testFirstOrCreateRespectsScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
         // $c1 = Client::create(['tenant_id' => $this->t1->id, 'name' => 'Shared']);
@@ -262,17 +264,19 @@ class TenantIsolationComprehensiveTest extends TestCase
         $this->assertEquals($this->t2->id, $c2->tenant_id);
     }
 
-    public function test_pagination_respects_scope(): void
+    public function testPaginationRespectsScope(): void
     {
         $this->resolver->setTenantId($this->t1->id);
+
         for ($i = 0; $i < 5; $i++) {
-            Client::create(['tenant_id' => $this->t1->id, 'name' => "C$i"]);
+            Client::create(['tenant_id' => $this->t1->id, 'name' => "C{$i}"]);
         }
 
         $this->resolver->clear();
         $this->resolver->setTenantId($this->t2->id);
+
         for ($i = 0; $i < 3; $i++) {
-            Client::create(['tenant_id' => $this->t2->id, 'name' => "X$i"]);
+            Client::create(['tenant_id' => $this->t2->id, 'name' => "X{$i}"]);
         }
 
         $this->resolver->clear();

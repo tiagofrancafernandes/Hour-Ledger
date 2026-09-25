@@ -43,7 +43,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function invitation_can_be_created_by_instructor()
+    public function invitationCanBeCreatedByInstructor()
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -62,7 +62,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function invitation_generates_unique_token()
+    public function invitationGeneratesUniqueToken()
     {
         $inv1 = Invitation::factory()->create(['tenant_id' => $this->tenant->id]);
         $inv2 = Invitation::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -73,7 +73,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function accepting_invitation_creates_active_link()
+    public function acceptingInvitationCreatesActiveLink()
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -102,7 +102,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function rejecting_invitation_creates_rejected_state()
+    public function rejectingInvitationCreatesRejectedState()
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -124,7 +124,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function student_with_active_link_can_access_instructor_data()
+    public function studentWithActiveLinkCanAccessInstructorData()
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -143,7 +143,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function student_without_link_cannot_access_instructor_data()
+    public function studentWithoutLinkCannotAccessInstructorData()
     {
         $otherInstructor = User::factory()->create();
         $otherInstructor->tenants()->attach($this->tenant->id);
@@ -158,7 +158,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function revoking_link_makes_student_lose_access()
+    public function revokingLinkMakesStudentLoseAccess()
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -182,7 +182,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function multiple_instructors_are_isolated_by_context()
+    public function multipleInstructorsAreIsolatedByContext()
     {
         $instructor1 = User::factory()->create();
         $instructor2 = User::factory()->create();
@@ -214,7 +214,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function soft_deleted_links_are_hidden_but_auditable()
+    public function softDeletedLinksAreHiddenButAuditable()
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -234,7 +234,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function invitation_token_is_secure_and_validates()
+    public function invitationTokenIsSecureAndValidates()
     {
         $invitation = Invitation::factory()->create(['tenant_id' => $this->tenant->id]);
         $token = $invitation->token;
@@ -252,7 +252,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function invitation_and_link_are_coordinated()
+    public function invitationAndLinkAreCoordinated()
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -276,7 +276,7 @@ class InstructorStudentLinkArchitectureTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function revoked_link_cannot_be_reactivated()
+    public function revokedLinkCannotBeReactivated()
     {
         $link = InstructorStudentLink::factory()->create([
             'tenant_id' => $this->tenant->id,

@@ -1,0 +1,79 @@
+### Variables
+@baseUrl = http://localhost:8000/api
+@authToken = your_auth_token_here
+@tenantId = 1
+
+### 1. List Lessons
+GET {{baseUrl}}/lessons
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 2. List Lessons by Student
+GET {{baseUrl}}/students/2/lessons
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 3. List Lessons by Instructor
+GET {{baseUrl}}/instructors/1/lessons
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 4. Schedule a New Lesson
+POST {{baseUrl}}/lessons
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "student_id": 2,
+    "wallet_id": 1,
+    "scheduled_at": "2026-09-28T14:00:00Z",
+    "duration_minutes": 50,
+    "notes": "Aula prática no percurso de exame"
+}
+
+### 5. Show Single Lesson
+GET {{baseUrl}}/lessons/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 6. Update Scheduled Lesson
+PUT {{baseUrl}}/lessons/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "duration_minutes": 100,
+    "notes": "Aula dupla de baliza e garagem"
+}
+
+### 7. Complete Lesson & Debit Hours from Wallet
+POST {{baseUrl}}/lessons/1/complete
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "hours_consumed": 1.00,
+    "notes": "Aula concluída com sucesso. Aluno dominou baliza de 2 pontos."
+}
+
+### 8. Cancel Lesson
+POST {{baseUrl}}/lessons/1/cancel
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 9. Delete Lesson (Soft Delete)
+DELETE {{baseUrl}}/lessons/1
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json

@@ -6,7 +6,6 @@ use App\Models\Client;
 use App\Models\Tenant;
 use App\Models\Wallet;
 use App\Services\TenantResolver;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class MultiTenancyIsolationTest extends TestCase
@@ -36,7 +35,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wallets_in_tenant_1_are_not_visible_in_tenant_2()
+    public function walletsInTenant1AreNotVisibleInTenant2()
     {
         // Dado: wallets em tenants diferentes
         $this->resolver->setTenantId($this->tenant1->id);
@@ -61,7 +60,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function schema_is_separate_for_each_tenant()
+    public function schemaIsSeparateForEachTenant()
     {
         // Dado: dois tenants com contextos definidos
         $this->resolver->setTenantId($this->tenant1->id);
@@ -88,7 +87,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function model_global_scope_prevents_cross_tenant_access()
+    public function modelGlobalScopePreventsCrossTenantAccess()
     {
         // Dado: wallet em tenant_1
         $this->resolver->setTenantId($this->tenant1->id);
@@ -107,7 +106,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function tenant_context_is_request_isolated()
+    public function tenantContextIsRequestIsolated()
     {
         // Dado: tenant_1 no contexto
         $this->resolver->setTenantId($this->tenant1->id);
@@ -124,7 +123,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function resolving_missing_tenant_returns_null()
+    public function resolvingMissingTenantReturnsNull()
     {
         // Dado: sem contexto de tenant
         $this->resolver->clear();
@@ -137,7 +136,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function wallet_queries_in_different_contexts_are_isolated()
+    public function walletQueriesInDifferentContextsAreIsolated()
     {
         // Dado: wallet em tenant_1
         $this->resolver->setTenantId($this->tenant1->id);
@@ -153,7 +152,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function clients_are_isolated_by_tenant()
+    public function clientsAreIsolatedByTenant()
     {
         // Dado: clients adicionais em tenants diferentes
         $this->resolver->setTenantId($this->tenant1->id);
@@ -178,7 +177,7 @@ class MultiTenancyIsolationTest extends TestCase
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
-    public function resolver_has_tenant_returns_correct_state()
+    public function resolverHasTenantReturnsCorrectState()
     {
         // Dado: resolver sem tenant
         $this->resolver->clear();

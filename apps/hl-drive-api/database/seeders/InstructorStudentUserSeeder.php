@@ -33,6 +33,7 @@ class InstructorStudentUserSeeder extends Seeder
 
         // Create 3 instructors
         $instructors = [];
+
         for ($i = 1; $i <= 3; $i++) {
             $instructor = User::firstOrCreate(
                 ['email' => "instructor{$i}@example.com"],
@@ -51,6 +52,7 @@ class InstructorStudentUserSeeder extends Seeder
 
         // Create 5 students
         $students = [];
+
         for ($i = 1; $i <= 5; $i++) {
             $student = User::firstOrCreate(
                 ['email' => "student{$i}@example.com"],

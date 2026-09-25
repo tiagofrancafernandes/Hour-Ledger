@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\MultiTenancy;
 
-use App\Models\LedgerEntry;
 use App\Models\Tenant;
 use App\Models\User;
-use App\Services\TenantResolver;
 use Tests\Feature\TenantTestCase;
 use Tests\Fixtures\TenantFixture;
 use Tests\Fixtures\UserFixture;
@@ -33,7 +31,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that TenantTestCase creates three tenants correctly
      */
-    public function test_tenant_test_case_creates_three_tenants(): void
+    public function testTenantTestCaseCreatesThreeTenants(): void
     {
         $this->assertNotNull($this->tenantA);
         $this->assertNotNull($this->tenantB);
@@ -47,7 +45,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that test tenants are stored in database
      */
-    public function test_test_tenants_are_persisted_in_database(): void
+    public function testTestTenantsArePersistedInDatabase(): void
     {
         // Check each tenant exists in database
         $this->assertDatabaseHas('tenants', ['id' => $this->tenantA->id, 'name' => 'Tenant A']);
@@ -61,7 +59,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that TenantTestCase creates three users correctly
      */
-    public function test_tenant_test_case_creates_three_users(): void
+    public function testTenantTestCaseCreatesThreeUsers(): void
     {
         $this->assertNotNull($this->userA);
         $this->assertNotNull($this->userB);
@@ -75,7 +73,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that test users are assigned to correct tenants
      */
-    public function test_users_assigned_to_correct_tenants(): void
+    public function testUsersAssignedToCorrectTenants(): void
     {
         // Verify userA has access to tenantA
         $this->assertTrue($this->userA->hasAccessToTenant($this->tenantA->id));
@@ -96,7 +94,7 @@ class SetupTest extends TenantTestCase
      * The actual validation of what the resolver does happens via the
      * TenantScope filtering tests in Milestone 2.
      */
-    public function test_switch_tenant_helper_method_exists(): void
+    public function testSwitchTenantHelperMethodExists(): void
     {
         // Verify the method exists and can be called
         try {
@@ -110,7 +108,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that assertActiveTenant helper method can be called
      */
-    public function test_assert_active_tenant_helper_method_exists(): void
+    public function testAssertActiveTenantHelperMethodExists(): void
     {
         // Verify the method exists and can be called
         try {
@@ -126,7 +124,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test getUserForTenant helper method
      */
-    public function test_get_user_for_tenant_helper(): void
+    public function testGetUserForTenantHelper(): void
     {
         $userA = $this->getUserForTenant($this->tenantA);
         $this->assertEquals($this->userA->id, $userA->id);
@@ -141,7 +139,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test TenantFixture creates single tenant
      */
-    public function test_tenant_fixture_creates_single_tenant(): void
+    public function testTenantFixtureCreatesSingleTenant(): void
     {
         $tenant = TenantFixture::createTenant(['name' => 'Custom Tenant']);
 
@@ -153,7 +151,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test TenantFixture creates multiple tenants
      */
-    public function test_tenant_fixture_creates_multiple_tenants(): void
+    public function testTenantFixtureCreatesMultipleTenants(): void
     {
         $tenants = TenantFixture::createMultipleTenants(5);
 
@@ -172,7 +170,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test TenantFixture with different statuses
      */
-    public function test_tenant_fixture_with_different_statuses(): void
+    public function testTenantFixtureWithDifferentStatuses(): void
     {
         $activeTenant = TenantFixture::createActiveTenant(['name' => 'Active']);
         $suspendedTenant = TenantFixture::createSuspendedTenant(['name' => 'Suspended']);
@@ -186,7 +184,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test UserFixture creates user for tenant
      */
-    public function test_user_fixture_creates_user_for_tenant(): void
+    public function testUserFixtureCreatesUserForTenant(): void
     {
         $tenant = TenantFixture::createTenant(['name' => 'New Tenant']);
         $user = UserFixture::createUserForTenant($tenant, ['name' => 'John Doe']);
@@ -199,7 +197,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test UserFixture creates multiple users for tenant
      */
-    public function test_user_fixture_creates_multiple_users_for_tenant(): void
+    public function testUserFixtureCreatesMultipleUsersForTenant(): void
     {
         $tenant = TenantFixture::createTenant(['name' => 'New Tenant']);
         $users = UserFixture::createMultipleUsersForTenant($tenant, 3);
@@ -215,7 +213,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test UserFixture with specific roles
      */
-    public function test_user_fixture_with_different_roles(): void
+    public function testUserFixtureWithDifferentRoles(): void
     {
         $tenant = TenantFixture::createTenant(['name' => 'New Tenant']);
 
@@ -236,7 +234,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test UserFixture with suspended access
      */
-    public function test_user_fixture_with_suspended_access(): void
+    public function testUserFixtureWithSuspendedAccess(): void
     {
         $tenant = TenantFixture::createTenant(['name' => 'New Tenant']);
         $user = UserFixture::createSuspendedUserForTenant($tenant);
@@ -253,7 +251,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test UserFixture for multiple tenants
      */
-    public function test_user_fixture_for_multiple_tenants(): void
+    public function testUserFixtureForMultipleTenants(): void
     {
         $tenant1 = TenantFixture::createTenant(['name' => 'Tenant 1']);
         $tenant2 = TenantFixture::createTenant(['name' => 'Tenant 2']);
@@ -272,7 +270,7 @@ class SetupTest extends TenantTestCase
      * This test is automatically run fresh by RefreshDatabase trait.
      * If this passes and tenants/users are 3/3, it proves cleanup works.
      */
-    public function test_database_cleanup_between_tests(): void
+    public function testDatabaseCleanupBetweenTests(): void
     {
         // Should have exactly 3 tenants and 3 users from setUp
         $this->assertEquals(3, Tenant::count());
@@ -284,7 +282,7 @@ class SetupTest extends TenantTestCase
      *
      * Each test gets fresh data via RefreshDatabase
      */
-    public function test_fixture_independence_multiple_tests(): void
+    public function testFixtureIndependenceMultipleTests(): void
     {
         // Create additional data in this test
         $extraTenant = TenantFixture::createTenant(['name' => 'Extra']);
@@ -296,7 +294,7 @@ class SetupTest extends TenantTestCase
     /**
      * Test that fixtures can be created multiple times
      */
-    public function test_fixtures_reusable_across_test_methods(): void
+    public function testFixturesReusableAcrossTestMethods(): void
     {
         // First, verify initial setup
         $initialCount = Tenant::count();
@@ -316,7 +314,7 @@ class SetupTest extends TenantTestCase
      * This test verifies that the TenantObserver (if implemented) correctly
      * validates that a user can only be created with a valid tenant context.
      */
-    public function test_user_creation_validates_tenant_context(): void
+    public function testUserCreationValidatesTenantContext(): void
     {
         // Set tenant context
         $this->switchTenant($this->tenantA);
@@ -338,7 +336,7 @@ class SetupTest extends TenantTestCase
      *
      * For now we just verify the helper doesn't fail when called correctly.
      */
-    public function test_assert_tenant_isolation_helper(): void
+    public function testAssertTenantIsolationHelper(): void
     {
         // This test just verifies the helper method exists and can be called
         // The actual isolation validation tests are in Milestone 2

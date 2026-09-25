@@ -5,12 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Tenant;
-use App\Models\TenantContext;
 use App\Models\User;
 use App\Services\TenantResolver;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**

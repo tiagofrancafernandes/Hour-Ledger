@@ -68,10 +68,7 @@ function handleKeyDown(event: KeyboardEvent): void {
         <div class="space-y-4">
             <!-- Email Input -->
             <div>
-                <label
-                    for="email"
-                    class="block text-sm font-medium text-gray-700 mb-2"
-                >
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                     {{ t('invitation.email') }}
                 </label>
                 <input
@@ -91,16 +88,8 @@ function handleKeyDown(event: KeyboardEvent): void {
                 class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 @click="handleSubmit"
             >
-                <Icon
-                    v-if="isSubmitting || loading"
-                    icon="mdi:loading"
-                    class="w-4 h-4 animate-spin"
-                />
-                <Icon
-                    v-else
-                    icon="fa7-solid:paper-plane"
-                    class="w-4 h-4"
-                />
+                <Icon v-if="isSubmitting || loading" icon="mdi:loading" class="w-4 h-4 animate-spin" />
+                <Icon v-else icon="fa7-solid:paper-plane" class="w-4 h-4" />
                 {{ t('invitation.send') }}
             </button>
         </div>

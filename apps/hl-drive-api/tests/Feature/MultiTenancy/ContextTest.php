@@ -30,7 +30,7 @@ class ContextTest extends TenantTestCase
      * Validates that when we switch the active tenant, subsequent queries
      * immediately return data for the new tenant.
      */
-    public function test_changing_tenant_changes_query_results(): void
+    public function testChangingTenantChangesQueryResults(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
@@ -73,17 +73,19 @@ class ContextTest extends TenantTestCase
      * queries return an empty result set (fail-closed security).
      * This is critical for preventing accidental data leakage.
      */
-    public function test_null_context_returns_no_data(): void
+    public function testNullContextReturnsNoData(): void
     {
         $this->switchTenant($this->tenantA);
+
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client A-$i"]);
+            $client = new Client(['name' => "Client A-{$i}"]);
             $client->save();
         }
 
         $this->switchTenant($this->tenantB);
+
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client B-$i"]);
+            $client = new Client(['name' => "Client B-{$i}"]);
             $client->save();
         }
 
@@ -110,7 +112,7 @@ class ContextTest extends TenantTestCase
      * queries return no data. This ensures that even if the context is somehow
      * corrupted or set to an invalid value, we don't leak data.
      */
-    public function test_invalid_context_returns_no_data(): void
+    public function testInvalidContextReturnsNoData(): void
     {
         $this->switchTenant($this->tenantA);
         $client = new Client(['name' => 'Client A']);
@@ -144,7 +146,7 @@ class ContextTest extends TenantTestCase
      * all return consistent, isolated results. This ensures that
      * the context is maintained properly throughout the request lifecycle.
      */
-    public function test_sequential_queries_maintain_isolation(): void
+    public function testSequentialQueriesMaintainIsolation(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA1 = new Client(['name' => 'Client A-1']);
@@ -215,7 +217,7 @@ class ContextTest extends TenantTestCase
      * Validates that when we set a tenant context, it remains active
      * for multiple consecutive queries on different models.
      */
-    public function test_context_persists_across_model_queries(): void
+    public function testContextPersistsAcrossModelQueries(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);

@@ -81,14 +81,18 @@ const handleSchedule = async () => {
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Agendar Aula</h2>
 
         <form @submit.prevent="handleSchedule" class="space-y-6">
-            <div v-if="error" class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg">
+            <div
+                v-if="error"
+                class="p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg"
+            >
                 <p class="text-red-800 dark:text-red-200">{{ error }}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Data <span class="text-red-500">*</span>
+                        Data
+                        <span class="text-red-500">*</span>
                     </label>
                     <input
                         v-model="selectedDate"
@@ -101,7 +105,8 @@ const handleSchedule = async () => {
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Horário <span class="text-red-500">*</span>
+                        Horário
+                        <span class="text-red-500">*</span>
                     </label>
                     <input
                         v-model="selectedTime"
@@ -114,7 +119,8 @@ const handleSchedule = async () => {
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Duração (minutos) <span class="text-red-500">*</span>
+                    Duração (minutos)
+                    <span class="text-red-500">*</span>
                 </label>
                 <select
                     v-model.number="durationMinutes"
@@ -126,11 +132,13 @@ const handleSchedule = async () => {
                     <option value="90">1 hora e 30 minutos</option>
                     <option value="120">2 horas</option>
                 </select>
-                <p v-if="validationErrors.duration" class="text-red-500 text-sm mt-1">{{ validationErrors.duration }}</p>
+                <p v-if="validationErrors.duration" class="text-red-500 text-sm mt-1">
+                    {{ validationErrors.duration }}
+                </p>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> Observações </label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Observações</label>
                 <textarea
                     v-model="notes"
                     placeholder="Anotações sobre a aula"

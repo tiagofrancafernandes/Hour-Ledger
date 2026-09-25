@@ -28,7 +28,7 @@ class InvitationFlowTest extends TestCase
         $this->student = User::factory()->create(['tenant_id' => $this->tenant->id]);
     }
 
-    public function test_instructor_can_create_invitation_to_student(): void
+    public function testInstructorCanCreateInvitationToStudent(): void
     {
         $this->assertDatabaseMissing('invitations', [
             'instructor_id' => $this->instructor->id,
@@ -50,7 +50,7 @@ class InvitationFlowTest extends TestCase
         ]);
     }
 
-    public function test_invitation_expires_after_7_days(): void
+    public function testInvitationExpiresAfter7Days(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -69,7 +69,7 @@ class InvitationFlowTest extends TestCase
         $this->assertTrue($expiredInvitation->isExpired());
     }
 
-    public function test_invitation_token_is_unique(): void
+    public function testInvitationTokenIsUnique(): void
     {
         $token = 'unique-token-12345';
 
@@ -92,7 +92,7 @@ class InvitationFlowTest extends TestCase
         ]);
     }
 
-    public function test_student_can_accept_invitation(): void
+    public function testStudentCanAcceptInvitation(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -111,7 +111,7 @@ class InvitationFlowTest extends TestCase
         $this->assertNotNull($invitation->accepted_at);
     }
 
-    public function test_cannot_accept_expired_invitation(): void
+    public function testCannotAcceptExpiredInvitation(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -125,7 +125,7 @@ class InvitationFlowTest extends TestCase
         $this->assertFalse($invitation->isResolvable());
     }
 
-    public function test_student_can_reject_invitation(): void
+    public function testStudentCanRejectInvitation(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -140,7 +140,7 @@ class InvitationFlowTest extends TestCase
         $this->assertNotNull($invitation->rejected_at);
     }
 
-    public function test_cannot_accept_twice(): void
+    public function testCannotAcceptTwice(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -155,7 +155,7 @@ class InvitationFlowTest extends TestCase
         $this->assertTrue($invitation->status === InvitationStatus::ACCEPTED);
     }
 
-    public function test_cannot_create_duplicate_pending_invitation(): void
+    public function testCannotCreateDuplicatePendingInvitation(): void
     {
         Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -174,7 +174,7 @@ class InvitationFlowTest extends TestCase
         ]);
     }
 
-    public function test_can_resend_invitation(): void
+    public function testCanResendInvitation(): void
     {
         $invitation1 = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,
@@ -197,7 +197,7 @@ class InvitationFlowTest extends TestCase
         $this->assertTrue($invitation2->status === InvitationStatus::PENDING);
     }
 
-    public function test_invitation_soft_deletes(): void
+    public function testInvitationSoftDeletes(): void
     {
         $invitation = Invitation::factory()->create([
             'tenant_id' => $this->tenant->id,

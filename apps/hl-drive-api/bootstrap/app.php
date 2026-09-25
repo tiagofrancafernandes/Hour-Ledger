@@ -70,7 +70,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
         $middleware->api(
             append: [
-                \App\Http\Middleware\TenantMiddleware::class,
+                App\Http\Middleware\TenantMiddleware::class,
+                App\Http\Middleware\EnforceSubscriptionStatusMiddleware::class,
             ]
         );
 
@@ -79,6 +80,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'role' => Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'subscription.active' => App\Http\Middleware\EnforceSubscriptionStatusMiddleware::class,
         ]);
 
         //

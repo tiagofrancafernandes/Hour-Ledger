@@ -86,9 +86,11 @@ class Tenant extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'name',
         'slug',
         'status',
+        'metadata',
     ];
 
     /**

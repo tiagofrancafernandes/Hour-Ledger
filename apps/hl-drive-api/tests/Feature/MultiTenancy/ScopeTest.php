@@ -30,7 +30,7 @@ class ScopeTest extends TenantTestCase
      * Validates that when using where() on a model with BelongsToTenant,
      * the TenantScope is still applied in addition to the where clause.
      */
-    public function test_where_clause_respects_tenant_scope(): void
+    public function testWhereClauseRespectsTenantScope(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Premium Client']);
@@ -68,7 +68,7 @@ class ScopeTest extends TenantTestCase
      * Validates that when using joins, the TenantScope is still applied
      * and prevents cross-tenant data leakage through join operations.
      */
-    public function test_join_does_not_leak_data(): void
+    public function testJoinDoesNotLeakData(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
@@ -113,7 +113,7 @@ class ScopeTest extends TenantTestCase
      * Validates that when loading related models through relationships,
      * the TenantScope is applied and prevents cross-tenant data leakage.
      */
-    public function test_relations_do_not_leak_data(): void
+    public function testRelationsDoNotLeakData(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
@@ -163,23 +163,26 @@ class ScopeTest extends TenantTestCase
      * Validates that the count() method respects TenantScope and
      * returns only the count of records in the active tenant.
      */
-    public function test_count_reflects_only_tenant_data(): void
+    public function testCountReflectsOnlyTenantData(): void
     {
         $this->switchTenant($this->tenantA);
+
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client A-$i"]);
+            $client = new Client(['name' => "Client A-{$i}"]);
             $client->save();
         }
 
         $this->switchTenant($this->tenantB);
+
         for ($i = 1; $i <= 5; $i++) {
-            $client = new Client(['name' => "Client B-$i"]);
+            $client = new Client(['name' => "Client B-{$i}"]);
             $client->save();
         }
 
         $this->switchTenant($this->tenantC);
+
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client C-$i"]);
+            $client = new Client(['name' => "Client C-{$i}"]);
             $client->save();
         }
 
@@ -208,21 +211,23 @@ class ScopeTest extends TenantTestCase
      *
      * Validates that count() combined with where() still respects TenantScope.
      */
-    public function test_count_with_where_respects_scope(): void
+    public function testCountWithWhereRespectsScope(): void
     {
         $this->switchTenant($this->tenantA);
         $vip = new Client(['name' => 'VIP Client']);
         $vip->save();
+
         for ($i = 1; $i <= 2; $i++) {
-            $client = new Client(['name' => "Client A-$i"]);
+            $client = new Client(['name' => "Client A-{$i}"]);
             $client->save();
         }
 
         $this->switchTenant($this->tenantB);
         $vip = new Client(['name' => 'VIP Client']);
         $vip->save();
+
         for ($i = 1; $i <= 3; $i++) {
-            $client = new Client(['name' => "Client B-$i"]);
+            $client = new Client(['name' => "Client B-{$i}"]);
             $client->save();
         }
 
@@ -242,7 +247,7 @@ class ScopeTest extends TenantTestCase
      * Validates that the exists() method respects TenantScope and
      * only checks for records in the active tenant.
      */
-    public function test_exists_checks_only_in_tenant(): void
+    public function testExistsChecksOnlyInTenant(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client(['name' => 'Client A']);
@@ -279,7 +284,7 @@ class ScopeTest extends TenantTestCase
      *
      * Validates that exists() with multiple where conditions still respects TenantScope.
      */
-    public function test_exists_with_complex_conditions(): void
+    public function testExistsWithComplexConditions(): void
     {
         $this->switchTenant($this->tenantA);
         $clientA = new Client([
@@ -292,7 +297,7 @@ class ScopeTest extends TenantTestCase
         $clientB = new Client([
             'name' => 'Acme Corp',
             'email' => 'contact@acme.com',
-            ]);
+        ]);
         $clientB->save();
 
         $this->switchTenant($this->tenantA);

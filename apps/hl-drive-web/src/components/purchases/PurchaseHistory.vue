@@ -76,7 +76,11 @@ const formatDate = (date: string) => {
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                    <tr v-for="purchase in purchases" :key="purchase.id" class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <tr
+                        v-for="purchase in purchases"
+                        :key="purchase.id"
+                        class="hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
                         <td class="px-4 py-3 text-gray-900 dark:text-white">
                             {{ purchase.package?.name || 'N/A' }}
                         </td>
@@ -85,11 +89,15 @@ const formatDate = (date: string) => {
                             R$ {{ parseFloat(purchase.total_price).toFixed(2) }}
                         </td>
                         <td class="px-4 py-3">
-                            <span :class="['px-3 py-1 rounded-full text-xs font-medium', getStatusColor(purchase.status)]">
+                            <span
+                                :class="['px-3 py-1 rounded-full text-xs font-medium', getStatusColor(purchase.status)]"
+                            >
                                 {{ getStatusLabel(purchase.status) }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ formatDate(purchase.created_at) }}</td>
+                        <td class="px-4 py-3 text-gray-600 dark:text-gray-400">
+                            {{ formatDate(purchase.created_at) }}
+                        </td>
                     </tr>
                 </tbody>
             </table>

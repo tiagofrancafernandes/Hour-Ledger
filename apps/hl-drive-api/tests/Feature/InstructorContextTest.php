@@ -35,7 +35,7 @@ class InstructorContextTest extends TestCase
         ]);
     }
 
-    public function test_instructor_context_filters_resources(): void
+    public function testInstructorContextFiltersResources(): void
     {
         $otherInstructor = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $otherStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -55,7 +55,7 @@ class InstructorContextTest extends TestCase
         $this->assertEquals($linksForInstructor->first()->instructor_id, $this->instructor->id);
     }
 
-    public function test_switching_active_instructor_filters_queries(): void
+    public function testSwitchingActiveInstructorFiltersQueries(): void
     {
         $instructor2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $student2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -86,7 +86,7 @@ class InstructorContextTest extends TestCase
         $this->assertEquals($activeInstructor2Links->first()->instructor_id, $instructor2->id);
     }
 
-    public function test_cross_instructor_access_blocked(): void
+    public function testCrossInstructorAccessBlocked(): void
     {
         $instructor2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -98,7 +98,7 @@ class InstructorContextTest extends TestCase
         $this->assertCount(0, $links);
     }
 
-    public function test_without_context_resources_empty(): void
+    public function testWithoutContextResourcesEmpty(): void
     {
         $unlinkedStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -107,7 +107,7 @@ class InstructorContextTest extends TestCase
         $this->assertCount(0, $instructorLinks);
     }
 
-    public function test_context_persists_in_session(): void
+    public function testContextPersistsInSession(): void
     {
         $this->student->update(['active_instructor_id' => $this->instructor->id]);
 
@@ -116,7 +116,7 @@ class InstructorContextTest extends TestCase
         $this->assertEquals($freshStudent->active_instructor_id, $this->instructor->id);
     }
 
-    public function test_queries_with_scope_filter_correctly(): void
+    public function testQueriesWithScopeFilterCorrectly(): void
     {
         $otherStudent = User::factory()->create(['tenant_id' => $this->tenant->id]);
 
@@ -136,7 +136,7 @@ class InstructorContextTest extends TestCase
         $this->assertCount(1, $studentLinks);
     }
 
-    public function test_active_instructor_change_updates_header(): void
+    public function testActiveInstructorChangeUpdatesHeader(): void
     {
         $instructor2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
         $student2 = User::factory()->create(['tenant_id' => $this->tenant->id]);
@@ -157,7 +157,7 @@ class InstructorContextTest extends TestCase
         $this->assertEquals($this->student->fresh()->active_instructor_id, $instructor2->id);
     }
 
-    public function test_desvinculation_removes_access(): void
+    public function testDesvinculationRemovesAccess(): void
     {
         $this->student->update(['active_instructor_id' => $this->instructor->id]);
 
