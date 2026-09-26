@@ -17,12 +17,12 @@ Implementar mitigações para os débitos técnicos críticos e de alta severida
 ## 2. Escopo
 
 ### 2.1. Rate Limiting em Endpoints Públicos
-- [ ] Implementar middleware de rate limit em rotas sensíveis:
+- [x] Implementar middleware de rate limit em rotas sensíveis:
   - `/api/auth/login` (ex: 5 req/min)
   - `/api/auth/register` (ex: 3 req/min)
   - `/api/auth/password-recovery/*` (ex: 3 req/min)
-- [ ] Retornar status HTTP 429 Too Many Requests ao exceder limite.
-- [ ] Criar testes automatizados cobrindo tentativas excessivas e desbloqueio temporal.
+- [x] Retornar status HTTP 429 Too Many Requests ao exceder limite.
+- [x] Criar testes automatizados cobrindo tentativas excessivas e desbloqueio temporal.
 
 ### 2.2. Camada de Cache com Redis
 - [ ] Integrar Redis para cálculo de saldo derivado (`BalanceCalculatorService`).

@@ -93,11 +93,11 @@ Planejamento de médio e longo prazo do ecossistema:
 - [ROADMAP.md](./future/ROADMAP.md) — Visão geral das 6 fases do ecossistema.
 - [TECHNICAL-DEBT-ROADMAP.md](./future/TECHNICAL-DEBT-ROADMAP.md) — Mapeamento detalhado de débitos técnicos.
 - [spikes/INDEX.md](./future/spikes/INDEX.md) — Spikes de extração de pacotes compartilhados (`HL Core` e `Ledger`).
-- **Planos Ativos**:
-  - [002-01-unificacao-arquivos-planejamento-v1.md](../tasks/plans/002-01-unificacao-arquivos-planejamento-v1.md) — Unificação de planejamento.
-  - [003-01-debitos-tecnicos-e-resiliencia-v1.md](../tasks/plans/003-01-debitos-tecnicos-e-resiliencia-v1.md) — Rate limiting, cache Redis e resiliência.
-  - [004-01-evolucao-ledger-wallet-v1.md](../tasks/plans/004-01-evolucao-ledger-wallet-v1.md) — Tipos contábeis, WalletPolicy e transferências.
-  - [005-01-extracao-hl-core-modularizacao-v1.md](../tasks/plans/005-01-extracao-hl-core-modularizacao-v1.md) — Extração para packages e suporte a HL Consulting.
+- **Planos e Tarefas do Ecossistema**:
+  - [003-01-debitos-tecnicos-e-resiliencia-v1.md](../tasks/plans/doing/003-01-debitos-tecnicos-e-resiliencia-v1.md) — Rate limiting, cache Redis e resiliência (Em andamento).
+  - [004-01-evolucao-ledger-wallet-v1.md](../tasks/plans/004-01-evolucao-ledger-wallet-v1.md) — Tipos contábeis, WalletPolicy e transferências (Planejado).
+  - [005-01-extracao-hl-core-modularizacao-v1.md](../tasks/plans/005-01-extracao-hl-core-modularizacao-v1.md) — Extração para packages e suporte a HL Consulting (Planejado).
+  - [002-01-unificacao-arquivos-planejamento-v1.md](../tasks/plans/done/002-01-unificacao-arquivos-planejamento-v1.md) — Unificação de planejamento (Concluído).
 
 ---
 
@@ -177,5 +177,5 @@ curl -X POST http://localhost:8000/api/subscription/upload-receipt \
 
 ---
 
-> **Regra de Manutenção Obrigatória**:  
+> **Regra de Manutenção Obrigatória**:
 > Sempre que novas rotas, entidades ou comportamentos forem adicionados ou alterados no projeto, a respectiva documentação em `docs/` e o índice [docs/README.md](./README.md) **devem ser imediatamente atualizados**, incluindo exemplos em `.http` e `curl`.

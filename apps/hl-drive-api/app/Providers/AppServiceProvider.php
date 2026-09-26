@@ -9,6 +9,9 @@ use App\PaymentMethods\PixOfflinePaymentMethod;
 use App\PaymentMethods\PixPaymentMethod;
 use App\Services\TenantResolver;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
 
@@ -38,5 +41,24 @@ class AppServiceProvider extends ServiceProvider
         PaymentMethodRegistry::register(PixOfflinePaymentMethod::class);
         PaymentMethodRegistry::register(PixPaymentMethod::class);
         PaymentMethodRegistry::register(BankTransferPaymentMethod::class);
+
+        // Configure Rate Limiters
+        RateLimiter::for('login', function (Request $request) {
+            $key = (string) ($request->ip() ?: 'global');
+
+            return Limit::perMinute(5)->by($key);
+        });
+
+        RateLimiter::for('register', function (Request $request) {
+            $key = (string) ($request->ip() ?: 'global');
+
+            return Limit::perMinute(3)->by($key);
+        });
+
+        RateLimiter::for('password-recovery', function (Request $request) {
+            $key = (string) ($request->ip() ?: 'global');
+
+            return Limit::perMinute(3)->by($key);
+        });
     }
 }

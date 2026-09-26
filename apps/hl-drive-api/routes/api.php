@@ -62,22 +62,22 @@ Route::prefix('public')->name('api.public.')->group(function () {
     Route::any('/timezones', [PublicResourceController::class, 'timezones'])->name('timezones');
 });
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
 Route::prefix('auth')->group(function () {
     // Public routes (no authentication required)
     Route::get('/resources', [AuthController::class, 'getAuthResources']);
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 
     // Registration routes
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/register/verify', [AuthController::class, 'registerVerifyEmail']);
-    Route::post('/register/complete', [AuthController::class, 'registerComplete']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('/register/verify', [AuthController::class, 'registerVerifyEmail'])->middleware('throttle:register');
+    Route::post('/register/complete', [AuthController::class, 'registerComplete'])->middleware('throttle:register');
 
     // Password Recovery routes
-    Route::post('/password-recovery/request', [AuthController::class, 'requestPasswordRecovery']);
-    Route::post('/password-recovery/verify', [AuthController::class, 'verifyPasswordRecoveryToken']);
-    Route::post('/password-recovery/reset', [AuthController::class, 'resetPassword']);
+    Route::post('/password-recovery/request', [AuthController::class, 'requestPasswordRecovery'])->middleware('throttle:password-recovery');
+    Route::post('/password-recovery/verify', [AuthController::class, 'verifyPasswordRecoveryToken'])->middleware('throttle:password-recovery');
+    Route::post('/password-recovery/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:password-recovery');
 
     // Authenticated routes
     Route::middleware(['auth:sanctum'])->group(function () {
