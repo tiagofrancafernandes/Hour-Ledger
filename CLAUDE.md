@@ -21,6 +21,8 @@ Para entender bem o objetivo desse projeto, leia docs/architecture/02-VISION.md 
 - Atualize `docs/agent/checkpoints/` ao concluir cada milestone.
 - Ao retomar uma tarefa, leia o plano aprovado e o checkpoint atual antes de continuar.
 - Antes de alterar arquitetura, tenancy, ledger, wallet, autenticação ou permissões, apresente plano e aguarde aprovação.
+- Sempre mantenha as documentações e o índice geral (`docs/README.md`) atualizados ao criar ou alterar recursos no ecossistema.
+- Crie documentações acompanhadas de exemplos práticos sempre que possível (especialmente requisições HTTP com arquivos `.http` em `backend/dev-contents/demo-requests/` ou comandos `curl`), mantendo todos os exemplos atualizados e funcionais.
 
 ## Prioridade de instruções
 

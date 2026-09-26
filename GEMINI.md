@@ -28,6 +28,8 @@ Para entender bem o objetivo desse projeto, leia `docs/architecture/02-VISION.md
   - O **HL Core** é genérico e reutilizável; ele **nunca** deve conhecer nem depender de produtos específicos (como HL Drive ou HL Consulting).
   - Regras de negócio de produtos devem residir exclusivamente em seus domínios.
 - Ao criar ou alterar rotas no backend, gere ou atualize os respectivos arquivos de requisição de demonstração (`.http`) em `backend/dev-contents/demo-requests/` com o sufixo `-demo`, usando `tenants-demo.http` como template base.
+- Sempre mantenha as documentações e o índice geral (`docs/README.md`) atualizados ao criar ou modificar recursos ou rotas no ecossistema.
+- Crie documentações acompanhadas de exemplos práticos sempre que possível (especialmente requisições HTTP em arquivos `.http` em `backend/dev-contents/demo-requests/` ou comandos `curl`) e mantenha-os rigorosamente atualizados e funcionais.
 
 ---
 

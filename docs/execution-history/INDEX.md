@@ -76,29 +76,21 @@ Este diretório consolida a documentação de execução de cada fase do projeto
 
 ---
 
-## Relatórios Históricos Consolidados
-
-- `BETA-LAUNCH-FINAL-REPORT.md`: Relatório final do lançamento Beta (Junho/2026).
-- `BETA-STATUS.md`: Status da versão Beta no fechamento de ciclo.
-- `EXECUTION-SUMMARY-2026-07-04.md`: Resumo executivo de execução (Julho/2026).
-- `PROJECT-COMPLETION-SUMMARY.md`: Resumo consolidado de conclusão de projeto legado.
-- `PROGRESSO-ATUAL.txt`: Log diário de progresso durante o Beta Launch.
-- `PHASE-3/FASE-3-FINAL-REPORT.md`: Relatório final da Fase 3 (Multi-Instrutor).
-- `PHASE-4/FASE-4-MULTI-TENANCY-FINAL-REPORT.md`: Relatório final da Fase 4 (Multi-Tenancy).
-- `PHASE-4/TAREFA_G_SUMMARY.md`: Resumo de conclusão da Tarefa G (Testes de Isolamento Multi-Tenant).
-
----
-
 ## Outras Referências
 
-### Conhecimento e Guias Técnicos
-- `docs/knowledge/TECHNICAL-TRANSITION-REPORT.md`: Relatório detalhado de transição técnica do monorepo.
-- `docs/knowledge/TRANSITION-QUICK-REFERENCE.md`: Guia rápido de referência da transição.
+### Documentação Consolidada
+- `BACKLOG-CURATION-2026-06-25.md`: Curadoria completa de planos/tarefas e recomendações
+- `EXECUTION.md`: Tracker de execução geral
+- `ROADMAP-PROXIMO-CICLO.md`: Próximos passos após V1
 
-### Planos e Débitos Futuros
-- `docs/future/TECHNICAL-DEBT-ROADMAP.md`: Mapeamento detalhado de débitos técnicos e resiliência.
-- `docs/future/ROADMAP.md`: Visão geral das 6 fases do ecossistema.
-- `tasks/plans/`: Planos de desenvolvimento ativos e futuros.
+### Prompts e Histórico
+- Ver `docs/archive/prompts-history/` para prompts históricos
+
+### Planos Futuros (Pós-V1)
+- Ver `docs/future/spikes/` para:
+  - Extração de HL Core como plataforma compartilhada
+  - Extração de Ledger/Wallet como package reutilizável
+  - Novos produtos (HL Consulting, etc)
 
 ---
 
@@ -106,22 +98,13 @@ Este diretório consolida a documentação de execução de cada fase do projeto
 
 ```
 execution-history/
-├── BETA-LAUNCH-FINAL-REPORT.md
-├── BETA-STATUS.md
-├── EXECUTION-SUMMARY-2026-07-04.md
-├── PROJECT-COMPLETION-SUMMARY.md
-├── PROGRESSO-ATUAL.txt
-├── PHASE-1/
 ├── PHASE-2/
 │   ├── checkpoints/    (3 arquivos)
 │   └── plans/          (2 arquivos)
 ├── PHASE-3/
-│   ├── FASE-3-FINAL-REPORT.md
 │   ├── checkpoints/    (6 arquivos)
 │   └── plans/          (1 arquivo)
 ├── PHASE-4/
-│   ├── FASE-4-MULTI-TENANCY-FINAL-REPORT.md
-│   ├── TAREFA_G_SUMMARY.md
 │   ├── checkpoints/    (7 arquivos)
 │   └── plans/          (4 arquivos)
 └── INDEX.md            (este arquivo)
@@ -141,5 +124,5 @@ Essa restrição foi fundamental para manter a qualidade e o escopo do projeto.
 
 ---
 
-**Última atualização**: 2026-09-25  
-**Responsável**: Tiago França / Equipe Hour Ledger Ecosystem
+**Última atualização**: 2026-06-25  
+**Próxima revisão**: Após conclusão de Tarefa G

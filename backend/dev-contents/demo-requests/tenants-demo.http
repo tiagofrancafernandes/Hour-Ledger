@@ -1,0 +1,31 @@
+### Variables
+@baseUrl = http://localhost:8000/api
+@authToken = your_auth_token_here
+@tenantId = 1
+
+### ============================================================================
+### 1. RESOLUÇÃO DE TENANT & ROTAS DE CONTEXTO
+### ============================================================================
+
+### 1.1 Testar Endpoint de Resolução de Tenant via Header X-Tenant-ID
+GET {{baseUrl}}/test-tenant-endpoint
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 1.2 Testar Endpoint com Parâmetro de URL de Tenant
+GET {{baseUrl}}/tenant/{{tenantId}}/data
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### 1.3 Consultar Recursos com Tenant Ativo (Exemplo: Wallets)
+GET {{baseUrl}}/wallets
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json
+
+### 1.4 Consultar Clientes do Tenant Ativo
+GET {{baseUrl}}/clients
+Authorization: Bearer {{authToken}}
+X-Tenant-ID: {{tenantId}}
+Accept: application/json

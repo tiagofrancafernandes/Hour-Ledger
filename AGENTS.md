@@ -156,6 +156,7 @@ O sistema deve considerar:
 13. Se houver conflito entre documentação local e conhecimento interno, siga a documentação local.
 14. Para tarefas não triviais, crie plano antes de alterar código.
 15. Para tarefas longas, atualize checkpoint.
+16. Sempre mantenha as documentações e o índice geral (`docs/README.md`) atualizados ao criar ou modificar recursos. Crie documentações incluindo exemplos práticos sempre que possível (especialmente exemplos de requisições HTTP usando arquivos `.http` em `backend/dev-contents/demo-requests/` ou comandos `curl`) e mantenha-os rigorosamente atualizados.
 
 ## Planejamento
 
